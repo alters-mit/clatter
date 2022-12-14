@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{08D6715D-6E55-40C7-A606-9865F2E8CCCD}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>Clatter.Core</RootNamespace>
+        <AssemblyName>Clatter.Core</AssemblyName>
+        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Xml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="AudioEvent.cs" />
+        <Compile Include="AudioEventType.cs" />
+        <Compile Include="AudioGenerator.cs" />
+        <Compile Include="AudioObjectData.cs" />
+        <Compile Include="CollisionEvent.cs" />
+        <Compile Include="Creator.cs" />
+        <Compile Include="DoubleExtensions.cs" />
+        <Compile Include="EventState.cs" />
+        <Compile Include="Globals.cs" />
+        <Compile Include="Impact.cs" />
+        <Compile Include="ImpactMaterial.cs" />
+        <Compile Include="ImpactMaterialData.cs" />
+        <Compile Include="ImpactMaterialSized.cs" />
+        <Compile Include="MedianFilter.cs" />
+        <Compile Include="Modes.cs" />
+        <Compile Include="NormalDistribution.cs" />
+        <Compile Include="OnCollisionType.cs" />
+        <Compile Include="Paths.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Samples.cs" />
+        <Compile Include="Scrape.cs" />
+        <Compile Include="ScrapeMaterial.cs" />
+        <Compile Include="ScrapeMaterialData.cs" />
+        <Compile Include="Util.cs" />
+        <Compile Include="Vector3d.cs" />
+        <Compile Include="WavWriter.cs" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+
+</Project>
