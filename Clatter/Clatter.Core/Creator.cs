@@ -20,6 +20,34 @@ namespace Clatter.Core
         /// A cached impact. This can be used for ongoing impacts.
         /// </summary>
         private static Impact impact;
+        
+        
+        /// <summary>
+        /// Set the primary object.
+        /// </summary>
+        /// <param name="impactMaterial">A byte representing the impact material.</param>
+        /// <param name="amp">The amp.</param>
+        /// <param name="resonance">The resonance.</param>
+        /// <param name="mass">The mass.</param>
+        public static void SetPrimaryObject(byte impactMaterial, float amp, float resonance, float mass)
+        {
+            primary = new AudioObjectData(0, (ImpactMaterialSized)impactMaterial, amp, resonance, mass);
+        }
+
+
+        /// <summary>
+        /// Set the secondary object.
+        /// </summary>
+        /// <param name="impactMaterial">A byte representing the impact material.</param>
+        /// <param name="amp">The amp.</param>
+        /// <param name="resonance">The resonance.</param>
+        /// <param name="mass">The mass.</param>
+        /// <param name="scrapeMaterial">The scrape material. Can be null.</param>
+        public static void SetSecondaryObject(byte impactMaterial, float amp, float resonance, float mass, byte? scrapeMaterial)
+        {
+            secondary = new AudioObjectData(1, (ImpactMaterialSized)impactMaterial, amp, resonance, mass,
+                (ScrapeMaterial?)scrapeMaterial);
+        }
 
 
         /// <summary>
@@ -50,7 +78,8 @@ namespace Clatter.Core
                 return impact.samples.ToInt16Bytes();
             }
         }
-        
+
+
         /// <summary>
         /// Generate a scrape sound.
         /// This assumes that you have called SetPrimaryObject and SetSecondaryObject, and that in the latter call you provided a scrape material.
@@ -81,33 +110,34 @@ namespace Clatter.Core
             }
             return audio;
         }
-
+        
         
         /// <summary>
-        /// Set the primary object.
+        /// Generate an impact sound and write it to disk as a .wav file.
         /// </summary>
-        /// <param name="impactMaterial">A byte representing the impact material.</param>
-        /// <param name="amp">The amp.</param>
-        /// <param name="resonance">The resonance.</param>
-        /// <param name="mass">The mass.</param>
-        public static void SetPrimaryObject(byte impactMaterial, float amp, float resonance, float mass)
+        /// <param name="speed">The speed of the impact.</param>
+        /// <param name="newImpact">If true, this is a new impact. If false, this is part of an ongoing series of impacts. Ignored the first time this function is called.</param>
+        /// <param name="path">The path to the output file.</param>
+        public static void WriteImpact(float speed, bool newImpact, string path)
         {
-            primary = new AudioObjectData(0, (ImpactMaterialSized)impactMaterial, amp, resonance, mass);
+            WavWriter writer = new WavWriter(path);
+            writer.Write(GetImpact(speed, newImpact));
+            writer.End();
         }
-
-
+        
+        
         /// <summary>
-        /// Set the secondary object.
+        /// Generate a scrape sound and write it to disk as a .wav file.
+        /// This assumes that you have called SetPrimaryObject and SetSecondaryObject, and that in the latter call you provided a scrape material.
         /// </summary>
-        /// <param name="impactMaterial">A byte representing the impact material.</param>
-        /// <param name="amp">The amp.</param>
-        /// <param name="resonance">The resonance.</param>
-        /// <param name="mass">The mass.</param>
-        /// <param name="scrapeMaterial">The scrape material. Can be null.</param>
-        public static void SetSecondaryObject(byte impactMaterial, float amp, float resonance, float mass, byte? scrapeMaterial)
+        /// <param name="speed">The speed of the scrape.</param>
+        /// <param name="duration">The duration of the scrape in seconds. This will be rounded to the nearest tenth of a second.</param>
+        /// <param name="path">The path to the output file.</param>
+        public static void WriteScrape(float speed, float duration, string path)
         {
-            secondary = new AudioObjectData(1, (ImpactMaterialSized)impactMaterial, amp, resonance, mass,
-                (ScrapeMaterial?)scrapeMaterial);
+            WavWriter writer = new WavWriter(path);
+            writer.Write(GetScrape(speed, duration));
+            writer.End();
         }
     }
 }

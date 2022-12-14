@@ -18,6 +18,10 @@ namespace Clatter.Core
         /// </summary>
         private readonly string _path;
         /// <summary>
+        /// The number of channels.
+        /// </summary>
+        private readonly int _channels;
+        /// <summary>
         /// If we're writing wav data, this is a cached byte array for copying the audio float array into.
         /// </summary>
         private byte[] _wavChunk = new byte[2048 * 4];
@@ -25,11 +29,18 @@ namespace Clatter.Core
         /// A header for a .wav file.
         /// </summary>
         private static byte[] _wavHeader;
-
-
-        public WavWriter(string path, bool overwrite = true)
+        
+        
+        /// <summary>
+        /// (constructor)
+        /// </summary>
+        /// <param name="path">The path to the output file.</param>
+        /// <param name="overwrite">If true, overwrite an existing file.</param>
+        /// <param name="channels">The number of audio channels.</param>
+        public WavWriter(string path, bool overwrite = true, int channels = 1)
         {
             _path = path;
+            _channels = channels;
             // Create the directory.
             string d = Path.GetDirectoryName(_path);
             if (!Directory.Exists(d))
@@ -49,12 +60,32 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="data">The audio data.</param>
         /// <param name="length">The length of the data chunk (this might be less than data.Length).</param>
-        /// <param name="channels">The number of audio channels.</param>
-        public void Write(float[] data, int length, int channels)
+        public void Write(float[] data, int length)
+        {
+            // Resize the wav data array.
+            if (_wavChunk.Length != length * 2)
+            {
+                Array.Resize(ref _wavChunk, length * 2);
+            }
+            // Convert floats to int16 and copy the byte data into the array.
+            // Source: https://gist.github.com/darktable/2317063
+            for (int i = 0; i < length; i++)
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes((short)(data[i] * Globals.FLOAT_TO_SHORT)), 0, _wavChunk, i * 2, 2);
+            }
+            // Write.
+            Write(_wavChunk);
+        }
+        
+        /// <summary>
+        /// Write byte data. This assumes that the data is already an int16 byte array.
+        /// </summary>
+        /// <param name="data">The int16 byte array.</param>
+        public void Write(byte[] data)
         {
             if (_wavHeader == null)
             {
-                SetWavHeader(channels);
+                SetWavHeader(_channels);
             }
             // Write the .wav header.
             if (!_wroteWavHeader)
@@ -67,21 +98,10 @@ namespace Clatter.Core
                     filestream.Write(_wavHeader, 0, _wavHeader.Length);
                 }
             }
-            // Resize the wav data array.
-            if (_wavChunk.Length != length * 2)
-            {
-                Array.Resize(ref _wavChunk, length * 2);
-            }
-            // Convert floats to int16 and copy the byte data into the array.
-            // Source: https://gist.github.com/darktable/2317063
-            for (int i = 0; i < length; i++)
-            {
-                Buffer.BlockCopy(BitConverter.GetBytes((short)(data[i] * Globals.FLOAT_TO_SHORT)), 0, _wavChunk, i * 2, 2);
-            }
             // Write the byte array.
             using (FileStream filestream = new FileStream(_path, FileMode.Append))
             {
-                filestream.Write(_wavChunk, 0, _wavChunk.Length);
+                filestream.Write(data, 0, _wavChunk.Length);
             }
         }
 

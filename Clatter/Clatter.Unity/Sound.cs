@@ -125,7 +125,7 @@ namespace Clatter.Unity
             // Write audio data to disk.
             if (writing)
             {
-                writer.Write(data, data.Length, 1);
+                writer.Write(data, data.Length);
 
             }
             // Set the audio data.
