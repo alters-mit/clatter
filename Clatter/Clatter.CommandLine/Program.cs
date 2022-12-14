@@ -8,16 +8,6 @@ namespace Clatter.CommandLine
     /// </summary>
     public class Program
     {
-        /// <summary>
-        /// A cached impact material.
-        /// </summary>
-        private static ImpactMaterialSized impactMaterial;
-        /// <summary>
-        /// A cached scrape material,
-        /// </summary>
-        private static ScrapeMaterial scrapeMaterial;
-
-        
         private static void Main(string[] args)
         {
             // Get the path to the output file.
@@ -63,6 +53,7 @@ namespace Clatter.CommandLine
         private static AudioObjectData GetAudioObjectData(string[] args, uint id, string target, bool scrape)
         {
             string m = ArgumentParser.GetStringValue(args, target + "_material") + "_" + ArgumentParser.GetStringValue(args, target + "_size");
+            ImpactMaterialSized impactMaterial;
             if (!Enum.TryParse(m, out impactMaterial))
             {
                 throw new Exception("Invalid impact material: " + m);
@@ -73,6 +64,7 @@ namespace Clatter.CommandLine
             if (scrape)
             {
                 string s = ArgumentParser.GetStringValue(args, "scrape_material");
+                ScrapeMaterial scrapeMaterial;
                 if (!Enum.TryParse(s, out scrapeMaterial))
                 {
                     throw new Exception("Invalid scrape material: " + s);
