@@ -33,6 +33,16 @@ namespace Clatter.Core
         {
             primary = new AudioObjectData(0, (ImpactMaterialSized)impactMaterial, amp, resonance, mass);
         }
+        
+        
+        /// <summary>
+        /// Set the primary object.
+        /// </summary>
+        /// <param name="a">The primary object.</param>
+        public static void SetPrimaryObject(AudioObjectData a)
+        {
+            primary = a;
+        }
 
 
         /// <summary>
@@ -47,6 +57,16 @@ namespace Clatter.Core
         {
             secondary = new AudioObjectData(1, (ImpactMaterialSized)impactMaterial, amp, resonance, mass,
                 (ScrapeMaterial?)scrapeMaterial);
+        }
+        
+        
+        /// <summary>
+        /// Set the secondary object.
+        /// </summary>
+        /// <param name="a">The secondary object.</param>
+        public static void SetSecondaryObject(AudioObjectData a)
+        {
+            secondary = a;
         }
 
 
