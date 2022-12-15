@@ -78,6 +78,8 @@ namespace Clatter.Core
         /// <param name="newImpact">If true, this is a new impact. If false, this is part of an ongoing series of impacts. Ignored the first time this function is called.</param>
         public static byte[] GetImpact(float speed, bool newImpact)
         {
+            ImpactMaterialData.Load(primary.impactMaterial);
+            ImpactMaterialData.Load(secondary.impactMaterial);
             // Create the random number generator.
             Random rng = new Random();
             // Set the impact.
@@ -108,6 +110,9 @@ namespace Clatter.Core
         /// <param name="duration">The duration of the scrape in seconds. This will be rounded to the nearest tenth of a second.</param>
         public static byte[] GetScrape(float speed, float duration)
         {
+            ImpactMaterialData.Load(primary.impactMaterial);
+            ImpactMaterialData.Load(secondary.impactMaterial);
+            ScrapeMaterialData.Load(secondary.scrapeMaterial);
             int count = (int)(duration * Globals.framerate / Scrape.SAMPLES_LENGTH);
             // Get the scrape material.
             // Create the objects.

@@ -6,6 +6,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>Clatter.CommandLine</RootNamespace>
+        <Company>MIT</Company>
+        <Product>clatter</Product>
+        <AssemblyVersion>0.0.1</AssemblyVersion>
+        <AssemblyName>clatter</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>

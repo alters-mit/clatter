@@ -10,21 +10,22 @@ namespace Clatter.CommandLine
     {
         private static void Main(string[] args)
         {
-            // Get the path to the output file.
-            string path = ArgumentParser.GetStringValue(args, "path");
             // Set the primary object.
             Creator.SetPrimaryObject(GetAudioObjectData(args, 0, "primary", false));
             // Get the audio type.
             string audioType = ArgumentParser.GetStringValue(args, "type");
             // Check if this is a scrape.
             bool scrape;
+            float scrapeDuration;
             if (audioType == "impact")
             {
                 scrape = false;
+                scrapeDuration = -1;
             }
             else if (audioType == "scrape")
             {
                 scrape = true;
+                scrapeDuration = ArgumentParser.GetFloatValue(args, "duration");
             }
             else
             {
@@ -32,14 +33,43 @@ namespace Clatter.CommandLine
             }
             // Set the secondary object.
             Creator.SetSecondaryObject(GetAudioObjectData(args, 1, "secondary", scrape));
+            // Get the speed.
             float speed = ArgumentParser.GetFloatValue(args, "speed");
-            if (scrape)
+            // Get the path to the output file.
+            string path;
+            // Write a file.
+            if (ArgumentParser.TryGetStringValue(args, "path", out path))
             {
-                Creator.WriteScrape(speed, ArgumentParser.GetFloatValue(args, "duration"), path);
+                if (scrape)
+                {
+                    Creator.WriteScrape(speed, scrapeDuration, path);
+                }
+                else
+                {
+                    Creator.WriteImpact(speed, true, path);
+                }         
             }
+            // Write to stdout.
             else
             {
-                Creator.WriteImpact(speed, true, path);
+                // Get the audio data.
+                byte[] buffer;
+                if (scrape)
+                {
+                    buffer = Creator.GetScrape(speed, scrapeDuration);
+                }
+                else
+                {
+                    buffer = Creator.GetImpact(speed, true);
+                }
+                // Write the audio data. Source: https://stackoverflow.com/a/27007411
+                using (Stream outStream = Console.OpenStandardOutput())
+                {
+                    if (scrape)
+                    {
+                        outStream.Write(buffer, 0, buffer.Length);
+                    }
+                }
             }
         }
         
