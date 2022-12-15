@@ -69,7 +69,7 @@ namespace Clatter.Core
             {
                 return;
             }
-            Load(impactMaterial, File.ReadAllBytes(Path.Combine(Paths.root, Paths.IMPACT_MATERIAL_FOLDER, impactMaterial.ToString() + "_mm.bytes")));
+            Load(impactMaterial, Loader.Load("ImpactMaterials." + impactMaterial + "_mm.bytes"));
         }
     }
 }

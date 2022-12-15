@@ -139,13 +139,6 @@ namespace Clatter.Unity
         {
             // Set the data with a unique ID.
             o.Initialize(nextID);
-            // Load the impact material from Resources.
-            MaterialLoader.Load(o.data.impactMaterial);
-            // Load the scrape material from Resources.
-            if (o.hasScrapeMaterial)
-            {
-                MaterialLoader.Load(o.scrapeMaterial);
-            }
             nextID++;
             // Remember this object.
             objects.Add(o.data.id, o);
