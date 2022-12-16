@@ -24,7 +24,7 @@ namespace Clatter.Unity
         /// </summary>
         public bool auto;
         /// <summary>
-        /// The random seed. Ignored if randomSeed == true.
+        /// The random seed. Ignored if generateRandomSeed == true.
         /// </summary>
         [HideInInspector]
         public int seed;

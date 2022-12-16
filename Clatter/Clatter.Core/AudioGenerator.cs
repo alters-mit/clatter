@@ -143,7 +143,7 @@ namespace Clatter.Core
                     audioThreads[index].Start();
                 }
                 // Generate scrape audio.
-                else if (collisionEvents[index].type == AudioEventType.scrape)
+                else if (collisionEvents[index].type == AudioEventType.scrape && collisionEvents[index].secondary.hasScrapeMaterial)
                 {
                     // Set the previous area.
                     collisionEvents[index].primary.hasPreviousArea = true;

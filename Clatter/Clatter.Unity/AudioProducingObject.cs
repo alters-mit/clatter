@@ -30,8 +30,7 @@ namespace Clatter.Unity
         /// <summary>
         /// The impact material.
         /// </summary>
-        [SerializeField]
-        private ImpactMaterial impactMaterial;
+        public ImpactMaterial impactMaterial;
         /// <summary>
         /// If true, this object has a scrape material.
         /// </summary>
@@ -44,15 +43,41 @@ namespace Clatter.Unity
         /// <summary>
         /// The audio amplitude.
         /// </summary>
-        [SerializeField]
         [Range(0, 1)]
-        private float amp = 0.1f;
+        public float amp = 0.1f;
         /// <summary>
         /// The resonance value.
         /// </summary>
-        [SerializeField]
         [Range(0, 1)]
-        private float resonance = 0.1f;
+        public float resonance = 0.1f;
+        /// <summary>
+        /// If true, automatically set the friction values based on the impact material (see: PhysicsValues.cs).
+        /// </summary>
+        public bool autoSetFriction = true;
+        /// <summary>
+        /// The physic material dynamic friction value.
+        /// </summary>
+        [HideInInspector]
+        public float dynamicFriction = 0.1f;
+        /// <summary>
+        /// The physic material static friction value.
+        /// </summary>
+        [HideInInspector]
+        public float staticFriction = 0.1f;
+        /// <summary>
+        /// The physic material bounciness value. This always needs to be set on a per-object basis. 
+        /// </summary>
+        [Range(0, 1)]
+        public float bounciness = 0.2f;
+        /// <summary>
+        /// If true, automatically set the mass of the object based on its impact material and volume (see: PhysicsValues.cs). If false, use the mass value in the Rigidbody.
+        /// </summary>
+        public bool autoSetMass = true;
+        /// <summary>
+        /// The portion from 0 to 1 of the object that is hollow. This is used to convert volume and density to mass (see: autoSetMass).
+        /// </summary>
+        [HideInInspector]
+        public float hollowness;
         /// <summary>
         /// The object's Rigidbody. Can be null.
         /// </summary>
@@ -74,6 +99,10 @@ namespace Clatter.Unity
         /// </summary>
         private Vector3[] contactNormals = Array.Empty<Vector3>();
         /// <summary>
+        /// The object's physic material.
+        /// </summary>
+        private PhysicMaterial physicMaterial;
+        /// <summary>
         /// The floor audio data.
         /// </summary>
         public static AudioObjectData floor = new AudioObjectData(0, ImpactMaterialSized.wood_medium_4, 0.5f, 0.1f, 100, ScrapeMaterial.plywood);
@@ -85,32 +114,79 @@ namespace Clatter.Unity
         /// <param name="id">This object's ID.</param>
         public void Initialize(uint id)
         {
+            // Get the bounds of the object.
+            Bounds b = new Bounds(gameObject.transform.position, Vector3.zero);
+            foreach (Renderer re in gameObject.GetComponentsInChildren<Renderer>())
+            {
+                b.Encapsulate(re.bounds);
+            }
             // Set the bodies.
             r = GetComponent<Rigidbody>();
             articulationBody = GetComponent<ArticulationBody>();
+            // Automatically add a Rigidbody if needed.
+            if (r == null && articulationBody == null)
+            {
+                r = gameObject.AddComponent<Rigidbody>();
+                r.mass = 1;
+                r.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            }
             // Get the mass.
             float mass;
-            if (r != null)
+            // Auto-set the mass.
+            if (autoSetMass)
             {
-                mass = r.mass;
+                // Get the approximate volume.
+                float volume = b.size.x * b.size.y * b.size.z;
+                // Multiply the volume by the density and then by a hollowness factor.
+                mass = volume * PhysicsValues.Density[impactMaterial] * (1 - hollowness);
+                // Set the mass.
+                if (r != null)
+                {
+                    r.mass = mass;
+                }
+                else if (articulationBody != null)
+                {
+                    articulationBody.mass = mass;
+                }
             }
-            else if (articulationBody != null)
-            {
-                mass = articulationBody.mass;
-            }
+            // Use the mass value in the Rigidbody or ArticulationBody.
             else
             {
-                mass = 0;
+                if (r != null)
+                {
+                    mass = r.mass;
+                }
+                else if (articulationBody != null)
+                {
+                    mass = articulationBody.mass;
+                }
+                else
+                {
+                    mass = 0;
+                }          
+            }
+            // Set the physic material.
+            // Auto-set friction values.
+            if (autoSetFriction)
+            {
+                dynamicFriction = PhysicsValues.DynamicFriction[impactMaterial];
+                staticFriction = PhysicsValues.StaticFriction[impactMaterial];
+            }
+            // Set the physic material.
+            physicMaterial = new PhysicMaterial()
+            {
+                dynamicFriction = dynamicFriction,
+                staticFriction = staticFriction,
+                bounciness = bounciness
+            };
+            Collider[] colliders = gameObject.GetComponentsInChildren<Collider>();
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                colliders[i].sharedMaterial = physicMaterial;
             }
             // Get the size from the volume.
             if (autoSetSize)
             {
-                Bounds b = new Bounds(gameObject.transform.position, Vector3.zero);
-                // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
-                foreach (Renderer re in gameObject.GetComponentsInChildren(typeof(Renderer)))
-                {
-                    b.Encapsulate(re.bounds);
-                }
                 float s = b.size.x + b.size.y + b.size.z;
                 if (s <= 0.1f)
                 {
@@ -281,6 +357,7 @@ namespace Clatter.Unity
 
         private void OnDestroy()
         {
+            Destroy(physicMaterial);
             onDestroy?.Invoke(data.id);
         }
     }

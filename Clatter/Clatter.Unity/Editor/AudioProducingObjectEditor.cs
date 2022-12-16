@@ -22,6 +22,16 @@ namespace Clatter.Unity.Editor
             {
                 s.scrapeMaterial = (Core.ScrapeMaterial)EditorGUILayout.EnumPopup("Scrape Material", s.scrapeMaterial);
             }
+            if (!s.autoSetFriction)
+            {
+                s.dynamicFriction = EditorGUILayout.Slider("Dynamic Friction", s.dynamicFriction, 0, 1);
+                s.staticFriction = EditorGUILayout.Slider("Static Friction", s.staticFriction, 0, 1);
+            }
+
+            if (s.autoSetMass)
+            {
+                s.hollowness = EditorGUILayout.Slider("Hollowness", s.hollowness, 0, 1);
+            }
         }
     }
 }

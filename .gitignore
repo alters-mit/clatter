@@ -4,3 +4,8 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 .idea/
+ClatterUnityExamples/.vs/
+ClatterUnityExamples/Logs/
+ClatterUnityExamples/Library/
+ClatterUnityExamples/Temp/
+ClatterUnityExamples/.vsconfig
