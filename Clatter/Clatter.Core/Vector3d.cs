@@ -12,54 +12,54 @@ namespace Clatter.Core
         /// <summary>
         /// The vector data.
         /// </summary>
-        private double[] _vector;
+        private double[] vector;
         /// <summary>
         /// The x coordinate.
         /// </summary>
-        public double x
+        public double X
         {
             get
             {
-                return _vector[0];
+                return vector[0];
             }
             set
             {
-                _vector[0] = value;
+                vector[0] = value;
             }
         }
         /// <summary>
         /// The y coordinate.
         /// </summary>
-        public double y
+        public double Y
         {
             get
             {
-                return _vector[1];
+                return vector[1];
             }
             set
             {
-                _vector[1] = value;
+                vector[1] = value;
             }
         }
         /// <summary>
         /// The z coordinate.
         /// </summary>
-        public double z
+        public double Z
         {
             get
             {
-                return _vector[2];
+                return vector[2];
             }
             set
             {
-                _vector[2] = value;
+                vector[2] = value;
             }
         }
         public Vector3d Normalized
         {
             get
             {
-                Vector3d vector2d = new Vector3d(_vector);
+                Vector3d vector2d = new Vector3d(vector);
                 vector2d.Normalize();
                 return vector2d;
             }
@@ -81,7 +81,7 @@ namespace Clatter.Core
         {
             get
             {
-                return x * x + y * y + z * z;
+                return X * X + Y * Y + Z * Z;
             }
         }
         /// <summary>
@@ -104,10 +104,10 @@ namespace Clatter.Core
         /// <param name="z">The z coordinate.</param>
         public Vector3d(double x, double y, double z)
         {
-            _vector = new double[3];
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            vector = new double[3];
+            this.X = x;
+            this.Y = y;
+            this.Z = z;
         }
 
 
@@ -117,15 +117,15 @@ namespace Clatter.Core
         /// <param name="vector">The vector. We assume this has exactly 3 elements.</param>
         public Vector3d(double[] vector)
         {
-            _vector = new double[3];
-            Buffer.BlockCopy(vector, 0, this._vector, 0, vector.Length * 8);
+            this.vector = new double[3];
+            Buffer.BlockCopy(vector, 0, this.vector, 0, vector.Length * 8);
         }
         
 
 
         public override string ToString()
         {
-            return "(" + x + "; " + y + "; " + z + ")";
+            return "(" + X + "; " + Y + "; " + Z + ")";
         }
         
 
@@ -148,7 +148,7 @@ namespace Clatter.Core
         
         public void CopyTo(Vector3d a)
         {
-            Buffer.BlockCopy(_vector, 0, a._vector, 0, _vector.Length * 8);
+            Buffer.BlockCopy(vector, 0, a.vector, 0, vector.Length * 8);
         }
 
 
@@ -159,13 +159,13 @@ namespace Clatter.Core
                 return false;
             }
             Vector3d vector3d = (Vector3d)other;
-            return x.Equals(vector3d.x) && y.Equals(vector3d.y) && z.Equals(vector3d.z);
+            return X.Equals(vector3d.X) && Y.Equals(vector3d.Y) && Z.Equals(vector3d.Z);
         }
 
 
         public override int GetHashCode()
         {
-            return x.GetHashCode() ^ y.GetHashCode() << 2 ^ z.GetHashCode() >> 2;
+            return X.GetHashCode() ^ Y.GetHashCode() << 2 ^ Z.GetHashCode() >> 2;
         }
         
         
@@ -177,37 +177,37 @@ namespace Clatter.Core
 
         public static Vector3d operator +(Vector3d a, Vector3d b)
         {
-            return new Vector3d(a.x + b.x, a.y + b.y, a.z + b.z);
+            return new Vector3d(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         }
 
 
         public static Vector3d operator -(Vector3d a, Vector3d b)
         {
-            return new Vector3d(a.x - b.x, a.y - b.y, a.z - b.z);
+            return new Vector3d(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
         }
 
 
         public static Vector3d operator -(Vector3d a)
         {
-            return new Vector3d(-a.x, -a.y, -a.z);
+            return new Vector3d(-a.X, -a.Y, -a.Z);
         }
 
 
         public static Vector3d operator *(Vector3d a, double d)
         {
-            return new Vector3d(a.x * d, a.y * d, a.z * d);
+            return new Vector3d(a.X * d, a.Y * d, a.Z * d);
         }
 
 
         public static Vector3d operator *(float d, Vector3d a)
         {
-            return new Vector3d(a.x * d, a.y * d, a.z * d);
+            return new Vector3d(a.X * d, a.Y * d, a.Z * d);
         }
 
 
         public static Vector3d operator /(Vector3d a, double d)
         {
-            return new Vector3d(a.x / d, a.y / d, a.z / d);
+            return new Vector3d(a.X / d, a.Y / d, a.Z / d);
         }
 
 

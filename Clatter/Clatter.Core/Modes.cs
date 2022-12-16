@@ -65,9 +65,9 @@ namespace Clatter.Core
             double[] synthSound = new double[0];
             for (int i = 0; i < frequencies.Length; i++)
             {
-                double H_dB = 80 + powers[i];
-                double L_ms = decayTimes[i] * H_dB / 60;
-                int modeCount = (int)Math.Ceiling(L_ms / 1e3 * Globals.framerate);
+                double hdb = 80 + powers[i];
+                double lms = decayTimes[i] * hdb / 60;
+                int modeCount = (int)Math.Ceiling(lms / 1e3 * Globals.framerate);
                 // Clamp the count to positive values.
                 if (modeCount < 0)
                 {

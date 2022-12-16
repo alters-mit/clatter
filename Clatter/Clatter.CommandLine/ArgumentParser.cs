@@ -75,5 +75,49 @@
             }
             return 0;
         }
+        
+        
+        /// <summary>
+        /// Try to get a double value from an optional flag. If the flag isn't present, the value isn't set.
+        /// </summary>
+        /// <param name="args">The command-line arguments.</param>
+        /// <param name="flag">The flag preceding the value without the `"--"` prefix.</param>
+        /// <param name="value">The value.</param>
+        public static void TryGetDoubleValue(string[] args, string flag, ref double value)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                // This is the flag.
+                if (args[i].StartsWith("--") && args[i].Substring(2) == flag)
+                {
+                    double d;
+                    if (double.TryParse(args[i + 1], out d))
+                    {
+                        value = d;
+                        return;
+                    }
+                }
+            }
+        }
+        
+        
+        /// <summary>
+        /// Try to get a boolean value from an optional flag. If the flag isn't present, the value isn't set.
+        /// </summary>
+        /// <param name="args">The command-line arguments.</param>
+        /// <param name="flag">The flag preceding the value without the `"--"` prefix.</param>
+        /// <param name="value">The value.</param>
+        public static void TryGetBooleanValue(string[] args, string flag, ref bool value)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                // This is the flag.
+                if (args[i].StartsWith("--") && args[i].Substring(2) == flag)
+                {
+                    value = !value;
+                    return;
+                }
+            }
+        }
     }
 }

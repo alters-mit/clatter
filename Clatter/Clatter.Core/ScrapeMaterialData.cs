@@ -22,6 +22,7 @@ namespace Clatter.Core
         /// <summary>
         /// Secondary-derivative data.
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         public double[] d2sdx2;
         /// <summary>
         /// The roughness volume gain.
@@ -56,6 +57,7 @@ namespace Clatter.Core
                 dsdx[i - 1] = surface[i] / SCRAPE_M_PER_PIXEL;
             }
             // Get second-derivative data.
+            // ReSharper disable once InconsistentNaming
             double[] d2sdx2 = new double[dsdx.Length - 1];
             for (int i = 1; i < dsdx.Length; i++)
             {

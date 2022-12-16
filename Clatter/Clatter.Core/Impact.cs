@@ -11,18 +11,19 @@ namespace Clatter.Core
         /// <summary>
         /// The minimum time in seconds between impacts.
         /// </summary>
-        public static float minTimeBetweenImpacts = 0.25f;
+        public static double minTimeBetweenImpacts = 0.25;
         /// <summary>
         /// The maximum time in seconds between impacts.
         /// </summary>
-        public static float maxTimeBetweenImpacts = 3f;
+        public static double maxTimeBetweenImpacts = 3;
         /// <summary>
         /// The time of the most recent impact event.
         /// </summary>
-        public DateTime time = DateTime.Now;
+        private DateTime time = DateTime.Now;
         /// <summary>
         /// The cached impulse response array.
         /// </summary>
+        // ReSharper disable once NotAccessedField.Local
         private double[] impulseResponse;
 
 

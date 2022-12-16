@@ -18,7 +18,7 @@ namespace Clatter.Core
         /// <param name="trim">If true, trim the length of the convolved array to a.Length.</param>
         public static double[] Convolve(this double[] a, double[] kernel, bool trim)
         {
-            return Convolve(a, kernel, trim ? a.Length : a.Length + (int)System.Math.Ceiling(kernel.Length / 2.0));
+            return Convolve(a, kernel, trim ? a.Length : a.Length + (int)Math.Ceiling(kernel.Length / 2.0));
         }
 
 
@@ -33,7 +33,7 @@ namespace Clatter.Core
         public static double[] Convolve(this double[] a, double[] kernel, int length)
         {
             double[] result = new double[length];
-            int k = 0;
+            int k;
             for (int i = 0; i < result.Length; i++)
             {
                 for (int j = 0; j < kernel.Length; j++)
@@ -67,9 +67,9 @@ namespace Clatter.Core
         /// <param name="startX">Start interpolating the x array at this index.</param>
         public static double Interpolate1D(this double value, double[] x, double[] y, double lower, double upper, int yIndexOffset, ref int startX)
         {
-            int start = 0;
-            int next = 0;
-            double m = 0;
+            int start;
+            int next;
+            double m;
             for (int i = startX; i < x.Length; i++)
             {
                 if (value < x[i])

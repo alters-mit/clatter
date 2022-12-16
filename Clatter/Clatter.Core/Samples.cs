@@ -17,11 +17,11 @@ namespace Clatter.Core
         /// <summary>
         /// The audio samples.
         /// </summary>
-        private double[] _samples = new double[DEFAULT_LENGTH];
+        private double[] samples = new double[DEFAULT_LENGTH];
         /// <summary>
         /// The length of the samples.
         /// </summary>
-        private int _length;
+        private int length;
 
 
         /// <summary>
@@ -34,14 +34,14 @@ namespace Clatter.Core
         public void Set(double[] samples, int start, int length)
         {
             // Resize the samples if needed.
-            if (length >= _samples.Length)
+            if (length >= this.samples.Length)
             {
-                Array.Resize(ref this._samples, length * 2);
+                Array.Resize(ref this.samples, length * 2);
             }
             // Set the length of the audio samples.
-            this._length = length;
+            this.length = length;
             // Copy the samples.
-            Buffer.BlockCopy(samples, start * 8, this._samples, 0, length * 8);
+            Buffer.BlockCopy(samples, start * 8, this.samples, 0, length * 8);
         }
 
 
@@ -51,12 +51,12 @@ namespace Clatter.Core
         /// <param name="b">The other samples.</param>
         public void CopyTo(Samples b)
         {
-            if (b._samples.Length < _samples.Length)
+            if (b.samples.Length < samples.Length)
             {
-                Array.Resize(ref b._samples, _samples.Length);
+                Array.Resize(ref b.samples, samples.Length);
             }
-            Buffer.BlockCopy(_samples, 0, b._samples, 0, _length * 8);
-            b._length = _length;
+            Buffer.BlockCopy(samples, 0, b.samples, 0, length * 8);
+            b.length = length;
         }
 
 
@@ -65,7 +65,7 @@ namespace Clatter.Core
         /// </summary>
         public float[] ToFloats()
         {
-            return _samples.ToFloats(_length);
+            return samples.ToFloats(length);
         }
 
 
@@ -74,7 +74,7 @@ namespace Clatter.Core
         /// </summary>
         public byte[] ToInt16Bytes()
         {
-            return _samples.ToInt16Bytes(_length);
+            return samples.ToInt16Bytes(length);
         }
     }
 }

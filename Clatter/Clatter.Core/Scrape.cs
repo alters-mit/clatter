@@ -15,7 +15,7 @@ namespace Clatter.Core
         /// <summary>
         /// Conversion factor from short to double. This is relevant for the decibel values.
         /// </summary>
-        private const double SHORT_CONVERSION = 1.0 / 32767;
+        private const double SHORT_CONVERSION = 1.0 / Globals.FLOAT_TO_SHORT;
 
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Clatter.Core
         /// <summary>
         /// The audio source ID. We need to declare this here because scrapes are ongoing sounds.
         /// </summary>
-        public readonly int audioSourceID;
+        public readonly int audioSourceId;
         /// <summary>
         /// The previous index in the scrape surface array.
         /// </summary>
@@ -52,10 +52,17 @@ namespace Clatter.Core
         private static readonly double[] ScrapeLinearSpace = Util.LinSpace(0.0, 1.0, SAMPLES_LENGTH);
 
 
+        /// <summary>
+        /// (constructor)
+        /// </summary>
+        /// <param name="scrapeMaterial">The scrape material.</param>
+        /// <param name="primary">The primary object (the smaller, moving object).</param>
+        /// <param name="secondary">The secondary object (the scrape surface).</param>
+        /// <param name="rng">The random number generator.</param>
         public Scrape(ScrapeMaterial scrapeMaterial, AudioObjectData primary, AudioObjectData secondary, Random rng) : base(primary, secondary, rng)
         {
             scrapeMaterialData = ScrapeMaterialData.Get(scrapeMaterial);
-            audioSourceID = rng.Next();
+            audioSourceId = rng.Next();
         }
 
 

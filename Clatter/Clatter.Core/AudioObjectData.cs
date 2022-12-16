@@ -49,10 +49,6 @@
         /// If true, this is a previous area.
         /// </summary>
         public bool hasPreviousArea = false;
-        /// <summary>
-        /// The floor audio data.
-        /// </summary>
-        public static AudioObjectData floor = new AudioObjectData(0, ImpactMaterialSized.wood_medium_4, 0.5f, 0.1f, 100, ScrapeMaterial.plywood);
 
 
         public AudioObjectData(uint id, ImpactMaterialSized impactMaterial, float amp, float resonance, float mass, ScrapeMaterial? scrapeMaterial = null)
@@ -63,6 +59,7 @@
             hasScrapeMaterial = scrapeMaterial != null;
             if (hasScrapeMaterial)
             {
+                // ReSharper disable once PossibleInvalidOperationException
                 this.scrapeMaterial = (ScrapeMaterial)scrapeMaterial;
             }
             else

@@ -73,6 +73,10 @@ namespace Clatter.Unity
         /// A cached array of contact normals.
         /// </summary>
         private Vector3[] contactNormals = Array.Empty<Vector3>();
+        /// <summary>
+        /// The floor audio data.
+        /// </summary>
+        public static AudioObjectData floor = new AudioObjectData(0, ImpactMaterialSized.wood_medium_4, 0.5f, 0.1f, 100, ScrapeMaterial.plywood);
 
 
         /// <summary>
@@ -169,7 +173,7 @@ namespace Clatter.Unity
             {
                 angularSpeed = data.angularSpeed;
                 // The other object is the floor.
-                otherData = AudioObjectData.floor;
+                otherData = floor;
             }
             // Get the number of contacts.
             int numContacts = collision.contactCount;
@@ -206,9 +210,9 @@ namespace Clatter.Unity
             Vector3d centroid = Vector3d.Zero;
             for (int i = 0; i < numContacts; i++)
             {
-                centroid.x += contactPoints[i].x;
-                centroid.y += contactPoints[i].y;
-                centroid.z += contactPoints[i].z;
+                centroid.X += contactPoints[i].x;
+                centroid.Y += contactPoints[i].y;
+                centroid.Z += contactPoints[i].z;
             }
             centroid /= numContacts;
             // Get the square root magnitude to be computationally fast.
@@ -217,9 +221,9 @@ namespace Clatter.Unity
             Vector3d p = Vector3d.Zero;
             for (int i = 0; i < numContacts; i++)
             {
-                p.x = contactPoints[i].x;
-                p.y = contactPoints[i].y;
-                p.z = contactPoints[i].z;
+                p.X = contactPoints[i].x;
+                p.Y = contactPoints[i].y;
+                p.Z = contactPoints[i].z;
                 double s = (centroid - p).SqrMagnitude;
                 if (s > sqrtMagnitude)
                 {

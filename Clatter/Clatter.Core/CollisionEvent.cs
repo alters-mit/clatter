@@ -8,43 +8,43 @@
         /// <summary>
         /// On a stay event, if the previous area is None and the current area is greater than this, the collision is actually an impact. 
         /// </summary>
-        public static float impactAreaNewCollision = 1e-5f;
+        public static double impactAreaNewCollision = 1e-5;
         /// <summary>
         /// On a stay event, if the area of the collision increases by at least this factor, the collision is actually an impact.
         /// </summary>
-        public static float impactAreaRatio = 5;
+        public static double impactAreaRatio = 5;
         /// <summary>
         /// On a stay event, if the angular velocity is this or greater, the event is a roll, not a scrape.
         /// </summary>
-        public static float rollAngularVelocity = 0.5f;
+        public static double rollAngularVelocity = 0.5;
         /// <summary>
         /// The primary object.
         /// </summary>
-        public AudioObjectData primary;
+        public readonly AudioObjectData primary;
         /// <summary>
         /// The secondary object.
         /// </summary>
-        public AudioObjectData secondary;
+        public readonly AudioObjectData secondary;
         /// <summary>
         /// The summed object IDs pair as a long.
         /// </summary>
-        public ulong ids;
+        public readonly ulong ids;
         /// <summary>
         /// The type of the audio event (impact, scrape, roll, none).
         /// </summary>
-        public AudioEventType type;
+        public readonly AudioEventType type;
         /// <summary>
         /// The centroid of the collision contact points.
         /// </summary>
-        public Vector3d centroid;
+        public readonly Vector3d centroid;
         /// <summary>
         /// The average normalized speed.
         /// </summary>
-        public float normalSpeed;
+        public readonly float normalSpeed;
         /// <summary>
         /// The area of the collision.
         /// </summary>
-        public double area;
+        public readonly double area;
 
 
         /// <summary>
@@ -53,8 +53,11 @@
         /// <param name="collider">The collider object.</param>
         /// <param name="collidee">The object that the collider hit.</param>
         /// <param name="angularSpeed">The faster angular speed of the two objects.</param>
+        /// <param name="centroid">The centroid of the collision.</param>
         /// <param name="onCollisionType">The type of collision (enter, stay, exit).</param>
         /// <param name="filterDuplicates">If true, try to filter out duplicate collision events.</param>
+        /// <param name="normalSpeed">The normalized speed of the collision.</param>
+        /// <param name="area">The contact area of the collision.</param>
         public CollisionEvent(AudioObjectData collider, AudioObjectData collidee, float angularSpeed, float normalSpeed, double area,
             Vector3d centroid, OnCollisionType onCollisionType, bool filterDuplicates = true)
         {
@@ -142,6 +145,7 @@
         /// <param name="secondary">The secondary object.</param>
         /// <param name="type">The type of the audio event (impact, scrape, roll, none).</param>
         /// <param name="normalSpeed">The average normalized speed.</param>
+        /// <param name="area">The contact area of the collision.</param>
         /// <param name="centroid">The centroid of the collision contact points.</param>
         public CollisionEvent(AudioObjectData primary, AudioObjectData secondary, AudioEventType type, float normalSpeed, float area, Vector3d centroid)
         {

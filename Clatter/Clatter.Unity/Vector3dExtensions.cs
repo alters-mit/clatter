@@ -15,7 +15,7 @@ namespace Clatter.Unity
         /// <param name="vector">(this)</param>
         public static Vector3 ToVector3(this Vector3d vector)
         {
-            return new Vector3((float)vector.x, (float)vector.y, (float)vector.z);
+            return new Vector3((float)vector.X, (float)vector.Y, (float)vector.Z);
         }
     }
 }

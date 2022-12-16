@@ -22,7 +22,7 @@ namespace Clatter.Unity
         /// <summary>
         /// If true, automatically update by calling Update() and FixedUpdate(). To manually update instead, call instance.OnUpdate() and instance.OnFixedUpdate().
         /// </summary>
-        public bool autoUpdate = true;
+        public bool auto;
         /// <summary>
         /// The random seed. Ignored if randomSeed == true.
         /// </summary>
@@ -236,7 +236,7 @@ namespace Clatter.Unity
 
         private void Awake()
         {
-            if (autoUpdate)
+            if (auto)
             {
                 OnAwake();
             }
@@ -245,7 +245,7 @@ namespace Clatter.Unity
 
         private void Update()
         {
-            if (autoUpdate)
+            if (auto)
             {
                 OnUpdate();
             }
@@ -254,7 +254,7 @@ namespace Clatter.Unity
 
         private void FixedUpdate()
         {
-            if (autoUpdate)
+            if (auto)
             {
                 OnFixedUpdate();
             }

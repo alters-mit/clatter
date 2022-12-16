@@ -13,17 +13,31 @@ namespace Clatter.Core
     /// </summary>
     public class MedianFilter
     {
-        readonly double[] _buffer;
-        private Dictionary<int, double[]> offsetBuffers = new Dictionary<int, double[]>();
-        int _offset;
-        bool _bufferFull;
+        /// <summary>
+        /// The filter buffer.
+        /// </summary>
+        private readonly double[] buffer;
+        /// <summary>
+        /// A dictionary of cached offset buffers. Key = The length of the buffer.
+        /// </summary>
+        private readonly Dictionary<int, double[]> offsetBuffers = new Dictionary<int, double[]>();
+        /// <summary>
+        /// The current offset.
+        /// </summary>
+        private int offset;
+        /// <summary>
+        /// If true, the buffer is full.
+        /// </summary>
+        private bool bufferFull;
+        
 
         /// <summary>
         /// Create a Median Filter.
         /// </summary>
         public MedianFilter(int windowSize)
         {
-            _buffer = new double[windowSize];
+            // Set the buffer.
+            buffer = new double[windowSize];
             // Generate offset buffers.
             for (int i = windowSize - 1; i >= 0; i--)
             {
@@ -36,17 +50,17 @@ namespace Clatter.Core
         /// </summary>
         public double ProcessSample(double sample)
         {
-            _buffer[_offset = (_offset == 0) ? _buffer.Length - 1 : _offset - 1] = sample;
-            _bufferFull |= _offset == 0;
-            if (_bufferFull)
+            buffer[offset = (offset == 0) ? buffer.Length - 1 : offset - 1] = sample;
+            bufferFull |= offset == 0;
+            if (bufferFull)
             {
-                return _buffer.MedianInplace();
+                return buffer.MedianInplace();
             }
             else
             {
-                int length = _buffer.Length - _offset;
+                int length = buffer.Length - offset;
                 // Copy to the offset buffer.
-                Buffer.BlockCopy(_buffer, _offset * 8, offsetBuffers[length], 0, offsetBuffers[length].Length * 8);
+                Buffer.BlockCopy(buffer, offset * 8, offsetBuffers[length], 0, offsetBuffers[length].Length * 8);
                 return offsetBuffers[length].MedianInplace();
             }
         }
@@ -56,8 +70,8 @@ namespace Clatter.Core
         /// </summary>
         public void Reset()
         {
-            _offset = 0;
-            _bufferFull = false;
+            offset = 0;
+            bufferFull = false;
         }
     }
 }

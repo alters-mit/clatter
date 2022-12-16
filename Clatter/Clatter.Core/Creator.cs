@@ -20,8 +20,8 @@ namespace Clatter.Core
         /// A cached impact. This can be used for ongoing impacts.
         /// </summary>
         private static Impact impact;
-        
-        
+
+
         /// <summary>
         /// Set the primary object.
         /// </summary>

@@ -1,5 +1,4 @@
 ﻿using System;
-using Random = System.Random;
 
 
 namespace Clatter.Core
@@ -12,15 +11,19 @@ namespace Clatter.Core
         /// <summary>
         /// The overall amp of the simulation.
         /// </summary>
-        public static double initialAmp = 0.5f;
+        public static double initialAmp = 0.5;
         /// <summary>
-        /// If True, clamp amp values to 0.99.
+        /// If true, clamp amp values to 0.99.
         /// </summary>
         public static bool preventDistortion = true;
         /// <summary>
+        /// If true, clamp the impulse contact time.
+        /// </summary>
+        public static bool clampContactTime = true;
+        /// <summary>
         /// The audio samples.
         /// </summary>
-        public Samples samples = new Samples();
+        public readonly Samples samples = new Samples();
         /// <summary>
         /// The current state of the audio event.
         /// </summary>
@@ -28,7 +31,7 @@ namespace Clatter.Core
         /// <summary>
         /// The collision counter.
         /// </summary>
-        protected int collisionCount = 0;
+        protected int collisionCount;
         /// <summary>
         /// The amplitude of the first collision.
         /// </summary>
@@ -71,14 +74,14 @@ namespace Clatter.Core
 
 
         /// <summary>
-        /// Synthesize impact audio. Returns true if successsful.
+        /// Synthesize impact audio. Returns true if successful.
         /// </summary>
         /// <param name="collisionEvent">The collision event. Contains data for this specific collision.</param>
         /// <param name="rng">The random number generator.</param>
-        /// <param name="samples">The audio samples.</param>
         /// <param name="impulseResponse">The impulse response.</param>
         protected bool GetImpact(CollisionEvent collisionEvent, Random rng, out double[] impulseResponse)
         {
+            // ReSharper disable once LocalVariableHidesMember
             double amp;
             // Re-scale the amplitude.
             if (collisionCount == 0)
@@ -134,9 +137,13 @@ namespace Clatter.Core
                 samples = null;
                 return;
             }
+            // Get the contact time.
+            double maxT = 0.001 * Math.Min(collisionEvent.primary.mass, collisionEvent.secondary.mass);
+            if (clampContactTime)
+            {
+                maxT = Math.Min(maxT, 2e-3);
+            }
             // Convolve with force, with contact time scaled by the object mass.
-            // A contact time over 2ms is unphysically long.
-            double maxT = Math.Min(0.001 * Math.Min(collisionEvent.primary.mass, collisionEvent.secondary.mass), 2e-3);
             double[] frc = Util.LinSpace(0, Math.PI, (int)Math.Ceiling(maxT * Globals.framerate));
             // Clamp the amp.
             if (preventDistortion && amp > 0.99)

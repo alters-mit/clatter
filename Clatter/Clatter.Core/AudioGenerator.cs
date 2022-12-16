@@ -18,8 +18,8 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="samples">The audio samples.</param>
         /// <param name="centroid">The position of the audio source.</param>
-        /// <param name="audiosourceID">The audio source ID.</param>
-        public delegate void audioEvent(Samples samples, Vector3d centroid, int audiosourceID);
+        /// <param name="audioSourceId">The audio source ID.</param>
+        public delegate void AudioEvent(Samples samples, Vector3d centroid, int audioSourceId);
 
 
         /// <summary>
@@ -27,23 +27,19 @@ namespace Clatter.Core
         /// </summary>
         private const int DEFAULT_MAX_NUM_EVENTS = 200;
 
-
-        /// <summary>
-        /// The number of audio channels.
-        /// </summary>
-        public static int numChannels;
+        
         /// <summary>
         /// Invoked when impact audio is generated.
         /// </summary>
-        public audioEvent onImpact;
+        public AudioEvent onImpact;
         /// <summary>
         /// Invoked when audio is generated for a new scrape event.
         /// </summary>
-        public audioEvent onScrapeStart;
+        public AudioEvent onScrapeStart;
         /// <summary>
         /// Invoked when audio is generated for an ongoing scrape event.
         /// </summary>
-        public audioEvent onScrapeOngoing;
+        public AudioEvent onScrapeOngoing;
         /// <summary>
         /// Invoked when a scrape ends.
         /// </summary>
@@ -65,25 +61,25 @@ namespace Clatter.Core
         /// </summary>
         private bool[] threadDeaths = new bool[DEFAULT_MAX_NUM_EVENTS];
         /// <summary>
-        /// An array of falses used to clear threadLifes.
+        /// An array of falses used to clear threadDeaths.
         /// </summary>
         private bool[] falses = new bool[DEFAULT_MAX_NUM_EVENTS];
         /// <summary>
         /// A dictionary of ongoing impacts. Key = Collision object ID pairs. Value = An impact event.
         /// </summary>
-        private Dictionary<ulong, Impact> impacts = new Dictionary<ulong, Impact>();
+        private readonly Dictionary<ulong, Impact> impacts = new Dictionary<ulong, Impact>();
         /// <summary>
         /// A dictionary of ongoing scrapes. Key = Collision object ID pairs. Value = A scrape event.
         /// </summary>
-        private Dictionary<ulong, Scrape> scrapes = new Dictionary<ulong, Scrape>();
+        private readonly Dictionary<ulong, Scrape> scrapes = new Dictionary<ulong, Scrape>();
         /// <summary>
         /// The number of events on this frame.
         /// </summary>
-        private int numEvents = 0;
+        private int numEvents;
         /// <summary>
         /// If true, the application has quit.
         /// </summary>
-        private bool destroyed = false;
+        private bool destroyed;
 
 
         /// <summary>
@@ -181,7 +177,7 @@ namespace Clatter.Core
                         continue;
                     }
                     // Kill the thread.
-                    else if (destroyed)
+                    if (destroyed)
                     {
                         audioThreads[i].Join();
                         threadDeaths[i] = true;
@@ -203,12 +199,12 @@ namespace Clatter.Core
                             // Start a new scrape.
                             if (scrapes[collisionEvents[i].ids].state == EventState.start)
                             {
-                                onScrapeStart?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].centroid, scrapes[collisionEvents[i].ids].audioSourceID);
+                                onScrapeStart?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].centroid, scrapes[collisionEvents[i].ids].audioSourceId);
                             }
                             // Continue an ongoing scrape.
                             else if (scrapes[collisionEvents[i].ids].state == EventState.ongoing)
                             {
-                                onScrapeOngoing?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].centroid, scrapes[collisionEvents[i].ids].audioSourceID);
+                                onScrapeOngoing?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].centroid, scrapes[collisionEvents[i].ids].audioSourceId);
                             }
                         }
                     }
@@ -241,7 +237,7 @@ namespace Clatter.Core
                 else if (scrapes[scrapeKeys[i]].state == EventState.end)
                 {
                     // Announce that the scrape has ended.
-                    onScrapeEnd?.Invoke(scrapes[scrapeKeys[i]].audioSourceID);
+                    onScrapeEnd?.Invoke(scrapes[scrapeKeys[i]].audioSourceId);
                     // Remove the event.
                     scrapes.Remove(scrapeKeys[i]);
                 }
@@ -289,7 +285,7 @@ namespace Clatter.Core
         /// <param name="collisionIndex">The index of the collision event.</param>
         /// <param name="audioEvents">The audio events.</param>
         private void GetAudio<T>(int collisionIndex, Dictionary<ulong, T> audioEvents)
-            where T : AudioEvent
+            where T : Core.AudioEvent
         {
             // Try to generate audio.
             try
