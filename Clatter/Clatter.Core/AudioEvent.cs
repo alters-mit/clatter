@@ -130,9 +130,12 @@ namespace Clatter.Core
         /// <param name="impulseResponse">The impulse response.</param>
         private void SynthImpactModes(CollisionEvent collisionEvent, double amp, out double[] samples, out double[] impulseResponse)
         {
-            impulseResponse = Modes.Add(modesA.Sum(collisionEvent.primary.resonance),
-                modesB.Sum(collisionEvent.secondary.resonance));
-            if (impulseResponse.Length == 0)
+            impulseResponse = Array.Empty<double>();
+            // Sum the modes.
+            modesA.Sum(collisionEvent.primary.resonance);
+            modesB.Sum(collisionEvent.secondary.resonance);
+            int impulseResponseLength = Modes.Add(modesA.synthSound, modesA.synthSoundLength, modesB.synthSound, modesB.synthSoundLength, ref impulseResponse);
+            if (impulseResponseLength == 0)
             {
                 samples = null;
                 return;
@@ -155,7 +158,7 @@ namespace Clatter.Core
                 frc[i] = Math.Sin(frc[i]);
             }
             // Convolve.
-            samples = impulseResponse.Convolve(frc, false);
+            samples = impulseResponse.Convolve(frc, impulseResponseLength);
             double maxSample = 0;
             for (int i = 0; i < samples.Length; i++)
             {

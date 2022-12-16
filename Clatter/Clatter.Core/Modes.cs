@@ -27,6 +27,10 @@ namespace Clatter.Core
         /// </summary>
         public readonly double[] decayTimes = new double[DEFAULT_LENGTH];
 
+        public double[] synthSound = new double[9000];
+        public int synthSoundLength;
+        private double[] mode = new double[9000];
+
 
         /// <summary>
         /// Generate object modes data.
@@ -60,42 +64,49 @@ namespace Clatter.Core
         /// Returns a synthesized sound.
         /// </summary>
         /// <param name="resonance">The object's audio resonance value.</param>
-        public double[] Sum(double resonance)
+        public void Sum(double resonance)
         {
-            double[] synthSound = new double[0];
             for (int i = 0; i < frequencies.Length; i++)
             {
-                double hdb = 80 + powers[i];
-                double lms = decayTimes[i] * hdb / 60;
-                int modeCount = (int)Math.Ceiling(lms / 1e3 * Globals.framerate);
+                int modeCount = (int)Math.Ceiling((decayTimes[i] * (80 + powers[i]) / 60) / 1e3 * Globals.framerate);
                 // Clamp the count to positive values.
                 if (modeCount < 0)
                 {
                     modeCount = 0;
                 }
-                double[] mode = new double[modeCount];
+                // Resize the mode array.
+                if (mode.Length < modeCount)
+                {
+                    Array.Resize(ref mode, modeCount * 2);
+                }
                 if (modeCount > 0)
                 {
                     // Synthesize a sinusoid.
                     double pow = Math.Pow(10, powers[i] / 20);
-                    double dcy = -60 / (decayTimes[i] * resonance / 1e3);
+                    double dcy = -60 / (decayTimes[i] * resonance / 1e3) / 20;
                     double q = 2 * frequencies[i] * Math.PI;
+                    double tt;
                     for (int j = 0; j < modeCount; j++)
                     {
-                        double tt = j / Globals.framerate;
-                        mode[j] = Math.Cos(tt * q) * pow * Math.Pow(10, (tt * dcy) / 20);
+                        tt = j / Globals.framerate;
+                        mode[j] = Math.Cos(tt * q) * pow * Math.Pow(10, tt * dcy);
                     }
                 }
                 if (i == 0)
                 {
-                    synthSound = mode;
+                    // Copy the first mode into the synth sound.
+                    synthSoundLength = modeCount;
+                    if (synthSound.Length < synthSoundLength)
+                    {
+                        Array.Resize(ref synthSound, synthSoundLength * 2);
+                    }
+                    Buffer.BlockCopy(mode, 0, synthSound, 0, synthSoundLength * 8);
                 }
                 else
                 {
-                    synthSound = Add(synthSound, mode);
+                    synthSoundLength = Add(synthSound, synthSoundLength, mode, modeCount, ref synthSound);
                 }
             }
-            return synthSound;
         }
 
 
@@ -116,29 +127,37 @@ namespace Clatter.Core
         /// Add together arrays of different lengths by zero-padding the shorter.
         /// </summary>
         /// <param name="a">The first array.</param>
+        /// <param name="aLength">The length of the first array (can be less than the true length).</param>
         /// <param name="b">The second array.</param>
-        public static double[] Add(double[] a, double[] b)
+        /// <param name="bLength">The length of the second array (can be less than the true length).</param>
+        /// <param name="added">The output array.</param>
+        public static int Add(double[] a, int aLength, double[] b, int bLength, ref double[] added)
         {
-            double[] c;
-            if (a.Length < b.Length)
+            if (aLength < bLength)
             {
-                c = new double[b.Length];
-                b.CopyTo(c, 0);
-                for (int i = 0; i < a.Length; i++)
+                if (added.Length < bLength)
                 {
-                    c[i] += a[i];
+                    Array.Resize(ref added, bLength * 2);
+                }
+                b.CopyTo(added, 0);
+                for (int i = 0; i < aLength; i++)
+                {
+                    added[i] += a[i];
                 }
             }
             else
             {
-                c = new double[a.Length];
-                a.CopyTo(c, 0);
-                for (int i = 0; i < b.Length; i++)
+                if (added.Length < aLength)
                 {
-                    c[i] += b[i];
+                    Array.Resize(ref added, aLength * 2);
+                }
+                a.CopyTo(added, 0);
+                for (int i = 0; i < bLength; i++)
+                {
+                    added[i] += b[i];
                 }
             }
-            return c;
+            return added.Length;
         }
     }
 }
