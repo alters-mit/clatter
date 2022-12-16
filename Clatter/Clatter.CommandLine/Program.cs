@@ -14,13 +14,7 @@ namespace Clatter.CommandLine
             ArgumentParser.TryGetDoubleValue(args, "initial_amp", ref AudioEvent.initialAmp);
             ArgumentParser.TryGetBooleanValue(args, "allow_distortion", ref AudioEvent.preventDistortion);
             ArgumentParser.TryGetBooleanValue(args, "clamp_contact_time", ref AudioEvent.clampContactTime);
-            ArgumentParser.TryGetDoubleValue(args, "impact_area_new_collision", ref CollisionEvent.impactAreaNewCollision);
-            ArgumentParser.TryGetDoubleValue(args, "impact_area_ration", ref CollisionEvent.impactAreaRatio);
-            ArgumentParser.TryGetDoubleValue(args, "roll_angular_velocity", ref CollisionEvent.rollAngularVelocity);
             ArgumentParser.TryGetDoubleValue(args, "scrape_max_speed", ref Scrape.scrapeMaxSpeed);
-            ArgumentParser.TryGetDoubleValue(args, "framerate", ref Globals.framerate);
-            // Set the framerate.
-            Globals.framerateInt = (int)Globals.framerate;
             // Set the primary object.
             Creator.SetPrimaryObject(GetAudioObjectData(args, 0, "primary", false));
             // Get the audio type.
