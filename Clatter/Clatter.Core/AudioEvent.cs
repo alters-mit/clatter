@@ -107,9 +107,8 @@ namespace Clatter.Core
             }
             // Generate the sound.
             double[] rawSamples;
-            SynthImpactModes(collisionEvent, amp, out rawSamples, out impulseResponse);
             // This should rarely happen, if ever.
-            if (rawSamples == null)
+            if (!SynthImpactModes(collisionEvent, amp, out rawSamples, out impulseResponse))
             {
                 return false;
             }
@@ -128,8 +127,14 @@ namespace Clatter.Core
         /// <param name="amp">The audio amp.</param>
         /// <param name="samples">The samples.</param>
         /// <param name="impulseResponse">The impulse response.</param>
-        private void SynthImpactModes(CollisionEvent collisionEvent, double amp, out double[] samples, out double[] impulseResponse)
+        private bool SynthImpactModes(CollisionEvent collisionEvent, double amp, out double[] samples, out double[] impulseResponse)
         {
+            if (amp <= 0)
+            {
+                samples = null;
+                impulseResponse = null;
+                return false;
+            }
             impulseResponse = Array.Empty<double>();
             // Sum the modes.
             modesA.Sum(collisionEvent.primary.resonance);
@@ -138,7 +143,7 @@ namespace Clatter.Core
             if (impulseResponseLength == 0)
             {
                 samples = null;
-                return;
+                return false;
             }
             // Get the contact time.
             double maxT = 0.001 * Math.Min(collisionEvent.primary.mass, collisionEvent.secondary.mass);
@@ -184,6 +189,7 @@ namespace Clatter.Core
             {
                 samples[i] = amp * samples[i] / maxAbsSample;
             }
+            return true;
         }
     }
 }

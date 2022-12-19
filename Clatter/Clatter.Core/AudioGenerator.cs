@@ -188,7 +188,7 @@ namespace Clatter.Core
                         // Remove the thread.
                         audioThreads[i] = null;
                         // Announce impact audio.
-                        if (collisionEvents[i].type == AudioEventType.impact)
+                        if (collisionEvents[i].type == AudioEventType.impact && impacts[collisionEvents[i].ids].state != EventState.end)
                         {
                             // Play impact samples at the centroid using a new random audio source ID.
                             onImpact?.Invoke(impacts[collisionEvents[i].ids].samples, collisionEvents[i].centroid, rng.Next());

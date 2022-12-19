@@ -126,7 +126,6 @@ namespace Clatter.Unity
             if (writing)
             {
                 writer.Write(data, data.Length);
-
             }
             // Set the audio data.
             source.clip.SetData(data, 0);
