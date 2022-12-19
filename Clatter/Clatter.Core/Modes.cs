@@ -133,13 +133,15 @@ namespace Clatter.Core
         /// <param name="added">The output array.</param>
         public static int Add(double[] a, int aLength, double[] b, int bLength, ref double[] added)
         {
+            int length;
             if (aLength < bLength)
             {
+                length = bLength;
                 if (added.Length < bLength)
                 {
                     Array.Resize(ref added, bLength * 2);
                 }
-                b.CopyTo(added, 0);
+                Buffer.BlockCopy(b, 0, added, 0, bLength * 8);
                 for (int i = 0; i < aLength; i++)
                 {
                     added[i] += a[i];
@@ -147,17 +149,18 @@ namespace Clatter.Core
             }
             else
             {
+                length = aLength;
                 if (added.Length < aLength)
                 {
                     Array.Resize(ref added, aLength * 2);
                 }
-                a.CopyTo(added, 0);
+                Buffer.BlockCopy(a, 0, added, 0, aLength * 8);
                 for (int i = 0; i < bLength; i++)
                 {
                     added[i] += b[i];
                 }
             }
-            return added.Length;
+            return length;
         }
     }
 }
