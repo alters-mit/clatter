@@ -66,7 +66,7 @@
             this.centroid = centroid;
             this.area = area;
             // Compare the IDs for filter out duplicate events.
-            if (filterDuplicates && collider.id > collidee.id)
+            if ((filterDuplicates && collider.id > collidee.id) || this.normalSpeed <= 0)
             {
                 primary = collider;
                 secondary = collidee;

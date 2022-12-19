@@ -253,6 +253,10 @@ namespace Clatter.Unity
             }
             // Get the number of contacts.
             int numContacts = collision.contactCount;
+            if (numContacts == 0)
+            {
+                return;
+            }
             // Resize the arrays.
             if (numContacts > contacts.Length)
             {
