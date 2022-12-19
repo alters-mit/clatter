@@ -251,10 +251,15 @@ namespace Clatter.Unity
                 // The other object is the floor.
                 otherData = floor;
             }
+            CollisionEvent collisionEvent;
             // Get the number of contacts.
             int numContacts = collision.contactCount;
             if (numContacts == 0)
             {
+                // Get the event.
+                collisionEvent = new CollisionEvent(data, otherData, angularSpeed, 0, 0, Vector3d.Zero, OnCollisionType.exit);
+                // Add the collision.
+                ClatterManager.instance.generator.AddCollision(collisionEvent);
                 return;
             }
             // Resize the arrays.
@@ -316,9 +321,9 @@ namespace Clatter.Unity
             // Get the area.
             double area = Math.PI * radius * radius;
             // Get the event.
-            CollisionEvent audioEvent = new CollisionEvent(data, otherData, angularSpeed, normalSpeed, area, centroid, type);
+            collisionEvent = new CollisionEvent(data, otherData, angularSpeed, normalSpeed, area, centroid, type);
             // Add the collision.
-            ClatterManager.instance.generator.AddCollision(audioEvent);
+            ClatterManager.instance.generator.AddCollision(collisionEvent);
         }
 
 
