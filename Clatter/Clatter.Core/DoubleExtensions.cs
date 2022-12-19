@@ -24,7 +24,7 @@ namespace Clatter.Core
 
         /// <summary>
         /// Convolve an array with the given kernel.
-        /// Source: https://github.com/accord-net/framework/blob/development/Sources/Accord.Math/Matrix/Matrix.Common.cs
+        /// Source: https://stackoverflow.com/a/7239016
         /// This code is a more optimized version of the source.
         /// </summary>
         /// <param name="a">A floating number array.</param>
@@ -33,21 +33,22 @@ namespace Clatter.Core
         public static double[] Convolve(this double[] a, double[] kernel, int length)
         {
             double[] result = new double[length];
-            int k;
-            for (int i = 0; i < result.Length; i++)
+            double sum;
+            int n1;
+            int n2;
+            int inputLength = a.Length;
+            int kernelLength = kernel.Length;
+            int resultLength = result.Length;
+            for (int i = resultLength - 1; i >= 0; i--)
             {
-                for (int j = 0; j < kernel.Length; j++)
+                sum = 0;
+                n1 = i < inputLength ? 0 : i - inputLength - 1;
+                n2 = i < kernelLength ? i : kernelLength - 1;
+                for (int j = n1; j <= n2; j++)
                 {
-                    k = i - j;
-                    if (k < 0)
-                    {
-                        break;
-                    }
-                    if (k < a.Length)
-                    {
-                        result[i] += a[k] * kernel[j];
-                    }
+                    sum += a[i - j] * kernel[j];
                 }
+                result[i] = sum;
             }
             return result;
         }

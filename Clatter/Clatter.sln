@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clatter.CommandLine", "Clat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clatter.ImpactBenchmark", "Clatter.ImpactBenchmark\Clatter.ImpactBenchmark.csproj", "{B7F432F2-5985-4EC5-8086-9EEA75A3ED2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clatter.ImpactTest", "Clatter.ImpactTest\Clatter.ImpactTest.csproj", "{84C9AA3D-35E5-4BE9-AEF4-988F5454FC8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{B7F432F2-5985-4EC5-8086-9EEA75A3ED2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7F432F2-5985-4EC5-8086-9EEA75A3ED2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7F432F2-5985-4EC5-8086-9EEA75A3ED2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84C9AA3D-35E5-4BE9-AEF4-988F5454FC8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84C9AA3D-35E5-4BE9-AEF4-988F5454FC8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84C9AA3D-35E5-4BE9-AEF4-988F5454FC8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84C9AA3D-35E5-4BE9-AEF4-988F5454FC8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
