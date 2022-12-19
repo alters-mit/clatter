@@ -47,6 +47,10 @@ namespace Clatter.Core
         /// </summary>
         private readonly ScrapeMaterialData scrapeMaterialData;
         /// <summary>
+        /// The cached impulse response array. This never gets used.
+        /// </summary>
+        private double[] impulseResponse = new double[9000];
+        /// <summary>
         /// A linear space vector used for scrape synthesis.
         /// </summary>
         private static readonly double[] ScrapeLinearSpace = Util.LinSpace(0.0, 1.0, SAMPLES_LENGTH);
@@ -73,7 +77,6 @@ namespace Clatter.Core
             double db2 = (40 * Math.Log10(speed / scrapeMaxSpeed) - 4) * SHORT_CONVERSION;
             double db1 = (20 * Math.Log10(speed / scrapeMaxSpeed) - 25) * SHORT_CONVERSION;
             // Get impulse response of the colliding objects.
-            double[] impulseResponse;
             if (!GetImpact(collisionEvent, rng, out impulseResponse))
             {
                 return false;

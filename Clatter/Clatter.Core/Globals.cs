@@ -6,6 +6,10 @@
     public static class Globals
     {
         /// <summary>
+        /// The default length of an array of audio samples.
+        /// </summary>
+        public const int DEFAULT_SAMPLES_LENGTH = 6000;
+        /// <summary>
         /// Conversion factor for float to short.
         /// </summary>
         public const int FLOAT_TO_SHORT = 32767;

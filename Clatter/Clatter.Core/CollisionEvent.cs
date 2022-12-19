@@ -3,7 +3,7 @@
     /// <summary>
     /// Data for a collision audio event.
     /// </summary>
-    public struct CollisionEvent
+    public readonly struct CollisionEvent
     {
         /// <summary>
         /// On a stay event, if the previous area is None and the current area is greater than this, the collision is actually an impact. 

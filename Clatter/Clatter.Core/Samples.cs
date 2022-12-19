@@ -9,15 +9,9 @@ namespace Clatter.Core
     public class Samples
     {
         /// <summary>
-        /// The default length of the samples array.
-        /// </summary>
-        private const int DEFAULT_LENGTH = 6000;
-
-
-        /// <summary>
         /// The audio samples.
         /// </summary>
-        private double[] samples = new double[DEFAULT_LENGTH];
+        private double[] samples = new double[Globals.DEFAULT_SAMPLES_LENGTH];
         /// <summary>
         /// The length of the samples.
         /// </summary>
@@ -42,21 +36,6 @@ namespace Clatter.Core
             this.length = length;
             // Copy the samples.
             Buffer.BlockCopy(samples, start * 8, this.samples, 0, length * 8);
-        }
-
-
-        /// <summary>
-        /// Copy these samples to another samples.
-        /// </summary>
-        /// <param name="b">The other samples.</param>
-        public void CopyTo(Samples b)
-        {
-            if (b.samples.Length < samples.Length)
-            {
-                Array.Resize(ref b.samples, samples.Length);
-            }
-            Buffer.BlockCopy(samples, 0, b.samples, 0, length * 8);
-            b.length = length;
         }
 
 

@@ -131,8 +131,6 @@ namespace Clatter.Core
             primary.hasPreviousArea = true;
             primary.previousArea = 1;
             primary.speed = speed;
-            // Create the random number generator.
-            Random rng = new Random();
             // Get the scrape.
             Scrape scrape = new Scrape(secondary.scrapeMaterial, primary, secondary, rng);
             // Get the collision event.

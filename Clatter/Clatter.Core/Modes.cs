@@ -26,10 +26,18 @@ namespace Clatter.Core
         /// Mode decay times i.e. the time in ms it takes for each mode to decay 60dB from its onset power.
         /// </summary>
         public readonly double[] decayTimes = new double[DEFAULT_LENGTH];
-
-        public double[] synthSound = new double[9000];
+        /// <summary>
+        /// The cached synth sound array.
+        /// </summary>
+        public double[] synthSound = new double[Globals.DEFAULT_SAMPLES_LENGTH];
+        /// <summary>
+        /// The actual length of the synth sound (usually less than synthSound.Length).
+        /// </summary>
         public int synthSoundLength;
-        private double[] mode = new double[9000];
+        /// <summary>
+        /// The cached modes array.
+        /// </summary>
+        private double[] mode = new double[Globals.DEFAULT_SAMPLES_LENGTH];
 
 
         /// <summary>

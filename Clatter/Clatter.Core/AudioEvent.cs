@@ -56,7 +56,7 @@ namespace Clatter.Core
         /// <param name="primary">The primary object.</param>
         /// <param name="secondary">The secondary object.</param>
         /// <param name="rng">The random number generator.</param>
-        public AudioEvent(AudioObjectData primary, AudioObjectData secondary, Random rng)
+        protected AudioEvent(AudioObjectData primary, AudioObjectData secondary, Random rng)
         {
             // Generate the modes.
             modesB = new Modes(ImpactMaterialData.impactMaterials[primary.impactMaterial], rng);
