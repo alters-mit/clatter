@@ -20,6 +20,20 @@ namespace Clatter.Core
         /// A cached impact. This can be used for ongoing impacts.
         /// </summary>
         private static Impact impact;
+        /// <summary>
+        /// The random number generator.
+        /// </summary>
+        private static Random rng = new Random();
+        
+        
+        /// <summary>
+        /// Set a new random number generator with a new seed.
+        /// </summary>
+        /// <param name="seed">The seed.</param>
+        public static void SetRandom(int seed)
+        {
+            rng = new Random(seed);
+        }
 
 
         /// <summary>
@@ -80,8 +94,6 @@ namespace Clatter.Core
         {
             ImpactMaterialData.Load(primary.impactMaterial);
             ImpactMaterialData.Load(secondary.impactMaterial);
-            // Create the random number generator.
-            Random rng = new Random();
             // Set the impact.
             if (newImpact || impact == null)
             {
