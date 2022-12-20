@@ -10,15 +10,15 @@ namespace Clatter.Core
     public struct ImpactMaterialData
     {
         /// <summary>
-        /// RT60 values (decay times).
+        /// The frequency of the sinusoid used to create the mode in Hz.
         /// </summary>
         public double[] cf;
         /// <summary>
-        /// Onset power values.
+        /// The power of the mode at the onset, in dB relative to the amplitude of the "onset click".
         /// </summary>
         public double[] op;
         /// <summary>
-        /// Mode properties.
+        /// RT60 values. The time it takes a mode power to decay 60dB (i.e. 10**(-6)) from its onset power in seconds.
         /// </summary>
         public double[] rt;
         /// <summary>
