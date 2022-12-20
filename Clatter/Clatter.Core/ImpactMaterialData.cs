@@ -10,11 +10,11 @@ namespace Clatter.Core
     public struct ImpactMaterialData
     {
         /// <summary>
-        /// Mode properties.
+        /// RT60 values (decay times).
         /// </summary>
         public double[] cf;
         /// <summary>
-        /// Mode properties.
+        /// Onset power values.
         /// </summary>
         public double[] op;
         /// <summary>
