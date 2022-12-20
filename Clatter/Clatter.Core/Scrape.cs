@@ -49,7 +49,7 @@ namespace Clatter.Core
         /// <summary>
         /// If true, we've generated the impulse response.
         /// </summary>
-        private bool gotImpulseResponse;
+        private bool gotImpulseResponse = false;
         /// <summary>
         /// A linear space vector used for scrape synthesis.
         /// </summary>
