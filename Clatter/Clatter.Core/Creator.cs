@@ -136,12 +136,13 @@ namespace Clatter.Core
             // Get the collision event.
             CollisionEvent collisionEvent = new CollisionEvent(primary, secondary, 0, speed, 1, Vector3d.Zero, OnCollisionType.stay, false);
             byte[] audio = new byte[Scrape.SAMPLES_LENGTH * 2 * count];
+            int c = Scrape.SAMPLES_LENGTH * 2;
             for (int i = 0; i < count; i++)
             {
                 // Continue the scrape.
                 scrape.GetAudio(collisionEvent, rng);
                 // Get the audio and copy it to the buffer.
-                Buffer.BlockCopy(scrape.samples.ToInt16Bytes(), 0, audio, i * 2 * count, Scrape.SAMPLES_LENGTH * 2);
+                Buffer.BlockCopy(scrape.samples.ToInt16Bytes(), 0, audio, i * c, c);
             }
             return audio;
         }

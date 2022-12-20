@@ -101,7 +101,7 @@ namespace Clatter.Core
             // Write the byte array.
             using (FileStream filestream = new FileStream(path, FileMode.Append))
             {
-                filestream.Write(data, 0, wavChunk.Length);
+                filestream.Write(data, 0, data.Length);
             }
         }
 
