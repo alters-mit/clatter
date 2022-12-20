@@ -25,9 +25,9 @@ namespace Clatter.Core
         // ReSharper disable once InconsistentNaming
         public double[] d2sdx2;
         /// <summary>
-        /// The roughness volume gain.
+        /// The roughness ratio.
         /// </summary>
-        public double roughnessGain;
+        public double roughnessRatio;
         /// <summary>
         /// Scrape data per material type.
         /// </summary>
@@ -67,7 +67,7 @@ namespace Clatter.Core
             {
                 dsdx = dsdx,
                 d2sdx2 = d2sdx2,
-                roughnessGain = BitConverter.ToDouble(raw, 0)
+                roughnessRatio = BitConverter.ToDouble(raw, 0)
             };
             ScrapeMaterials.Add(scrapeMaterial, scrapeMaterialData);
         }

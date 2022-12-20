@@ -12,16 +12,12 @@ namespace Clatter.Core
         /// The length of the scrape samples.
         /// </summary>
         public const int SAMPLES_LENGTH = 4410;
-        /// <summary>
-        /// Conversion factor from short to double. This is relevant for the decibel values.
-        /// </summary>
-        private const double SHORT_CONVERSION = 1.0 / Globals.FLOAT_TO_SHORT;
 
 
         /// <summary>
         /// The maximum speed allowed for a scrape.
         /// </summary>
-        public static double scrapeMaxSpeed = 1;
+        public static double scrapeMaxSpeed = 5;
         /// <summary>
         /// The audio source ID. We need to declare this here because scrapes are ongoing sounds.
         /// </summary>
@@ -51,6 +47,10 @@ namespace Clatter.Core
         /// </summary>
         private double[] impulseResponse = new double[9000];
         /// <summary>
+        /// If true, we've generated the impulse response.
+        /// </summary>
+        private bool gotImpulseResponse;
+        /// <summary>
         /// A linear space vector used for scrape synthesis.
         /// </summary>
         private static readonly double[] ScrapeLinearSpace = Util.LinSpace(0.0, 1.0, SAMPLES_LENGTH);
@@ -74,12 +74,14 @@ namespace Clatter.Core
         {
             // Get the speed of the primary object and clamp it.
             double speed = Math.Min(collisionEvent.primary.speed, scrapeMaxSpeed);
-            double db2 = (40 * Math.Log10(speed / scrapeMaxSpeed) - 4) * SHORT_CONVERSION;
-            double db1 = (20 * Math.Log10(speed / scrapeMaxSpeed) - 25) * SHORT_CONVERSION;
             // Get impulse response of the colliding objects.
-            if (!GetImpact(collisionEvent, rng, out impulseResponse))
+            if (!gotImpulseResponse)
             {
-                return false;
+                if (!GetImpact(collisionEvent, rng, out impulseResponse))
+                {
+                    return false;
+                }
+                gotImpulseResponse = true;
             }
             int numPts = (int)(Math.Floor((speed / 10) / ScrapeMaterialData.SCRAPE_M_PER_PIXEL) + 1);
             if (numPts <= 1)
@@ -98,40 +100,31 @@ namespace Clatter.Core
             }
             int length = finalIndex - scrapeIndex;
             // Get the horizontal force.
-            double curveMass = 1000 * collisionEvent.primary.mass;
+            double curveMass = 10 * collisionEvent.primary.mass;
             MedianFilter medianFilter = new MedianFilter(5);
             // Apply interpolation.
             int horizontalInterpolationIndex = 0;
             int verticalInterpolationIndex = 0;
+            double vertical = 0.5 * Math.Pow(speed / scrapeMaxSpeed, 2);
+            double horizontal = 0.05 * (speed / scrapeMaxSpeed);
             for (int i = 0; i < ScrapeLinearSpace.Length; i++)
             {
                 // Get the horizontal force.
-                horizontalForce[i] = ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.dsdx, scrapeMaterialData.dsdx[scrapeIndex], scrapeMaterialData.dsdx[scrapeIndex + length], scrapeIndex, ref horizontalInterpolationIndex);
+                horizontalForce[i] = horizontal * ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.dsdx, scrapeMaterialData.dsdx[scrapeIndex], scrapeMaterialData.dsdx[scrapeIndex + length], scrapeIndex, ref horizontalInterpolationIndex);
                 // Get the curve value.
-                verticalForce[i] = medianFilter.ProcessSample(Math.Tanh(ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.d2sdx2, scrapeMaterialData.d2sdx2[scrapeIndex], scrapeMaterialData.d2sdx2[scrapeIndex + length], scrapeIndex, ref verticalInterpolationIndex)
+                verticalForce[i] = vertical * medianFilter.ProcessSample(Math.Tanh(ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.d2sdx2, scrapeMaterialData.d2sdx2[scrapeIndex], scrapeMaterialData.d2sdx2[scrapeIndex + length], scrapeIndex, ref verticalInterpolationIndex)
                     / curveMass));
             }
-            double maxAbsVerticalForce = 0;
-            double q;
             for (int i = 0; i < verticalForce.Length; i++)
             {
-                q = Math.Abs(verticalForce[i]);
-                if (q > maxAbsVerticalForce)
-                {
-                    maxAbsVerticalForce = q;
-                }
-            }
-            for (int i = 0; i < verticalForce.Length; i++)
-            {
-                verticalForce[i] /= maxAbsVerticalForce;
+                verticalForce[i] += horizontalForce[i];
             }
             // Convolve and apply roughness.
-            double[] conv1 = impulseResponse.Convolve(verticalForce, ScrapeLinearSpace.Length);
-            double[] conv2 = impulseResponse.Convolve(horizontalForce, ScrapeLinearSpace.Length);
+            double[] conv = impulseResponse.Convolve(verticalForce, ScrapeLinearSpace.Length);
             int c = 0;
-            for (int i = 0; i < conv1.Length; i++)
+            for (int i = 0; i < conv.Length; i++)
             {
-                summedMaster[i] = ((conv1[c] * db1) + (conv2[c] * db2)) * scrapeMaterialData.roughnessGain;
+                summedMaster[i] = conv[c] * scrapeMaterialData.roughnessRatio;
                 c++;
             }
             // Generate the samples.
