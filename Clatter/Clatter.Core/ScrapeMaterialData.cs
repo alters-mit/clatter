@@ -54,14 +54,14 @@ namespace Clatter.Core
             double[] dsdx = new double[surface.Length - 1];
             for (int i = 1; i < surface.Length; i++)
             {
-                dsdx[i - 1] = surface[i] / SCRAPE_M_PER_PIXEL;
+                dsdx[i - 1] = (surface[i] - surface[i - 1]) / SCRAPE_M_PER_PIXEL;
             }
             // Get second-derivative data.
             // ReSharper disable once InconsistentNaming
             double[] d2sdx2 = new double[dsdx.Length - 1];
             for (int i = 1; i < dsdx.Length; i++)
             {
-                d2sdx2[i - 1] = dsdx[i] / SCRAPE_M_PER_PIXEL;
+                d2sdx2[i - 1] = (dsdx[i] - dsdx[i - 1]) / SCRAPE_M_PER_PIXEL;
             }
             ScrapeMaterialData scrapeMaterialData = new ScrapeMaterialData
             {
