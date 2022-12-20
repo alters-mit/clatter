@@ -66,12 +66,13 @@ namespace Clatter.Core
         /// <param name="upper">The value to be returned for values after the last point in <paramref name="x"/>.</param>
         /// <param name="yIndexOffset">Offset the y index by this value.</param>
         /// <param name="startX">Start interpolating the x array at this index.</param>
-        public static double Interpolate1D(this double value, double[] x, double[] y, double lower, double upper, int yIndexOffset, ref int startX)
+        /// <param name="endX">The final index in the x array.</param>
+        public static double Interpolate1D(this double value, double[] x, double[] y, double lower, double upper, int yIndexOffset, ref int startX, int endX)
         {
             int start;
             int next;
             double m;
-            for (int i = startX; i < x.Length; i++)
+            for (int i = startX; i < endX; i++)
             {
                 if (value < x[i])
                 {

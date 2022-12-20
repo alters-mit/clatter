@@ -152,7 +152,7 @@ namespace Clatter.Core
                 maxT = Math.Min(maxT, 2e-3);
             }
             // Convolve with force, with contact time scaled by the object mass.
-            double[] frc = Util.LinSpace(0, Math.PI, (int)Math.Ceiling(maxT * Globals.framerate));
+            double[] frc = LinSpace.Get(0, Math.PI, (int)Math.Ceiling(maxT * Globals.framerate));
             // Clamp the amp.
             if (preventDistortion && amp > 0.99)
             {

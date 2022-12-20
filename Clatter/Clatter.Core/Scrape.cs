@@ -51,9 +51,13 @@ namespace Clatter.Core
         /// </summary>
         private bool gotImpulseResponse;
         /// <summary>
+        /// The cached vect1 array.
+        /// </summary>
+        private double[] vect1 = new double[9000];
+        /// <summary>
         /// A linear space vector used for scrape synthesis.
         /// </summary>
-        private static readonly double[] ScrapeLinearSpace = Util.LinSpace(0.0, 1.0, SAMPLES_LENGTH);
+        private static readonly double[] ScrapeLinearSpace = LinSpace.Get(0.0, 1.0, SAMPLES_LENGTH);
 
 
         /// <summary>
@@ -91,7 +95,7 @@ namespace Clatter.Core
             // Get the final index.
             int finalIndex = scrapeIndex + numPts;
             // Define a linear space.
-            double[] vect1 = Util.LinSpace(0.0, 1.0, numPts);
+            LinSpace.GetInPlace(0.0, 1.0, numPts, ref vect1);
             // Reset the indices if they exceed the scrape surface.
             if (finalIndex >= scrapeMaterialData.dsdx.Length)
             {
@@ -110,9 +114,9 @@ namespace Clatter.Core
             for (int i = 0; i < ScrapeLinearSpace.Length; i++)
             {
                 // Get the horizontal force.
-                horizontalForce[i] = horizontal * ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.dsdx, scrapeMaterialData.dsdx[scrapeIndex], scrapeMaterialData.dsdx[scrapeIndex + length], scrapeIndex, ref horizontalInterpolationIndex);
+                horizontalForce[i] = horizontal * ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.dsdx, scrapeMaterialData.dsdx[scrapeIndex], scrapeMaterialData.dsdx[scrapeIndex + length], scrapeIndex, ref horizontalInterpolationIndex, numPts);
                 // Get the curve value.
-                verticalForce[i] = vertical * medianFilter.ProcessSample(Math.Tanh(ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.d2sdx2, scrapeMaterialData.d2sdx2[scrapeIndex], scrapeMaterialData.d2sdx2[scrapeIndex + length], scrapeIndex, ref verticalInterpolationIndex)
+                verticalForce[i] = vertical * medianFilter.ProcessSample(Math.Tanh(ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.d2sdx2, scrapeMaterialData.d2sdx2[scrapeIndex], scrapeMaterialData.d2sdx2[scrapeIndex + length], scrapeIndex, ref verticalInterpolationIndex, numPts)
                     / curveMass));
             }
             for (int i = 0; i < verticalForce.Length; i++)

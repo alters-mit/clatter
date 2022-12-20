@@ -52,6 +52,7 @@
         <Compile Include="ImpactMaterial.cs" />
         <Compile Include="ImpactMaterialData.cs" />
         <Compile Include="ImpactMaterialSized.cs" />
+        <Compile Include="LinSpace.cs" />
         <Compile Include="MedianFilter.cs" />
         <Compile Include="Modes.cs" />
         <Compile Include="NormalDistribution.cs" />
@@ -62,7 +63,6 @@
         <Compile Include="Scrape.cs" />
         <Compile Include="ScrapeMaterial.cs" />
         <Compile Include="ScrapeMaterialData.cs" />
-        <Compile Include="Util.cs" />
         <Compile Include="Vector3d.cs" />
         <Compile Include="WavWriter.cs" />
     </ItemGroup>
