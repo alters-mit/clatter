@@ -64,14 +64,5 @@ namespace Clatter.Core
                 return offsetBuffers[length].MedianInplace();
             }
         }
-
-        /// <summary>
-        /// Reset internal state.
-        /// </summary>
-        public void Reset()
-        {
-            offset = 0;
-            bufferFull = false;
-        }
     }
 }
