@@ -116,11 +116,18 @@ namespace Clatter.Core
         public static byte[] ToInt16Bytes(this double[] a, int length)
         {
             byte[] bs = new byte[length * 2];
+            byte[] shortArray = new byte[2];
+            short s;
             // Convert doubles to int16 and copy the byte data into the array.
             // Source: https://gist.github.com/darktable/2317063
             for (int i = 0; i < length; i++)
             {
-                Buffer.BlockCopy(BitConverter.GetBytes((short)(a[i] * Globals.FLOAT_TO_SHORT)), 0, bs, i * 2, 2);
+                // Cast to short.
+                s = (short)(a[i] * Globals.FLOAT_TO_SHORT);
+                // Convert to bytes.
+                s.GetBytes(shortArray);
+                // Copy the bytes
+                Buffer.BlockCopy(shortArray, 0, bs, i * 2, 2);
             }
             return bs;
         }
@@ -263,6 +270,7 @@ namespace Clatter.Core
             }
             return min;
         }
+        
 
         /// <summary>
         /// Returns the largest value from the unsorted data array.
