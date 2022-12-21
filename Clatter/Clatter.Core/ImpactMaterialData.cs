@@ -28,17 +28,18 @@ namespace Clatter.Core
 
 
         /// <summary>
-        /// Load impact material data.
+        /// Load impact material data from a file relative to this assembly.
         /// </summary>
         /// <param name="impactMaterial">The impact material.</param>
-        /// <param name="raw">The raw byte data.</param>
-        public static void Load(ImpactMaterialSized impactMaterial, byte[] raw)
+        public static void Load(ImpactMaterialSized impactMaterial)
         {
             // We already loaded the material.
             if (impactMaterials.ContainsKey(impactMaterial))
             {
                 return;
             }
+            // Load the raw byte data.
+            byte[] raw = Loader.Load("ImpactMaterials." + impactMaterial + "_mm.bytes");
             // The first 12 bytes are the lengths of the arrays.
             double[] cf = new double[BitConverter.ToInt32(raw, 0)];
             double[] op = new double[BitConverter.ToInt32(raw, 4)];
@@ -55,20 +56,22 @@ namespace Clatter.Core
                 rt = rt
             });
         }
-
-
+        
+        
         /// <summary>
-        /// Load impact material data from a file relative to this assembly.
+        /// Parse a size and an impact material to get an ImpactMaterialSized value.
         /// </summary>
         /// <param name="impactMaterial">The impact material.</param>
-        public static void Load(ImpactMaterialSized impactMaterial)
+        /// <param name="size">The size.</param>
+        public static ImpactMaterialSized GetImpactMaterialSized(ImpactMaterial impactMaterial, int size)
         {
-            // We already loaded the material.
-            if (impactMaterials.ContainsKey(impactMaterial))
+            string m = impactMaterial + "_" + size;
+            ImpactMaterialSized impactMaterialSized;
+            if (!Enum.TryParse(m, out impactMaterialSized))
             {
-                return;
+                throw new Exception("Invalid impact material: " + m);
             }
-            Load(impactMaterial, Loader.Load("ImpactMaterials." + impactMaterial + "_mm.bytes"));
+            return impactMaterialSized;
         }
     }
 }

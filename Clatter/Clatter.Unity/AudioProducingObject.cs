@@ -214,7 +214,7 @@ namespace Clatter.Unity
                 }
             }
             // Convert the material + size to an impact material.
-            ImpactMaterialSized im = (ImpactMaterialSized)Enum.Parse(typeof(ImpactMaterialSized), impactMaterial + "_" + size);
+            ImpactMaterialSized im = ImpactMaterialData.GetImpactMaterialSized(impactMaterial, size);
             // Set the data.
             if (hasScrapeMaterial)
             {

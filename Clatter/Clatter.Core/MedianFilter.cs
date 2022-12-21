@@ -34,6 +34,7 @@ namespace Clatter.Core
         /// <summary>
         /// Create a Median Filter.
         /// </summary>
+        /// /// <param name="windowSize">The window size.</param>
         public MedianFilter(int windowSize)
         {
             // Set the buffer.
@@ -44,10 +45,12 @@ namespace Clatter.Core
                 offsetBuffers.Add(i, new double[i]);
             }
         }
-
+        
+        
         /// <summary>
         /// Process a single sample.
         /// </summary>
+        /// <param name="sample">The sample.</param>
         public double ProcessSample(double sample)
         {
             buffer[offset = (offset == 0) ? buffer.Length - 1 : offset - 1] = sample;

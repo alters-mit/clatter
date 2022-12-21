@@ -77,6 +77,7 @@ namespace Clatter.Core
             Write(wavChunk);
         }
         
+        
         /// <summary>
         /// Write byte data. This assumes that the data is already an int16 byte array.
         /// </summary>

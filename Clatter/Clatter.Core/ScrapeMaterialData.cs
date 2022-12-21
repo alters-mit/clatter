@@ -32,21 +32,21 @@ namespace Clatter.Core
         /// Scrape data per material type.
         /// </summary>
         private static readonly Dictionary<ScrapeMaterial, ScrapeMaterialData> ScrapeMaterials = new Dictionary<ScrapeMaterial, ScrapeMaterialData>();
-
-
+        
 
         /// <summary>
-        /// Load the scrape material data into memory.
+        /// Load scrape material data from a file relative to this assembly.
         /// </summary>
         /// <param name="scrapeMaterial">The scrape material.</param>
-        /// <param name="raw">The raw byte data loaded from a file.</param>
-        public static void Load(ScrapeMaterial scrapeMaterial, byte[] raw)
+        public static void Load(ScrapeMaterial scrapeMaterial)
         {
-            // Use a pre-loaded material.
+            // We already loaded the material.
             if (ScrapeMaterials.ContainsKey(scrapeMaterial))
             {
                 return;
             }
+            // Load the raw byte data.
+            byte[] raw = Loader.Load("ScrapeMaterials." + scrapeMaterial + ".bytes"); 
             // Get the surface array.
             double[] surface = new double[(raw.Length - 8) / 8];
             Buffer.BlockCopy(raw, 8, surface, 0, raw.Length - 8);
@@ -70,21 +70,6 @@ namespace Clatter.Core
                 roughnessRatio = BitConverter.ToDouble(raw, 0)
             };
             ScrapeMaterials.Add(scrapeMaterial, scrapeMaterialData);
-        }
-
-
-        /// <summary>
-        /// Load scrape material data from a file relative to this assembly.
-        /// </summary>
-        /// <param name="scrapeMaterial">The scrape material.</param>
-        public static void Load(ScrapeMaterial scrapeMaterial)
-        {
-            // We already loaded the material.
-            if (ScrapeMaterials.ContainsKey(scrapeMaterial))
-            {
-                return;
-            }
-            Load(scrapeMaterial, Loader.Load("ScrapeMaterials." + scrapeMaterial + ".bytes"));
         }
 
 
