@@ -56,9 +56,11 @@ namespace Clatter.Unity
                     // Create and use new samples.
                     if (nextData[i] == null)
                     {
-                        nextData[i] = new ScrapeAudioData();
-                        nextData[i].data = samples.ToFloats();
-                        nextData[i].allocated = true;
+                        nextData[i] = new ScrapeAudioData()
+                        {
+                            data = samples.ToFloats(),
+                            allocated = true
+                        };
                         nextDataIndex = i;
                         return;
                     }

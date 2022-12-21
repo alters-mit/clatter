@@ -87,6 +87,14 @@ namespace Clatter.Unity
         /// </summary>
         private ArticulationBody articulationBody;
         /// <summary>
+        /// If true, this object has a Rigidbody.
+        /// </summary>
+        private bool hasRigidbody;
+        /// <summary>
+        /// If true, this object has an ArticulationBody.
+        /// </summary>
+        private bool hasArticulationBody;
+        /// <summary>
         /// Cached array of collision contacts.
         /// </summary>
         private static ContactPoint[] contacts = Array.Empty<ContactPoint>();
@@ -130,6 +138,8 @@ namespace Clatter.Unity
                 r.mass = 1;
                 r.collisionDetectionMode = CollisionDetectionMode.Discrete;
             }
+            hasRigidbody = r != null;
+            hasArticulationBody = articulationBody != null;
             // Get the mass.
             float mass;
             // Auto-set the mass.
@@ -333,12 +343,12 @@ namespace Clatter.Unity
         public void OnFixedUpdate()
         {
             // Update the velocity.
-            if (r != null)
+            if (hasRigidbody)
             {
                 data.speed = r.velocity.magnitude;
                 data.angularSpeed = r.angularVelocity.magnitude;
             }
-            else if (articulationBody != null)
+            else if (hasArticulationBody)
             {
                 data.speed = articulationBody.velocity.magnitude;
                 data.angularSpeed = articulationBody.angularVelocity.magnitude;

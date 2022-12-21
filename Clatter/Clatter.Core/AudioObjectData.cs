@@ -22,11 +22,11 @@
         /// </summary>
         public readonly bool hasScrapeMaterial;
         /// <summary>
-        /// The audio amplitude.
+        /// The audio amplitude (0 to 1).
         /// </summary>
         public readonly float amp;
         /// <summary>
-        /// The resonance value.
+        /// The resonance value (0 to 1).
         /// </summary>
         public readonly float resonance;
         /// <summary>
@@ -49,8 +49,17 @@
         /// If true, this is a previous area.
         /// </summary>
         public bool hasPreviousArea = false;
-
-
+        
+        
+        /// <summary>
+        /// (constructor)
+        /// </summary>
+        /// <param name="id">The ID of this object.</param>
+        /// <param name="impactMaterial">The impact material.</param>
+        /// <param name="amp">The audio amplitude (0 to 1).</param>
+        /// <param name="resonance">The resonance value (0 to 1).</param>
+        /// <param name="mass">The mass of the object.</param>
+        /// <param name="scrapeMaterial">The scrape material. Can be null.</param>
         public AudioObjectData(uint id, ImpactMaterialSized impactMaterial, float amp, float resonance, float mass, ScrapeMaterial? scrapeMaterial = null)
         {
             this.id = id;

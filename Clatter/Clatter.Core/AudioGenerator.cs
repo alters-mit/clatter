@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
-using Random = System.Random;
-
 
 
 namespace Clatter.Core
@@ -83,7 +81,7 @@ namespace Clatter.Core
 
 
         /// <summary>
-        /// (Constructor)
+        /// (constructor)
         /// </summary>
         /// <param name="audioObjects">The objects that will generate audio.</param>
         /// <param name="seed">The random seed. If null, the seed is random.</param>
