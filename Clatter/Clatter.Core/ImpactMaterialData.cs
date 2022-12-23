@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 
 namespace Clatter.Core
@@ -9,6 +10,12 @@ namespace Clatter.Core
     /// </summary>
     public struct ImpactMaterialData
     {
+        /// <summary>
+        /// Regex string to parse sized impact materials as unsized impact materials.
+        /// </summary>
+        private static readonly Regex SizedToUnSized = new Regex("(.*?)_([0-9])");
+        
+        
         /// <summary>
         /// The frequency of the sinusoid used to create the mode in Hz.
         /// </summary>
@@ -72,6 +79,26 @@ namespace Clatter.Core
                 throw new Exception("Invalid impact material: " + m);
             }
             return impactMaterialSized;
+        }
+
+
+        /// <summary>
+        /// Parse a sized impact material to get an un-sized impact material.
+        /// </summary>
+        /// <param name="impactMaterialSized">The sized impact material.</param>
+        public static ImpactMaterial GetImpactMaterial(ImpactMaterialSized impactMaterialSized)
+        {
+            Match match = SizedToUnSized.Match(impactMaterialSized.ToString());
+            if (match == null)
+            {
+                throw new Exception("Invalid ImpactMaterialSized: " + impactMaterialSized);
+            }
+            ImpactMaterial impactMaterial;
+            if (!Enum.TryParse(match.Groups[1].Value, out impactMaterial))
+            {
+                throw new Exception("Invalid ImpactMaterialSized: " + impactMaterialSized);
+            }
+            return impactMaterial;
         }
     }
 }

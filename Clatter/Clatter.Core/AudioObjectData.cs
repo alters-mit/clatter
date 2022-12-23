@@ -2,11 +2,31 @@
 {
     /// <summary>
     /// Audio data for a Clatter object.
+    ///
+    /// Audio generation in Clatter is always the result of a collision event between two AudioObjectData objects. Each object in your scene or simulation must have corresponding AudioObjectData.
+    ///
+    /// All of an audio object's fields will affect the audio it generates when it collides with a larger object. Some fields such as mass are read-only while others such as speed are assumed to change as the object moves.
+    ///
+    /// This is a minimal example of how to instantiate an AudioObjectData:
+    ///
+    /// ```csharp
+    /// using Clatter.Core;
+    ///
+    /// AudioObjectData a = new AudioObjectData(0, ImpactMaterialSized.glass_1, 0.2f, 0.2f, 1);
+    /// ```
+    ///
+    /// You can optionally set a Clatter object as a "scrape surface" by setting the scrapeMaterial constructor parameter:
+    ///
+    /// ```csharp
+    /// using Clatter.Core;
+    /// 
+    /// AudioObjectData a = new AudioObjectData(0, ImpactMaterialSized.ceramic_4, 0.2f, 0.2f, 1, ScrapeMaterial.ceramic);
+    /// ```
     /// </summary>
     public class AudioObjectData
     {
         /// <summary>
-        /// The unique ID of the object.
+        /// The ID of the object. This must always be unique.
         /// </summary>
         public readonly uint id;
         /// <summary>
@@ -46,7 +66,7 @@
         /// </summary>
         public double previousArea = 0;
         /// <summary>
-        /// If true, this is a previous area.
+        /// If true, this object has contacted another object previously and generated contact area.
         /// </summary>
         public bool hasPreviousArea = false;
         

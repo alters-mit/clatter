@@ -1,7 +1,7 @@
 ﻿namespace Clatter.Core
 {
     /// <summary>
-    /// Audio materials for impact sounds without size bucket information.
+    /// Audio materials for impact sounds without size bucket information. See: ImpactMaterialSized.
     /// </summary>
     public enum ImpactMaterial : byte
     {

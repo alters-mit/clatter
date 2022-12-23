@@ -179,8 +179,8 @@ namespace Clatter.Unity
             // Auto-set friction values.
             if (autoSetFriction)
             {
-                dynamicFriction = PhysicsValues.DynamicFriction[impactMaterial];
-                staticFriction = PhysicsValues.StaticFriction[impactMaterial];
+                dynamicFriction = PhysicMaterialValues.DynamicFriction[impactMaterial];
+                staticFriction = PhysicMaterialValues.StaticFriction[impactMaterial];
             }
             // Set the physic material.
             physicMaterial = new PhysicMaterial()
