@@ -66,7 +66,7 @@ namespace Clatter.Core
         /// <param name="scrapeMaterial">The scrape material.</param>
         /// <param name="primary">The primary object (the smaller, moving object).</param>
         /// <param name="secondary">The secondary object (the scrape surface).</param>
-        /// <param name="rng">The random number generator.</param>
+        /// <param name="rng">The random number generator. This is used to randomly adjust audio data before generating new audio.</param>
         public Scrape(ScrapeMaterial scrapeMaterial, AudioObjectData primary, AudioObjectData secondary, Random rng) : base(primary, secondary, rng)
         {
             scrapeMaterialData = ScrapeMaterialData.Get(scrapeMaterial);
@@ -74,20 +74,20 @@ namespace Clatter.Core
         }
 
 
-        public override bool GetAudio(CollisionEvent collisionEvent, Random rng)
+        public override bool GetAudio(float speed, Random rng)
         {
             // Get the speed of the primary object and clamp it.
-            double speed = Math.Min(collisionEvent.primary.speed, scrapeMaxSpeed);
+            double primarySpeed = Math.Min(primary.speed, scrapeMaxSpeed);
             // Get impulse response of the colliding objects.
             if (!gotImpulseResponse)
             {
-                if (!GetImpact(collisionEvent, rng, out impulseResponse))
+                if (!GetImpact(speed, rng, out impulseResponse))
                 {
                     return false;
                 }
                 gotImpulseResponse = true;
             }
-            int numPts = (int)(Math.Floor((speed / 10) / ScrapeMaterialData.SCRAPE_M_PER_PIXEL) + 1);
+            int numPts = (int)(Math.Floor((primarySpeed / 10) / ScrapeMaterialData.SCRAPE_M_PER_PIXEL) + 1);
             if (numPts <= 1)
             {
                 return false;
@@ -104,13 +104,13 @@ namespace Clatter.Core
             }
             int length = finalIndex - scrapeIndex;
             // Get the horizontal force.
-            double curveMass = 10 * collisionEvent.primary.mass;
+            double curveMass = 10 * primary.mass;
             MedianFilter medianFilter = new MedianFilter(5);
             // Apply interpolation.
             int horizontalInterpolationIndex = 0;
             int verticalInterpolationIndex = 0;
-            double vertical = 0.5 * Math.Pow(speed / scrapeMaxSpeed, 2);
-            double horizontal = 0.05 * (speed / scrapeMaxSpeed);
+            double vertical = 0.5 * Math.Pow(primarySpeed / scrapeMaxSpeed, 2);
+            double horizontal = 0.05 * (primarySpeed / scrapeMaxSpeed);
             for (int i = 0; i < ScrapeLinearSpace.Length; i++)
             {
                 // Get the horizontal force.

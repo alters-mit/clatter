@@ -1,7 +1,16 @@
 ﻿namespace Clatter.Core
 {
     /// <summary>
-    /// Data for a collision audio event.
+    /// A CollisionEvent derives audio data needed for audio events from a collision. The type and nature of the collision will determine whether the collision generates impact audio, scrape audio, or neither.
+    ///
+    /// Collisions always have two `AudioObjectData` objects: A collider and a collidee. The faster object is the "primary" object and the slower (or non-moving) object is the "secondary" object. For scrape events, the collidee should be slower and have a `ScrapeMaterial`.
+    ///
+    /// CollisionEvents use two similar-sounding enum types:
+    ///
+    /// 1. `AudioEventType` is the type of audio event: impact, scrape, roll, or none. Roll audio is not yet supported.
+    /// 2. `OnCollisionType` maps to Unity collision events: enter, stay, exit. An enter is always an impact. A stay can be an impact, scrape, or neither depending on the angular velocity and contact area. An exit is always none.
+    ///
+    /// The CollisionEvent constructor takes a `OnCollisionType` value and other values such as speed and determines which `AudioEventType` this collision is.
     /// </summary>
     public readonly struct CollisionEvent
     {
@@ -26,7 +35,7 @@
         /// </summary>
         public readonly AudioObjectData secondary;
         /// <summary>
-        /// The summed object IDs pair as a long.
+        /// The combined object IDs pair as a long. This is used by `AudioGenerator` as a dictionary key.
         /// </summary>
         public readonly ulong ids;
         /// <summary>
@@ -38,15 +47,15 @@
         /// </summary>
         public readonly Vector3d centroid;
         /// <summary>
-        /// The average normalized speed.
+        /// The speed.
         /// </summary>
-        public readonly float normalSpeed;
+        public readonly float speed;
         /// <summary>
         /// The area of the collision.
         /// </summary>
         public readonly double area;
 
-
+        
         /// <summary>
         /// From collision data.
         /// </summary>
@@ -56,17 +65,17 @@
         /// <param name="centroid">The centroid of the collision.</param>
         /// <param name="onCollisionType">The type of collision (enter, stay, exit).</param>
         /// <param name="filterDuplicates">If true, try to filter out duplicate collision events.</param>
-        /// <param name="normalSpeed">The normalized speed of the collision.</param>
+        /// <param name="speed">The speed of the collision.</param>
         /// <param name="area">The contact area of the collision.</param>
-        public CollisionEvent(AudioObjectData collider, AudioObjectData collidee, float angularSpeed, float normalSpeed, double area,
+        public CollisionEvent(AudioObjectData collider, AudioObjectData collidee, float angularSpeed, float speed, double area,
             Vector3d centroid, OnCollisionType onCollisionType, bool filterDuplicates = true)
         {
             ids = 0;
-            this.normalSpeed = normalSpeed;
+            this.speed = speed;
             this.centroid = centroid;
             this.area = area;
             // Compare the IDs for filter out duplicate events.
-            if ((filterDuplicates && collider.id > collidee.id) || this.normalSpeed <= 0)
+            if ((filterDuplicates && collider.id > collidee.id) || this.speed <= 0)
             {
                 primary = collider;
                 secondary = collidee;
@@ -134,28 +143,6 @@
                     type = AudioEventType.none;
                 }
             }
-            ids = GetIDsKey();
-        }
-
-
-        /// <summary>
-        /// From manually set values.
-        /// </summary>
-        /// <param name="primary">The primary object.</param>
-        /// <param name="secondary">The secondary object.</param>
-        /// <param name="type">The type of the audio event (impact, scrape, roll, none).</param>
-        /// <param name="normalSpeed">The average normalized speed.</param>
-        /// <param name="area">The contact area of the collision.</param>
-        /// <param name="centroid">The centroid of the collision contact points.</param>
-        public CollisionEvent(AudioObjectData primary, AudioObjectData secondary, AudioEventType type, float normalSpeed, float area, Vector3d centroid)
-        {
-            this.primary = primary;
-            this.secondary = secondary;
-            this.type = type;
-            this.normalSpeed = normalSpeed;
-            this.centroid = centroid;
-            this.area = area;
-            ids = 0;
             ids = GetIDsKey();
         }
 

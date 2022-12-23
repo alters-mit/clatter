@@ -4,16 +4,18 @@
 namespace Clatter.Core
 {
     /// <summary>
-    /// Data for a physics-derived audio event.
+    /// AudioEvent is an abstract base class for generating audio from physics events. There are two subclasses: `Impact` and `Scrape`.
+    ///
+    /// AudioEvents are actually a *series* of events rather than isolated events; previous interactions between the two objects will affect the generated audio.
     /// </summary>
     public abstract class AudioEvent
     {
         /// <summary>
-        /// The overall amp of the simulation.
+        /// The overall amplitude of the simulation. The amplitude of generated audio is scaled by this factor. Must be between 0 and 0.99
         /// </summary>
-        public static double initialAmp = 0.5;
+        public static double simulationAmp = 0.5;
         /// <summary>
-        /// If true, clamp amp values to 0.99.
+        /// If true, clamp the audio amplitude values to 0.99.
         /// </summary>
         public static bool preventDistortion = true;
         /// <summary>
@@ -21,21 +23,29 @@ namespace Clatter.Core
         /// </summary>
         public static bool clampContactTime = true;
         /// <summary>
-        /// The audio samples.
+        /// The audio samples generated from this event.
         /// </summary>
         public readonly Samples samples = new Samples();
         /// <summary>
-        /// The current state of the audio event.
+        /// The current state of the AudioEvent.
         /// </summary>
         public EventState state = EventState.start;
         /// <summary>
-        /// The collision counter.
+        /// The number of collision events in this series so far.
         /// </summary>
         protected int collisionCount;
         /// <summary>
+        /// The primary object.
+        /// </summary>
+        protected readonly AudioObjectData primary;
+        /// <summary>
+        /// The secondary object.
+        /// </summary>
+        protected readonly AudioObjectData secondary;
+        /// <summary>
         /// The amplitude of the first collision.
         /// </summary>
-        private double amp;
+        private double initialAmp;
         /// <summary>
         /// The speed of the initial collision.
         /// </summary>
@@ -55,52 +65,54 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="primary">The primary object.</param>
         /// <param name="secondary">The secondary object.</param>
-        /// <param name="rng">The random number generator.</param>
+        /// <param name="rng">The random number generator. This is used to randomly adjust audio data before generating new audio.</param>
         protected AudioEvent(AudioObjectData primary, AudioObjectData secondary, Random rng)
         {
+            this.primary = primary;
+            this.secondary = secondary;
             // Generate the modes.
             modesB = new Modes(ImpactMaterialData.impactMaterials[primary.impactMaterial], rng);
             modesA = new Modes(ImpactMaterialData.impactMaterials[secondary.impactMaterial], rng);
-            amp = primary.amp * initialAmp;
+            initialAmp = primary.amp * simulationAmp;
         }
 
 
         /// <summary>
         /// Generate audio. Returns true if audio was generated. This will set the `samples` field.
         /// </summary>
-        /// <param name="collisionEvent">The collision event. Contains data for this specific collision.</param>
+        /// <param name="speed">The collision speed.</param>
         /// <param name="rng">The random number generator.</param>
-        public abstract bool GetAudio(CollisionEvent collisionEvent, Random rng);
+        public abstract bool GetAudio(float speed, Random rng);
 
 
         /// <summary>
         /// Synthesize impact audio. Returns true if successful.
         /// </summary>
-        /// <param name="collisionEvent">The collision event. Contains data for this specific collision.</param>
+        /// <param name="speed">The collision speed.</param>
         /// <param name="rng">The random number generator.</param>
         /// <param name="impulseResponse">The impulse response.</param>
-        protected bool GetImpact(CollisionEvent collisionEvent, Random rng, out double[] impulseResponse)
+        protected bool GetImpact(float speed, Random rng, out double[] impulseResponse)
         {
             // ReSharper disable once LocalVariableHidesMember
             double amp;
             // Re-scale the amplitude.
             if (collisionCount == 0)
             {
-                double log10RelativeAmp = 20 * Math.Log10(collisionEvent.secondary.amp / collisionEvent.primary.amp);
+                double log10RelativeAmp = 20 * Math.Log10(secondary.amp / primary.amp);
                 for (int i = 0; i < modesB.decayTimes.Length; i++)
                 {
                     modesB.decayTimes[i] += log10RelativeAmp;
                 }
                 // Set the amp.
-                this.amp = collisionEvent.primary.amp * initialAmp;
-                amp = this.amp;
+                this.initialAmp = primary.amp * simulationAmp;
+                amp = this.initialAmp;
                 // Set the initial speed.
-                initialSpeed = collisionEvent.normalSpeed;
+                initialSpeed = speed;
             }
             else
             {
                 // Set the amp.
-                amp = this.amp * collisionEvent.normalSpeed / initialSpeed;
+                amp = this.initialAmp * speed / initialSpeed;
                 // Adjust modes so that two successive impacts are not identical.
                 modesA.AdjustPowers(rng);
                 modesB.AdjustPowers(rng);
@@ -108,7 +120,7 @@ namespace Clatter.Core
             // Generate the sound.
             double[] rawSamples;
             // This should rarely happen, if ever.
-            if (!SynthImpactModes(collisionEvent, amp, out rawSamples, out impulseResponse))
+            if (!SynthImpactModes(amp, out rawSamples, out impulseResponse))
             {
                 return false;
             }
@@ -123,11 +135,10 @@ namespace Clatter.Core
         /// <summary>
         /// Synth impact modes.
         /// </summary>
-        /// <param name="collisionEvent">The collision audio event.</param>
         /// <param name="amp">The audio amp.</param>
         /// <param name="samples">The samples.</param>
         /// <param name="impulseResponse">The impulse response.</param>
-        private bool SynthImpactModes(CollisionEvent collisionEvent, double amp, out double[] samples, out double[] impulseResponse)
+        private bool SynthImpactModes(double amp, out double[] samples, out double[] impulseResponse)
         {
             if (amp <= 0)
             {
@@ -137,8 +148,8 @@ namespace Clatter.Core
             }
             impulseResponse = Array.Empty<double>();
             // Sum the modes.
-            modesA.Sum(collisionEvent.primary.resonance);
-            modesB.Sum(collisionEvent.secondary.resonance);
+            modesA.Sum(primary.resonance);
+            modesB.Sum(secondary.resonance);
             int impulseResponseLength = Modes.Add(modesA.synthSound, modesA.synthSoundLength, modesB.synthSound, modesB.synthSoundLength, ref impulseResponse);
             if (impulseResponseLength == 0)
             {
@@ -146,7 +157,7 @@ namespace Clatter.Core
                 return false;
             }
             // Get the contact time.
-            double maxT = 0.001 * Math.Min(collisionEvent.primary.mass, collisionEvent.secondary.mass);
+            double maxT = 0.001 * Math.Min(primary.mass, secondary.mass);
             if (clampContactTime)
             {
                 maxT = Math.Min(maxT, 2e-3);

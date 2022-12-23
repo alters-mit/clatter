@@ -283,7 +283,7 @@ namespace Clatter.Core
             // Try to generate audio.
             try
             {
-                if (!audioEvents[collisionEvents[collisionIndex].ids].GetAudio(collisionEvents[collisionIndex], rng))
+                if (!audioEvents[collisionEvents[collisionIndex].ids].GetAudio(collisionEvents[collisionIndex].speed, rng))
                 {
                     audioEvents[collisionEvents[collisionIndex].ids].state = EventState.end;
                 }

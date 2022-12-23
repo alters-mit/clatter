@@ -10,16 +10,12 @@
     /// This is a minimal example of how to instantiate an AudioObjectData:
     ///
     /// ```csharp
-    /// using Clatter.Core;
-    ///
     /// AudioObjectData a = new AudioObjectData(0, ImpactMaterialSized.glass_1, 0.2f, 0.2f, 1);
     /// ```
     ///
     /// You can optionally set a Clatter object as a "scrape surface" by setting the scrapeMaterial constructor parameter:
     ///
     /// ```csharp
-    /// using Clatter.Core;
-    /// 
     /// AudioObjectData a = new AudioObjectData(0, ImpactMaterialSized.ceramic_4, 0.2f, 0.2f, 1, ScrapeMaterial.ceramic);
     /// ```
     /// </summary>

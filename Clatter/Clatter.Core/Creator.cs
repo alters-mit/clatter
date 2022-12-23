@@ -99,10 +99,8 @@ namespace Clatter.Core
             {
                 impact = new Impact(primary, secondary, rng);
             }
-            // Get the collision event.
-            CollisionEvent collisionEvent = new CollisionEvent(primary, secondary, 0, speed, 0, Vector3d.Zero, OnCollisionType.enter, false);
             // Generate audio.
-            bool ok = impact.GetAudio(collisionEvent, rng);
+            bool ok = impact.GetAudio(speed, rng);
             if (!ok)
             {
                 return new byte[0];
@@ -128,19 +126,15 @@ namespace Clatter.Core
             int count = (int)(duration * Globals.framerate / Scrape.SAMPLES_LENGTH);
             // Get the scrape material.
             // Create the objects.
-            primary.hasPreviousArea = true;
-            primary.previousArea = 1;
             primary.speed = speed;
             // Get the scrape.
             Scrape scrape = new Scrape(secondary.scrapeMaterial, primary, secondary, rng);
-            // Get the collision event.
-            CollisionEvent collisionEvent = new CollisionEvent(primary, secondary, 0, speed, 1, Vector3d.Zero, OnCollisionType.stay, false);
             byte[] audio = new byte[Scrape.SAMPLES_LENGTH * 2 * count];
             int c = Scrape.SAMPLES_LENGTH * 2;
             for (int i = 0; i < count; i++)
             {
                 // Continue the scrape.
-                scrape.GetAudio(collisionEvent, rng);
+                scrape.GetAudio(speed, rng);
                 // Get the audio and copy it to the buffer.
                 Buffer.BlockCopy(scrape.samples.ToInt16Bytes(), 0, audio, i * c, c);
             }

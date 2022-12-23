@@ -10,20 +10,6 @@ namespace Clatter.Core
     {
         /// <summary>
         /// Convolve an array with the given kernel.
-        /// Source: https://github.com/accord-net/framework/blob/development/Sources/Accord.Math/Matrix/Matrix.Common.cs
-        /// This code is a more optimized version of the source.
-        /// </summary>
-        /// <param name="a">A floating number array.</param>
-        /// <param name="kernel">A convolution kernel.</param>
-        /// <param name="trim">If true, trim the length of the convolved array to a.Length.</param>
-        public static double[] Convolve(this double[] a, double[] kernel, bool trim)
-        {
-            return Convolve(a, kernel, trim ? a.Length : a.Length + (int)Math.Ceiling(kernel.Length / 2.0));
-        }
-
-
-        /// <summary>
-        /// Convolve an array with the given kernel.
         /// Source: https://stackoverflow.com/a/7239016
         /// This code is a more optimized version of the source.
         /// </summary>

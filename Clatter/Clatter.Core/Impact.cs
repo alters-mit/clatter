@@ -5,16 +5,30 @@ using System.Diagnostics;
 namespace Clatter.Core
 {
     /// <summary>
-    /// Audio data for an impact event.
+    /// Impact is a subclass of `AudioEvent` used to generate impact audio.
+    ///
+    /// This is a minimal example of how to generate impact audio:
+    ///
+    /// ```csharp
+    /// using System;
+    /// using Clatter.Core;
+    ///
+    /// rng = new Random();
+    /// AudioObjectData primary = new AudioObjectData(0, ImpactMaterialSized.glass_1, 0.2f, 0.2f, 1);
+    /// AudioObjectData secondary = new AudioObjectData(1, ImpactMaterialSized.stone_4, 0.5f, 0.1f, 100);
+    /// Impact impact = new Impact(primary, secondary, rng);
+    /// impact.GetAudio(1, rng);
+    /// byte[] wavData = impact.samples.ToInt16Bytes();
+    /// ```
     /// </summary>
     public class Impact : AudioEvent
     {
         /// <summary>
-        /// The minimum time in seconds between impacts.
+        /// The minimum time in seconds between impacts. This can prevent strange "droning" sounds caused by too many impacts in rapid succession.
         /// </summary>
         public static double minTimeBetweenImpacts = 0.25;
         /// <summary>
-        /// The maximum time in seconds between impacts.
+        /// The maximum time in seconds between impacts. This can prevent strange "droning" sounds caused by too many impacts in rapid succession.
         /// </summary>
         public static double maxTimeBetweenImpacts = 3;
         /// <summary>
@@ -37,14 +51,14 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="primary">The primary object.</param>
         /// <param name="secondary">The secondary object.</param>
-        /// <param name="rng">The random number generator.</param>
+        /// <param name="rng">The random number generator. This is used to randomly adjust audio data before generating new audio.</param>
         public Impact(AudioObjectData primary, AudioObjectData secondary, Random rng) : base(primary, secondary, rng)
         {
             watch.Start();
         }
 
 
-        public override bool GetAudio(CollisionEvent collisionEvent, Random rng)
+        public override bool GetAudio(float speed, Random rng)
         {
             // Get the elapsed time.
             dt = watch.Elapsed.TotalSeconds;
@@ -58,7 +72,7 @@ namespace Clatter.Core
                 // Restart the clock.
                 watch.Restart();
                 // Get an impact.
-                return GetImpact(collisionEvent, rng, out impulseResponse);
+                return GetImpact(speed, rng, out impulseResponse);
             }
         }
     }

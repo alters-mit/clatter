@@ -11,7 +11,7 @@ namespace Clatter.CommandLine
         private static void Main(string[] args)
         {
             // Set static values.
-            ArgumentParser.TryGetDoubleValue(args, "initial_amp", ref AudioEvent.initialAmp);
+            ArgumentParser.TryGetDoubleValue(args, "simulation_amp", ref AudioEvent.simulationAmp);
             ArgumentParser.TryGetBooleanValue(args, "allow_distortion", ref AudioEvent.preventDistortion);
             ArgumentParser.TryGetBooleanValue(args, "clamp_contact_time", ref AudioEvent.clampContactTime);
             ArgumentParser.TryGetDoubleValue(args, "scrape_max_speed", ref Scrape.scrapeMaxSpeed);
