@@ -258,7 +258,7 @@ namespace Clatter.Core
             }
             // Add the event.
             collisionEvents[numEvents] = collisionEvent;
-            // Incremenet the total number of events on this frame.
+            // Increment the total number of events on this frame.
             numEvents++;
         }
 

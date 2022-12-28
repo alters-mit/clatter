@@ -89,7 +89,7 @@ namespace Clatter.CommandLine
         private static AudioObjectData GetAudioObjectData(string[] args, uint id, string target, bool scrape)
         {
             string m = ArgumentParser.GetStringValue(args, target + "_material") + "_" + ArgumentParser.GetStringValue(args, target + "_size");
-            ImpactMaterialSized impactMaterial;
+            ImpactMaterial impactMaterial;
             if (!Enum.TryParse(m, out impactMaterial))
             {
                 throw new Exception("Invalid impact material: " + m);

@@ -11,22 +11,22 @@ namespace Clatter.Core
         /// <summary>
         /// Density in kg/m^3 per ImpactMaterial.
         /// </summary>
-        public static readonly Dictionary<ImpactMaterial, int> Density = new Dictionary<ImpactMaterial, int>()
+        public static readonly Dictionary<ImpactMaterialUnsized, int> Density = new Dictionary<ImpactMaterialUnsized, int>()
         {
-            { ImpactMaterial.ceramic, 2180 },
-            { ImpactMaterial.glass, 2500 },
-            { ImpactMaterial.stone, 2000 },
-            { ImpactMaterial.metal, 8450 },
-            { ImpactMaterial.wood_hard, 1200 },
-            { ImpactMaterial.wood_medium, 700 },
-            { ImpactMaterial.wood_soft, 400 },
-            { ImpactMaterial.fabric, 1540 },
-            { ImpactMaterial.leather, 860 },
-            { ImpactMaterial.plastic_hard, 1150 },
-            { ImpactMaterial.plastic_soft_foam, 285 },
-            { ImpactMaterial.rubber, 1522 },
-            { ImpactMaterial.paper, 1200 },
-            { ImpactMaterial.cardboard, 698 }
+            { ImpactMaterialUnsized.ceramic, 2180 },
+            { ImpactMaterialUnsized.glass, 2500 },
+            { ImpactMaterialUnsized.stone, 2000 },
+            { ImpactMaterialUnsized.metal, 8450 },
+            { ImpactMaterialUnsized.wood_hard, 1200 },
+            { ImpactMaterialUnsized.wood_medium, 700 },
+            { ImpactMaterialUnsized.wood_soft, 400 },
+            { ImpactMaterialUnsized.fabric, 1540 },
+            { ImpactMaterialUnsized.leather, 860 },
+            { ImpactMaterialUnsized.plastic_hard, 1150 },
+            { ImpactMaterialUnsized.plastic_soft_foam, 285 },
+            { ImpactMaterialUnsized.rubber, 1522 },
+            { ImpactMaterialUnsized.paper, 1200 },
+            { ImpactMaterialUnsized.cardboard, 698 }
         };
     }
 }

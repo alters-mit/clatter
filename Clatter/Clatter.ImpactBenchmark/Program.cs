@@ -9,8 +9,8 @@ namespace Clatter.ImpactBenchmark
         private static void Main(string[] args)
         {
             // Load the materials.
-            ImpactMaterialSized primaryMaterial = ImpactMaterialSized.glass_1;
-            ImpactMaterialSized secondaryMaterial = ImpactMaterialSized.stone_4;
+            ImpactMaterial primaryMaterial = ImpactMaterial.glass_1;
+            ImpactMaterial secondaryMaterial = ImpactMaterial.stone_4;
             ImpactMaterialData.Load(primaryMaterial);
             ImpactMaterialData.Load(secondaryMaterial);
             // Set the objects.

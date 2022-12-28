@@ -28,7 +28,7 @@
         /// <summary>
         /// The impact material.
         /// </summary>
-        public readonly ImpactMaterialSized impactMaterial;
+        public readonly ImpactMaterial impactMaterial;
         /// <summary>
         /// The scrape material.
         /// </summary>
@@ -76,7 +76,7 @@
         /// <param name="resonance">The resonance value (0 to 1).</param>
         /// <param name="mass">The mass of the object.</param>
         /// <param name="scrapeMaterial">The scrape material. Can be null.</param>
-        public AudioObjectData(uint id, ImpactMaterialSized impactMaterial, float amp, float resonance, float mass, ScrapeMaterial? scrapeMaterial = null)
+        public AudioObjectData(uint id, ImpactMaterial impactMaterial, float amp, float resonance, float mass, ScrapeMaterial? scrapeMaterial = null)
         {
             this.id = id;
             this.impactMaterial = impactMaterial;

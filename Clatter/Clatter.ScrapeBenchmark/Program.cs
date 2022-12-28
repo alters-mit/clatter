@@ -11,8 +11,8 @@ namespace Clatter.ScrapeBenchmark
             // Load the materials.
             ScrapeMaterial scrapeMaterial = ScrapeMaterial.ceramic;
             ScrapeMaterialData.Load(scrapeMaterial);
-            ImpactMaterialSized primaryImpactMaterial = ImpactMaterialSized.metal_1;
-            ImpactMaterialSized secondaryImpactMaterial = ImpactMaterialSized.stone_4;
+            ImpactMaterial primaryImpactMaterial = ImpactMaterial.metal_1;
+            ImpactMaterial secondaryImpactMaterial = ImpactMaterial.stone_4;
             ImpactMaterialData.Load(primaryImpactMaterial);
             ImpactMaterialData.Load(secondaryImpactMaterial);
             // Set the objects.

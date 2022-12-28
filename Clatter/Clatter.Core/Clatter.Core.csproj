@@ -50,14 +50,13 @@
         <Compile Include="EventState.cs" />
         <Compile Include="Globals.cs" />
         <Compile Include="Impact.cs" />
-        <Compile Include="ImpactMaterial.cs" />
+        <Compile Include="ImpactMaterialUnsized.cs" />
         <Compile Include="ImpactMaterialData.cs" />
-        <Compile Include="ImpactMaterialSized.cs" />
+        <Compile Include="ImpactMaterial.cs" />
         <Compile Include="LinSpace.cs" />
         <Compile Include="MedianFilter.cs" />
         <Compile Include="Modes.cs" />
         <Compile Include="NormalDistribution.cs" />
-        <Compile Include="OnCollisionType.cs" />
         <Compile Include="Loader.cs" />
         <Compile Include="PhysicsValues.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

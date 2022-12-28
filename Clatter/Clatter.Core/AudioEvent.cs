@@ -4,9 +4,7 @@
 namespace Clatter.Core
 {
     /// <summary>
-    /// AudioEvent is an abstract base class for generating audio from physics events. There are two subclasses: `Impact` and `Scrape`.
-    ///
-    /// AudioEvents are actually a *series* of events rather than isolated events; previous interactions between the two objects will affect the generated audio.
+    /// AudioEvent is an abstract base class for generating audio from physics events.
     /// </summary>
     public abstract class AudioEvent
     {
@@ -104,15 +102,15 @@ namespace Clatter.Core
                     modesB.decayTimes[i] += log10RelativeAmp;
                 }
                 // Set the amp.
-                this.initialAmp = primary.amp * simulationAmp;
-                amp = this.initialAmp;
+                initialAmp = primary.amp * simulationAmp;
+                amp = initialAmp;
                 // Set the initial speed.
                 initialSpeed = speed;
             }
             else
             {
                 // Set the amp.
-                amp = this.initialAmp * speed / initialSpeed;
+                amp = initialAmp * speed / initialSpeed;
                 // Adjust modes so that two successive impacts are not identical.
                 modesA.AdjustPowers(rng);
                 modesB.AdjustPowers(rng);

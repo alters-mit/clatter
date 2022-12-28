@@ -31,16 +31,16 @@ namespace Clatter.Core
         /// <summary>
         /// A dictionary of ImpactMaterial values mapped to ScrapeMaterial values. Not all impact materials map to scrape materials and vice versa.
         /// </summary>
-        public static readonly Dictionary<ImpactMaterial, ScrapeMaterial> ImpactMaterialsToScrapeMaterials = new Dictionary<ImpactMaterial, ScrapeMaterial>()
+        public static readonly Dictionary<ImpactMaterialUnsized, ScrapeMaterial> ImpactMaterialsToScrapeMaterials = new Dictionary<ImpactMaterialUnsized, ScrapeMaterial>()
         {
-            { ImpactMaterial.metal, ScrapeMaterial.sanded_acrylic },
-            { ImpactMaterial.cardboard, ScrapeMaterial.plywood },
-            { ImpactMaterial.ceramic, ScrapeMaterial.vinyl },
-            { ImpactMaterial.glass, ScrapeMaterial.acrylic },
-            { ImpactMaterial.stone, ScrapeMaterial.vinyl },
-            { ImpactMaterial.wood_hard, ScrapeMaterial.plywood },
-            { ImpactMaterial.plastic_hard, ScrapeMaterial.pvc },
-            { ImpactMaterial.wood_medium, ScrapeMaterial.plywood }
+            { ImpactMaterialUnsized.metal, ScrapeMaterial.sanded_acrylic },
+            { ImpactMaterialUnsized.cardboard, ScrapeMaterial.plywood },
+            { ImpactMaterialUnsized.ceramic, ScrapeMaterial.vinyl },
+            { ImpactMaterialUnsized.glass, ScrapeMaterial.acrylic },
+            { ImpactMaterialUnsized.stone, ScrapeMaterial.vinyl },
+            { ImpactMaterialUnsized.wood_hard, ScrapeMaterial.plywood },
+            { ImpactMaterialUnsized.plastic_hard, ScrapeMaterial.pvc },
+            { ImpactMaterialUnsized.wood_medium, ScrapeMaterial.plywood }
         };
         /// <summary>
         /// Scrape data per material type.

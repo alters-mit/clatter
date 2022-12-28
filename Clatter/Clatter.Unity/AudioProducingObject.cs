@@ -11,6 +11,22 @@ namespace Clatter.Unity
     public class AudioProducingObject : MonoBehaviour
     {
         /// <summary>
+        /// On a stay event, if the previous area is None and the current area is greater than this, the collision is actually an impact. 
+        /// </summary>
+        public static double impactAreaNewCollision = 1e-5;
+        /// <summary>
+        /// On a stay event, if the area of the collision increases by at least this factor, the collision is actually an impact.
+        /// </summary>
+        public static double impactAreaRatio = 5;
+        /// <summary>
+        /// On a stay event, if the angular velocity is this or greater, the event is a roll, not a scrape.
+        /// </summary>
+        public static double rollAngularVelocity = 0.5;
+        /// <summary>
+        /// If true, filter out duplicate collision events (e.g. only register collision ID pair `(0, 1)`, not `(1, 0)`).
+        /// </summary>
+        public static bool filterDuplicates = true;
+        /// <summary>
         /// This object's data.
         /// </summary>
         public AudioObjectData data;
@@ -30,7 +46,7 @@ namespace Clatter.Unity
         /// <summary>
         /// The impact material.
         /// </summary>
-        public ImpactMaterial impactMaterial;
+        public ImpactMaterialUnsized impactMaterial;
         /// <summary>
         /// If true, this object has a scrape material.
         /// </summary>
@@ -113,7 +129,7 @@ namespace Clatter.Unity
         /// <summary>
         /// The floor audio data.
         /// </summary>
-        public static AudioObjectData floor = new AudioObjectData(0, ImpactMaterialSized.wood_medium_4, 0.5f, 0.1f, 100, ScrapeMaterial.plywood);
+        public static AudioObjectData floor = new AudioObjectData(0, ImpactMaterial.wood_medium_4, 0.5f, 0.1f, 100, ScrapeMaterial.plywood);
 
 
         /// <summary>
@@ -224,7 +240,7 @@ namespace Clatter.Unity
                 }
             }
             // Convert the material + size to an impact material.
-            ImpactMaterialSized im = ImpactMaterialData.GetImpactMaterialSized(impactMaterial, size);
+            ImpactMaterial im = ImpactMaterialData.GetImpactMaterialSized(impactMaterial, size);
             // Set the data.
             if (hasScrapeMaterial)
             {
@@ -262,13 +278,18 @@ namespace Clatter.Unity
                 otherData = floor;
             }
             CollisionEvent collisionEvent;
+            // Compare the IDs for filter out duplicate events.
+            if (filterDuplicates && data.id > otherData.id)
+            {
+                collisionEvent = new CollisionEvent(data, otherData, AudioEventType.none, 0, 0, Vector3d.Zero);
+                ClatterManager.instance.generator.AddCollision(collisionEvent);
+                return;
+            }
             // Get the number of contacts.
             int numContacts = collision.contactCount;
             if (numContacts == 0)
             {
-                // Get the event.
-                collisionEvent = new CollisionEvent(data, otherData, angularSpeed, 0, 0, Vector3d.Zero, OnCollisionType.exit);
-                // Add the collision.
+                collisionEvent = new CollisionEvent(data, otherData, AudioEventType.none, 0, 0, Vector3d.Zero);
                 ClatterManager.instance.generator.AddCollision(collisionEvent);
                 return;
             }
@@ -330,8 +351,71 @@ namespace Clatter.Unity
             double radius = Vector3d.Distance(centroid, maxPoint);
             // Get the area.
             double area = Math.PI * radius * radius;
+            AudioObjectData primary;
+            AudioObjectData secondary;
+            // Set the primary and secondary IDs depending on:
+            // 1. Whether this is a secondary object.
+            // 2. Which object is has a greater speed.
+            if (data.speed > otherData.speed)
+            {
+                primary = data;
+                secondary = otherData;
+            }
+            else
+            {
+                primary = otherData;
+                secondary = data;
+            }
+            AudioEventType audioEventType;
+            // Exits are always none.
+            if (type == OnCollisionType.exit)
+            {
+                audioEventType = AudioEventType.none;
+            }
+            // Enters are always impacts.
+            else if (type == OnCollisionType.enter)
+            {
+                audioEventType = AudioEventType.impact;
+            }
+            // Stays can be anything.
+            else
+            {
+                // There is no previous area.
+                if (!primary.hasPreviousArea)
+                {
+                    // The area is big enough to be an impact.
+                    if (area > impactAreaNewCollision)
+                    {
+                        audioEventType = AudioEventType.impact;
+                    }
+                    // This is a non-event.
+                    else
+                    {
+                        audioEventType = AudioEventType.none;
+                    }
+                }
+                // There is previous area, and the ratio between the new area and the previous area is small.
+                else if (primary.previousArea > 0 && area / primary.previousArea < impactAreaRatio)
+                {
+                    // If there is a high angular velocity, this is a roll.
+                    if (angularSpeed > rollAngularVelocity)
+                    {
+                        audioEventType = AudioEventType.roll;
+                    }
+                    // If there is little angular velocity, this is a scrape.
+                    else
+                    {
+                        audioEventType = AudioEventType.scrape;
+                    }
+                }
+                // This is a non-event.
+                else
+                {
+                    audioEventType = AudioEventType.none;
+                }
+            }
             // Get the event.
-            collisionEvent = new CollisionEvent(data, otherData, angularSpeed, normalSpeed, area, centroid, type);
+            collisionEvent = new CollisionEvent(primary, secondary, audioEventType, normalSpeed, area, centroid);
             // Add the collision.
             ClatterManager.instance.generator.AddCollision(collisionEvent);
         }

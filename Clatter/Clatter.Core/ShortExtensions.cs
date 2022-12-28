@@ -10,11 +10,10 @@
         /// </summary>
         /// <param name="value">(this)</param>
         /// <param name="bytes">The byte array.</param>
-        public static unsafe byte[] GetBytes(this short value, byte[] bytes)
+        public static unsafe void GetBytes(this short value, byte[] bytes)
         {
             fixed (byte* numPtr = bytes)
                 *(short*) numPtr = value;
-            return bytes;
         }
     }
 }

@@ -31,14 +31,14 @@ namespace Clatter.Core
         /// <summary>
         /// Impact data per material type.
         /// </summary>
-        public static Dictionary<ImpactMaterialSized, ImpactMaterialData> impactMaterials = new Dictionary<ImpactMaterialSized, ImpactMaterialData>();
+        public static Dictionary<ImpactMaterial, ImpactMaterialData> impactMaterials = new Dictionary<ImpactMaterial, ImpactMaterialData>();
 
 
         /// <summary>
         /// Load impact material data from a file relative to this assembly.
         /// </summary>
         /// <param name="impactMaterial">The impact material.</param>
-        public static void Load(ImpactMaterialSized impactMaterial)
+        public static void Load(ImpactMaterial impactMaterial)
         {
             // We already loaded the material.
             if (impactMaterials.ContainsKey(impactMaterial))
@@ -68,37 +68,37 @@ namespace Clatter.Core
         /// <summary>
         /// Parse a size and an impact material to get an ImpactMaterialSized value.
         /// </summary>
-        /// <param name="impactMaterial">The impact material.</param>
+        /// <param name="impactMaterialUnsized">The impact material.</param>
         /// <param name="size">The size.</param>
-        public static ImpactMaterialSized GetImpactMaterialSized(ImpactMaterial impactMaterial, int size)
+        public static ImpactMaterial GetImpactMaterialSized(ImpactMaterialUnsized impactMaterialUnsized, int size)
         {
-            string m = impactMaterial + "_" + size;
-            ImpactMaterialSized impactMaterialSized;
-            if (!Enum.TryParse(m, out impactMaterialSized))
+            string m = impactMaterialUnsized + "_" + size;
+            ImpactMaterial impactMaterial;
+            if (!Enum.TryParse(m, out impactMaterial))
             {
                 throw new Exception("Invalid impact material: " + m);
             }
-            return impactMaterialSized;
+            return impactMaterial;
         }
 
 
         /// <summary>
         /// Parse a sized impact material to get an un-sized impact material.
         /// </summary>
-        /// <param name="impactMaterialSized">The sized impact material.</param>
-        public static ImpactMaterial GetImpactMaterial(ImpactMaterialSized impactMaterialSized)
+        /// <param name="impactMaterial">The sized impact material.</param>
+        public static ImpactMaterialUnsized GetImpactMaterial(ImpactMaterial impactMaterial)
         {
-            Match match = SizedToUnSized.Match(impactMaterialSized.ToString());
+            Match match = SizedToUnSized.Match(impactMaterial.ToString());
             if (match == null)
             {
-                throw new Exception("Invalid ImpactMaterialSized: " + impactMaterialSized);
+                throw new Exception("Invalid ImpactMaterialSized: " + impactMaterial);
             }
-            ImpactMaterial impactMaterial;
-            if (!Enum.TryParse(match.Groups[1].Value, out impactMaterial))
+            ImpactMaterialUnsized impactMaterialUnsized;
+            if (!Enum.TryParse(match.Groups[1].Value, out impactMaterialUnsized))
             {
-                throw new Exception("Invalid ImpactMaterialSized: " + impactMaterialSized);
+                throw new Exception("Invalid ImpactMaterialSized: " + impactMaterial);
             }
-            return impactMaterial;
+            return impactMaterialUnsized;
         }
     }
 }

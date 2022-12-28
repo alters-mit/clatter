@@ -45,7 +45,7 @@ namespace Clatter.Core
         /// <param name="mass">The mass.</param>
         public static void SetPrimaryObject(byte impactMaterial, float amp, float resonance, float mass)
         {
-            primary = new AudioObjectData(0, (ImpactMaterialSized)impactMaterial, amp, resonance, mass);
+            primary = new AudioObjectData(0, (ImpactMaterial)impactMaterial, amp, resonance, mass);
         }
         
         
@@ -69,7 +69,7 @@ namespace Clatter.Core
         /// <param name="scrapeMaterial">The scrape material. Can be null.</param>
         public static void SetSecondaryObject(byte impactMaterial, float amp, float resonance, float mass, byte? scrapeMaterial)
         {
-            secondary = new AudioObjectData(1, (ImpactMaterialSized)impactMaterial, amp, resonance, mass,
+            secondary = new AudioObjectData(1, (ImpactMaterial)impactMaterial, amp, resonance, mass,
                 (ScrapeMaterial?)scrapeMaterial);
         }
         

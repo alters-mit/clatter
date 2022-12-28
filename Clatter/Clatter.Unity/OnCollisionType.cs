@@ -1,4 +1,4 @@
-﻿namespace Clatter.Core
+﻿namespace Clatter.Unity
 {
     /// <summary>
     /// Types of OnCollision callbacks, e.g. OnCollisionEnter.
