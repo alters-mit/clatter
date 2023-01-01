@@ -57,14 +57,14 @@ namespace Clatter.Core
             bufferFull |= offset == 0;
             if (bufferFull)
             {
-                return buffer.MedianInplace();
+                return buffer.MedianInPlace();
             }
             else
             {
                 int length = buffer.Length - offset;
                 // Copy to the offset buffer.
                 Buffer.BlockCopy(buffer, offset * 8, offsetBuffers[length], 0, offsetBuffers[length].Length * 8);
-                return offsetBuffers[length].MedianInplace();
+                return offsetBuffers[length].MedianInPlace();
             }
         }
     }

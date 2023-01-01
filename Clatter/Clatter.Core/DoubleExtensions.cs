@@ -118,29 +118,6 @@ namespace Clatter.Core
             return bs;
         }
 
-
-        /// <summary>
-        /// Clamp a double.
-        /// </summary>
-        /// <param name="v">(this)</param>
-        /// <param name="min">The minimum value.</param>
-        /// <param name="max">The maximum value.</param>
-        public static double Clamp(this double v, double min, double max)
-        {
-            if (v < min)
-            {
-                return min;
-            }
-            else if (v > max)
-            {
-                return max;
-            }
-            else
-            {
-                return v;
-            }
-        }
-        
         
         /// <summary>
         /// Estimates the median value from the unsorted data array.
@@ -148,7 +125,7 @@ namespace Clatter.Core
         /// Source: https://github.com/mathnet/mathnet-numerics/blob/master/src/Numerics/Statistics/ArrayStatistics.cs#L413
         /// </summary>
         /// <param name="data">Sample array, no sorting is assumed. Will be reordered.</param>
-        public static double MedianInplace(this double[] data)
+        public static double MedianInPlace(this double[] data)
         {
             int k = data.Length / 2;
             return data.Length % 2 != 0
