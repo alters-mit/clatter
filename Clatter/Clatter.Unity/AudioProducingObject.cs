@@ -213,10 +213,10 @@ namespace Clatter.Unity
             // Get the size from the volume.
             if (autoSetSize)
             {
-                size = ImpactMaterialData.GetSize(new Vector3d(b.size.x, b.size.y, b.size.z));
+                size = AudioObjectData.GetSize(new Vector3d(b.size.x, b.size.y, b.size.z));
             }
             // Convert the material + size to an impact material.
-            ImpactMaterial im = ImpactMaterialData.GetImpactMaterial(impactMaterial, size);
+            ImpactMaterial im = AudioObjectData.GetImpactMaterial(impactMaterial, size);
             // Set the data.
             if (hasScrapeMaterial)
             {

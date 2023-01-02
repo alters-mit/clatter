@@ -1,23 +1,32 @@
-﻿namespace Clatter.Core
+﻿using System;
+using System.Text.RegularExpressions;
+
+
+namespace Clatter.Core
 {
     /// <summary>
     /// Audio data for a Clatter object.
     ///
     /// Audio generation in Clatter is always the result of a collision event between two AudioObjectData objects. Each object in your scene or simulation must have corresponding AudioObjectData.
     ///
-    /// All of an audio object's fields will affect the audio it generates when it collides with a larger object. Some fields such as mass are read-only while others such as speed are assumed to change as the object moves.
-    ///
     /// This is a minimal example of how to instantiate an AudioObjectData:
     ///
-    /// ```csharp
-    /// AudioObjectData a = new AudioObjectData(0, ImpactMaterialSized.glass_1, 0.2f, 0.2f, 1);
-    /// ```
+    /// {code_example:AudioObjectDataConstructor}
     ///
     /// You can optionally set a Clatter object as a "scrape surface" by setting the scrapeMaterial constructor parameter:
     ///
-    /// ```csharp
-    /// AudioObjectData a = new AudioObjectData(0, ImpactMaterialSized.ceramic_4, 0.2f, 0.2f, 1, ScrapeMaterial.ceramic);
-    /// ```
+    /// {code_example:AudioObjectDataConstructorScrapeMaterial}
+    ///
+    /// In many cases, it is possible to derive the AudioObjectData constructor parameters from other physical values:
+    ///
+    /// **Example A.** Derive mass from volume. In this example, we need to convert the `ImpactMaterial` to an `ImpactMaterialUnsized` in order to look up the density:
+    ///
+    /// {code_example:MassFromVolume}
+    ///
+    /// **Example B.** Derive the "size bucket" from an `ImpactMaterialUnsized` value and volume:
+    ///
+    /// {code_example:SizeBucket}
+    /// 
     /// </summary>
     public class AudioObjectData
     {
@@ -65,6 +74,10 @@
         /// If true, this object has contacted another object previously and generated contact area.
         /// </summary>
         public bool hasPreviousArea = false;
+        /// <summary>
+        /// Regex string to parse sized impact materials as unsized impact materials.
+        /// </summary>
+        private static readonly Regex SizedToUnSized = new Regex("(.*?)_([0-9])");
         
         
         /// <summary>
@@ -95,6 +108,89 @@
             this.amp = amp.Clamp(0, 1);
             this.resonance = resonance.Clamp(0, 1);
             this.mass = mass;
+        }
+        
+        
+                /// <summary>
+        /// Parse a size and an ImpactMaterialUnsized value to get an ImpactMaterial value.
+        /// </summary>
+        /// <param name="impactMaterialUnsized">The unsized impact material.</param>
+        /// <param name="size">The size.</param>
+        public static ImpactMaterial GetImpactMaterial(ImpactMaterialUnsized impactMaterialUnsized, int size)
+        {
+            string m = impactMaterialUnsized + "_" + size;
+            ImpactMaterial impactMaterial;
+            if (!Enum.TryParse(m, out impactMaterial))
+            {
+                throw new Exception("Invalid impact material: " + m);
+            }
+            return impactMaterial;
+        }
+        
+        
+        /// <summary>
+        /// Returns the object's "size bucket" given the bounding box extents.
+        /// </summary>
+        /// <param name="extents">The object's bounding box extents.</param>
+        public static int GetSize(Vector3d extents)
+        {
+            double s = extents.X + extents.Y + extents.Z;
+            if (s <= 0.1)
+            {
+                return 0;
+            }
+            else if (s <= 0.2)
+            {
+                return 1;
+            }
+            else if (s <= 0.5)
+            {
+                return 2;
+            }
+            else if (s <= 1)
+            {
+                return 3;
+            }
+            else if (s <= 3)
+            {
+                return 4;
+            }
+            else
+            {
+                return 5;
+            }
+        }
+        
+
+        /// <summary>
+        /// Returns the object's "size bucket" given its volume..
+        /// </summary>
+        /// <param name="volume">The object's volume.</param>
+        public static int GetSize(double volume)
+        {
+            // Get the cubic root.
+            double s = Math.Pow(volume, 1.0 / 3);
+            return GetSize(new Vector3d(s, s, s));
+        }
+
+
+        /// <summary>
+        /// Parse a sized impact material to get an un-sized impact material.
+        /// </summary>
+        /// <param name="impactMaterial">The sized impact material.</param>
+        public static ImpactMaterialUnsized GetImpactMaterialUnsized(ImpactMaterial impactMaterial)
+        {
+            Match match = SizedToUnSized.Match(impactMaterial.ToString());
+            if (match == null)
+            {
+                throw new Exception("Invalid ImpactMaterialSized: " + impactMaterial);
+            }
+            ImpactMaterialUnsized impactMaterialUnsized;
+            if (!Enum.TryParse(match.Groups[1].Value, out impactMaterialUnsized))
+            {
+                throw new Exception("Invalid ImpactMaterialSized: " + impactMaterial);
+            }
+            return impactMaterialUnsized;
         }
     }
 }
