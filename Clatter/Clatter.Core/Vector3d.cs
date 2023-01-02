@@ -199,7 +199,7 @@ namespace Clatter.Core
         }
 
 
-        public static Vector3d operator *(float d, Vector3d a)
+        public static Vector3d operator *(double d, Vector3d a)
         {
             return new Vector3d(a.X * d, a.Y * d, a.Z * d);
         }

@@ -74,7 +74,7 @@ namespace Clatter.Core
         }
 
 
-        public override bool GetAudio(float speed, Random rng)
+        public override bool GetAudio(double speed, Random rng)
         {
             // Get the speed of the primary object and clamp it.
             double primarySpeed = Math.Min(primary.speed, scrapeMaxSpeed);

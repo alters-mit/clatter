@@ -66,11 +66,11 @@ namespace Clatter.Core
         
         
         /// <summary>
-        /// Parse a size and an impact material to get an ImpactMaterialSized value.
+        /// Parse a size and an ImpactMaterialUnsized value to get an ImpactMaterial value.
         /// </summary>
-        /// <param name="impactMaterialUnsized">The impact material.</param>
+        /// <param name="impactMaterialUnsized">The unsized impact material.</param>
         /// <param name="size">The size.</param>
-        public static ImpactMaterial GetImpactMaterialSized(ImpactMaterialUnsized impactMaterialUnsized, int size)
+        public static ImpactMaterial GetImpactMaterial(ImpactMaterialUnsized impactMaterialUnsized, int size)
         {
             string m = impactMaterialUnsized + "_" + size;
             ImpactMaterial impactMaterial;
@@ -80,13 +80,59 @@ namespace Clatter.Core
             }
             return impactMaterial;
         }
+        
+        
+        /// <summary>
+        /// Returns the object's "size bucket" given the bounding box extents.
+        /// </summary>
+        /// <param name="extents">The object's bounding box extents.</param>
+        public static int GetSize(Vector3d extents)
+        {
+            double s = extents.X + extents.Y + extents.Z;
+            if (s <= 0.1)
+            {
+                return 0;
+            }
+            else if (s <= 0.2)
+            {
+                return 1;
+            }
+            else if (s <= 0.5)
+            {
+                return 2;
+            }
+            else if (s <= 1)
+            {
+                return 3;
+            }
+            else if (s <= 3)
+            {
+                return 4;
+            }
+            else
+            {
+                return 5;
+            }
+        }
+        
+
+        /// <summary>
+        /// Returns the object's "size bucket" given its volume..
+        /// </summary>
+        /// <param name="volume">The object's volume.</param>
+        public int GetSize(double volume)
+        {
+            // Get the cubic root.
+            double s = Math.Pow(volume, 1.0 / 3);
+            return GetSize(new Vector3d(s, s, s));
+        }
 
 
         /// <summary>
         /// Parse a sized impact material to get an un-sized impact material.
         /// </summary>
         /// <param name="impactMaterial">The sized impact material.</param>
-        public static ImpactMaterialUnsized GetImpactMaterial(ImpactMaterial impactMaterial)
+        public static ImpactMaterialUnsized GetImpactMaterialUnsized(ImpactMaterial impactMaterial)
         {
             Match match = SizedToUnSized.Match(impactMaterial.ToString());
             if (match == null)

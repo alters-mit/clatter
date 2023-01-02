@@ -19,8 +19,7 @@ namespace Clatter.Core
 
 
         /// <summary>
-        /// Set the audio samples.
-        /// Cast from an array of doubles to an array of floats and fill all channels.
+        /// Copy audio data into this object.
         /// </summary>
         /// <param name="samples">The raw samples as a single-channel array of doubles.</param>
         /// <param name="start">The start index in the raw doubles samples array.</param>

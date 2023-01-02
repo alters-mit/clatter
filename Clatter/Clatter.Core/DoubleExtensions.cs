@@ -9,6 +9,29 @@ namespace Clatter.Core
     public static class DoubleExtensions
     {
         /// <summary>
+        /// Clamp this value to be between a and b.
+        /// </summary>
+        /// <param name="d">(this)</param>
+        /// <param name="a">The lower bound.</param>
+        /// <param name="b">The upper bound (inclusive).</param>
+        public static double Clamp(this double d, double a, double b)
+        {
+            if (d < a)
+            {
+                return a;
+            }
+            else if (d > b)
+            {
+                return b;
+            }
+            else
+            {
+                return d;             
+            }
+        }
+        
+        
+        /// <summary>
         /// Convolve an array with the given kernel.
         /// Source: https://stackoverflow.com/a/7239016
         /// This code is a more optimized version of the source.

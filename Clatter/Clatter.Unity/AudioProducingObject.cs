@@ -60,12 +60,12 @@ namespace Clatter.Unity
         /// The audio amplitude.
         /// </summary>
         [Range(0, 1)]
-        public float amp = 0.1f;
+        public double amp = 0.1f;
         /// <summary>
         /// The resonance value.
         /// </summary>
         [Range(0, 1)]
-        public float resonance = 0.1f;
+        public double resonance = 0.1f;
         /// <summary>
         /// If true, automatically set the friction values based on the impact material (see: PhysicsValues.cs).
         /// </summary>
@@ -157,22 +157,22 @@ namespace Clatter.Unity
             hasRigidbody = r != null;
             hasArticulationBody = articulationBody != null;
             // Get the mass.
-            float mass;
+            double mass;
             // Auto-set the mass.
             if (autoSetMass)
             {
                 // Get the approximate volume.
-                float volume = b.size.x * b.size.y * b.size.z;
+                double volume = b.size.x * b.size.y * b.size.z;
                 // Multiply the volume by the density and then by a hollowness factor.
                 mass = volume * PhysicsValues.Density[impactMaterial] * (1 - hollowness);
                 // Set the mass.
                 if (r != null)
                 {
-                    r.mass = mass;
+                    r.mass = (float)mass;
                 }
                 else if (articulationBody != null)
                 {
-                    articulationBody.mass = mass;
+                    articulationBody.mass = (float)mass;
                 }
             }
             // Use the mass value in the Rigidbody or ArticulationBody.
@@ -213,34 +213,10 @@ namespace Clatter.Unity
             // Get the size from the volume.
             if (autoSetSize)
             {
-                float s = b.size.x + b.size.y + b.size.z;
-                if (s <= 0.1f)
-                {
-                    size = 0;
-                }
-                else if (s <= 0.2f)
-                {
-                    size = 1;
-                }
-                else if (s <= 0.5f)
-                {
-                    size = 2;
-                }
-                else if (s <= 1)
-                {
-                    size = 3;
-                }
-                else if (s <= 3)
-                {
-                    size = 4;
-                }
-                else
-                {
-                    size = 5;
-                }
+                size = ImpactMaterialData.GetSize(new Vector3d(b.size.x, b.size.y, b.size.z));
             }
             // Convert the material + size to an impact material.
-            ImpactMaterial im = ImpactMaterialData.GetImpactMaterialSized(impactMaterial, size);
+            ImpactMaterial im = ImpactMaterialData.GetImpactMaterial(impactMaterial, size);
             // Set the data.
             if (hasScrapeMaterial)
             {
@@ -263,7 +239,7 @@ namespace Clatter.Unity
             // Try to get the other object.
             AudioProducingObject other = collision.body.GetComponentInChildren<AudioProducingObject>();
             // Get the greater angular velocity.
-            float angularSpeed;
+            double angularSpeed;
             AudioObjectData otherData;
             if (other != null)
             {
@@ -312,15 +288,15 @@ namespace Clatter.Unity
             }
             // Get the normalized relative velocity of the collision.
             Vector3 normalizedVelocity = collision.relativeVelocity.normalized;
-            float speed = normalizedVelocity.magnitude;
+            double speed = normalizedVelocity.magnitude;
             // Get the normal speeds.
-            float normalSpeeds = 0;
+            double normalSpeeds = 0;
             for (int i = 0; i < numContacts; i++)
             {
                 normalSpeeds += speed * Mathf.Acos(Mathf.Clamp(Vector3.Dot(contactNormals[i], normalizedVelocity), -1, 1));
             }
             // Get the average normal speed.
-            float normalSpeed = normalSpeeds / numContacts;
+            double normalSpeed = normalSpeeds / numContacts;
             // Get the approximate area.
             // Get the centroid.
             Vector3d centroid = Vector3d.Zero;

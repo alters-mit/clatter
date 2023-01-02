@@ -30,7 +30,7 @@
         /// <summary>
         /// The speed of the collision.
         /// </summary>
-        public readonly float speed;
+        public readonly double speed;
         /// <summary>
         /// The area of the collision.
         /// </summary>
@@ -46,7 +46,7 @@
         /// <param name="speed">The speed of the collision.</param>
         /// <param name="area">The area of the collision.</param>
         /// <param name="centroid">The centroid of the collision.</param>
-        public CollisionEvent(AudioObjectData primary, AudioObjectData secondary, AudioEventType type, float speed, double area, Vector3d centroid)
+        public CollisionEvent(AudioObjectData primary, AudioObjectData secondary, AudioEventType type, double speed, double area, Vector3d centroid)
         {
             this.primary = primary;
             this.secondary = secondary;

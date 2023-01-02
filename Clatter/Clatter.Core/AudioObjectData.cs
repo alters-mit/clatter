@@ -40,23 +40,23 @@
         /// <summary>
         /// The audio amplitude (0 to 1).
         /// </summary>
-        public readonly float amp;
+        public readonly double amp;
         /// <summary>
         /// The resonance value (0 to 1).
         /// </summary>
-        public readonly float resonance;
+        public readonly double resonance;
         /// <summary>
         /// The mass of the object.
         /// </summary>
-        public readonly float mass;
+        public readonly double mass;
         /// <summary>
         /// The directional speed of the object.
         /// </summary>
-        public float speed;
+        public double speed;
         /// <summary>
         /// The angular speed of the object.
         /// </summary>
-        public float angularSpeed;
+        public double angularSpeed;
         /// <summary>
         /// The collision contacts area of a previous collision.
         /// </summary>
@@ -76,7 +76,7 @@
         /// <param name="resonance">The resonance value (0 to 1).</param>
         /// <param name="mass">The mass of the object.</param>
         /// <param name="scrapeMaterial">The scrape material. Can be null.</param>
-        public AudioObjectData(uint id, ImpactMaterial impactMaterial, float amp, float resonance, float mass, ScrapeMaterial? scrapeMaterial = null)
+        public AudioObjectData(uint id, ImpactMaterial impactMaterial, double amp, double resonance, double mass, ScrapeMaterial? scrapeMaterial = null)
         {
             this.id = id;
             this.impactMaterial = impactMaterial;
@@ -92,8 +92,8 @@
                 this.scrapeMaterial = default;
             }
             // Set the physics parameters.
-            this.amp = amp;
-            this.resonance = resonance;
+            this.amp = amp.Clamp(0, 1);
+            this.resonance = resonance.Clamp(0, 1);
             this.mass = mass;
         }
     }

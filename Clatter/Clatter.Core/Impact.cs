@@ -60,7 +60,7 @@ namespace Clatter.Core
         }
 
 
-        public override bool GetAudio(float speed, Random rng)
+        public override bool GetAudio(double speed, Random rng)
         {
             // Get the elapsed time.
             dt = watch.Elapsed.TotalSeconds;

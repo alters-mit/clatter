@@ -80,7 +80,7 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="speed">The collision speed.</param>
         /// <param name="rng">The random number generator.</param>
-        public abstract bool GetAudio(float speed, Random rng);
+        public abstract bool GetAudio(double speed, Random rng);
 
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace Clatter.Core
         /// <param name="speed">The collision speed.</param>
         /// <param name="rng">The random number generator.</param>
         /// <param name="impulseResponse">The impulse response.</param>
-        protected bool GetImpact(float speed, Random rng, out double[] impulseResponse)
+        protected bool GetImpact(double speed, Random rng, out double[] impulseResponse)
         {
             // ReSharper disable once LocalVariableHidesMember
             double amp;
