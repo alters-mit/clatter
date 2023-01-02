@@ -21,7 +21,7 @@ namespace Clatter.CommandLine
             string audioType = ArgumentParser.GetStringValue(args, "type");
             // Check if this is a scrape.
             bool scrape;
-            float scrapeDuration;
+            double scrapeDuration;
             if (audioType == "impact")
             {
                 scrape = false;
@@ -30,7 +30,7 @@ namespace Clatter.CommandLine
             else if (audioType == "scrape")
             {
                 scrape = true;
-                scrapeDuration = ArgumentParser.GetFloatValue(args, "duration");
+                scrapeDuration = ArgumentParser.GetDoubleValue(args, "duration");
             }
             else
             {
@@ -39,7 +39,7 @@ namespace Clatter.CommandLine
             // Set the secondary object.
             Creator.SetSecondaryObject(GetAudioObjectData(args, 1, "secondary", scrape));
             // Get the speed.
-            float speed = ArgumentParser.GetFloatValue(args, "speed");
+            double speed = ArgumentParser.GetDoubleValue(args, "speed");
             // Get the path to the output file.
             string path;
             // Write a file.
@@ -94,9 +94,9 @@ namespace Clatter.CommandLine
             {
                 throw new Exception("Invalid impact material: " + m);
             }
-            float amp = ArgumentParser.GetFloatValue(args, target + "_amp");
-            float resonance = ArgumentParser.GetFloatValue(args, target + "_resonance");
-            float mass = ArgumentParser.GetFloatValue(args, target + "_mass");
+            double amp = ArgumentParser.GetDoubleValue(args, target + "_amp");
+            double resonance = ArgumentParser.GetDoubleValue(args, target + "_resonance");
+            double mass = ArgumentParser.GetDoubleValue(args, target + "_mass");
             if (scrape)
             {
                 string s = ArgumentParser.GetStringValue(args, "scrape_material");

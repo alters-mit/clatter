@@ -7,7 +7,23 @@ using System.Linq;
 namespace Clatter.Core
 {
     /// <summary>
-    /// Register audio collision events and generate audio.
+    /// An AudioGenerator can generate audio within a dynamic physics simulation.
+    ///
+    /// AudioGenerator is not *required* for audio generation but is usually your best option, for two reasons:
+    ///
+    /// 1. AudioGenerator automatically converts `CollisionEvent` data into audio data.
+    /// 2. AudioGenerator is multi-threaded; concurrent collisions generate audio on separate threads.
+    ///
+    /// AudioGenerator is structured like a UnityEngine MonoBehaviour object but it isn't a subclass of MonoBehaviour and won't update like one; Update() needs to be called manually.
+    ///
+    /// This is a minimal example of how to process multiple concurrent collisions with an AudioGenerator and, using `WavWriter`, write .wav files. Note that we're making a few implausible assumptions:
+    ///
+    /// - All of the objects are randomly generated. In a real simulation, you'll probably want more control over the objects' audio values.
+    /// - All of the collisions have a centroid of (0, 0, 0). In a real simulation, the collisions should probably be spatialized.
+    /// - All of the collisions events are impacts. In a real simulation, we could add a `ScrapeMaterial` to a "floor" object to start generating scrape audio.
+    ///
+    /// {code_example:AudioObjectDataConstructorScrapeMaterial}
+    /// 
     /// </summary>
     public class AudioGenerator
     {

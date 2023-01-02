@@ -3,16 +3,16 @@
     /// <summary>
     /// A CollisionEvent derives audio data needed for audio events from a collision. The type and nature of the collision will determine whether the collision generates impact audio, scrape audio, or neither.
     ///
-    /// Collisions always have two `AudioObjectData` objects: A primary (usually faster-moving) object, and a secondary (slower-moving or stationary) object. For scrape events, the secondary object must have a `ScrapeMaterial`.
+    /// Typically, a CollisionEvent is used in the background to convert physics collision data into an audio event. If you want to generate audio outside of a physics-driven simulation context, you don't need to use CollisionEvents.
     /// </summary>
     public readonly struct CollisionEvent
     {
         /// <summary>
-        /// The primary object.
+        /// The primary object. This should always be the faster-moving object.
         /// </summary>
         public readonly AudioObjectData primary;
         /// <summary>
-        /// The secondary object.
+        /// The secondary object. This should always be the slower-moving (or non-moving) object.
         /// </summary>
         public readonly AudioObjectData secondary;
         /// <summary>

@@ -50,22 +50,22 @@
         
         
         /// <summary>
-        /// Returns the float value of a flag argument.
-        /// Example: If the argument is `--mass 0.1`, then `flag` should be `"mass"` and this should return `0.1f`.
+        /// Returns the double value of a flag argument.
+        /// Example: If the argument is `--mass 0.1`, then `flag` should be `"mass"` and this should return `0.1`.
         /// </summary>
         /// <param name="args">The command-line arguments.</param>
         /// <param name="flag">The flag preceding the value without the `"--"` prefix.</param>
-        public static float GetFloatValue(string[] args, string flag)
+        public static double GetDoubleValue(string[] args, string flag)
         {
             for (int i = 0; i < args.Length; i++)
             {
                 // This is the flag.
                 if (args[i].StartsWith("--") && args[i].Substring(2) == flag)
                 {
-                    float f;
-                    if (float.TryParse(args[i + 1], out f))
+                    double d;
+                    if (double.TryParse(args[i + 1], out d))
                     {
-                        return f;
+                        return d;
                     }
                     else
                     {

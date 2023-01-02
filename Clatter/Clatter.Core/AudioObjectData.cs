@@ -13,7 +13,7 @@ namespace Clatter.Core
     ///
     /// {code_example:AudioObjectDataConstructor}
     ///
-    /// You can optionally set a Clatter object as a "scrape surface" by setting the scrapeMaterial constructor parameter:
+    /// To generate scrape audio, the object acting as the "scrape surface" must have a `ScrapeMaterial`. For example, if you want to scrape a block along a table, the table needs a `ScrapeMaterial` (and the block doesn't). This is a minimal example of how to set an object's `ScrapeMaterial`:
     ///
     /// {code_example:AudioObjectDataConstructorScrapeMaterial}
     ///

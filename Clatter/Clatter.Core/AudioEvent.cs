@@ -4,7 +4,7 @@
 namespace Clatter.Core
 {
     /// <summary>
-    /// AudioEvent is an abstract base class for generating audio from physics events.
+    /// AudioEvent is an abstract base class for generating audio from physics events. See: `Impact` and `Scrape`.
     /// </summary>
     public abstract class AudioEvent
     {

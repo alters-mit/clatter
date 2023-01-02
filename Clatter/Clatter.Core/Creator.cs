@@ -43,7 +43,7 @@ namespace Clatter.Core
         /// <param name="amp">The amp.</param>
         /// <param name="resonance">The resonance.</param>
         /// <param name="mass">The mass.</param>
-        public static void SetPrimaryObject(byte impactMaterial, float amp, float resonance, float mass)
+        public static void SetPrimaryObject(byte impactMaterial, double amp, double resonance, float mass)
         {
             primary = new AudioObjectData(0, (ImpactMaterial)impactMaterial, amp, resonance, mass);
         }
@@ -67,7 +67,7 @@ namespace Clatter.Core
         /// <param name="resonance">The resonance.</param>
         /// <param name="mass">The mass.</param>
         /// <param name="scrapeMaterial">The scrape material. Can be null.</param>
-        public static void SetSecondaryObject(byte impactMaterial, float amp, float resonance, float mass, byte? scrapeMaterial)
+        public static void SetSecondaryObject(byte impactMaterial, double amp, double resonance, double mass, byte? scrapeMaterial)
         {
             secondary = new AudioObjectData(1, (ImpactMaterial)impactMaterial, amp, resonance, mass,
                 (ScrapeMaterial?)scrapeMaterial);
@@ -90,7 +90,7 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="speed">The speed of the impact.</param>
         /// <param name="newImpact">If true, this is a new impact. If false, this is part of an ongoing series of impacts. Ignored the first time this function is called.</param>
-        public static byte[] GetImpact(float speed, bool newImpact)
+        public static byte[] GetImpact(double speed, bool newImpact)
         {
             ImpactMaterialData.Load(primary.impactMaterial);
             ImpactMaterialData.Load(secondary.impactMaterial);
@@ -118,7 +118,7 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="speed">The speed of the scrape.</param>
         /// <param name="duration">The duration of the scrape in seconds. This will be rounded to the nearest tenth of a second.</param>
-        public static byte[] GetScrape(float speed, float duration)
+        public static byte[] GetScrape(double speed, double duration)
         {
             ImpactMaterialData.Load(primary.impactMaterial);
             ImpactMaterialData.Load(secondary.impactMaterial);
@@ -148,7 +148,7 @@ namespace Clatter.Core
         /// <param name="speed">The speed of the impact.</param>
         /// <param name="newImpact">If true, this is a new impact. If false, this is part of an ongoing series of impacts. Ignored the first time this function is called.</param>
         /// <param name="path">The path to the output file.</param>
-        public static void WriteImpact(float speed, bool newImpact, string path)
+        public static void WriteImpact(double speed, bool newImpact, string path)
         {
             WavWriter writer = new WavWriter(path);
             writer.Write(GetImpact(speed, newImpact));
@@ -163,7 +163,7 @@ namespace Clatter.Core
         /// <param name="speed">The speed of the scrape.</param>
         /// <param name="duration">The duration of the scrape in seconds. This will be rounded to the nearest tenth of a second.</param>
         /// <param name="path">The path to the output file.</param>
-        public static void WriteScrape(float speed, float duration, string path)
+        public static void WriteScrape(double speed, double duration, string path)
         {
             WavWriter writer = new WavWriter(path);
             writer.Write(GetScrape(speed, duration));
