@@ -9,7 +9,6 @@ Clatter is intended for usage with [TDW](https://github.com/threedworld-mit/tdw)
 - Unique and powerful audio synthesis capabilities. Unlike most physics driven audio generators, Clatter generates audio out of pre-computed data, rather than relying on modifying or mixing pre-existing audio files.
 - Built-in support for Unity.
 - An intuitive, highly flexible API.
-- High performance. Clatter uses multithreading to process audio, meaning that it can generate a *lot* of concurrent audio without slowing down.
 - Python API bindings.
 
  **There are three ways to use Clatter:**
@@ -28,20 +27,9 @@ Clatter is intended for usage with [TDW](https://github.com/threedworld-mit/tdw)
 
 # Documentation
 
-**Clatter.Core**
-
-- Manual
-- API
-- Python bindings
-
-**Clatter.Unity**
-
-- Manual
-- API
-
-**Clatter command-line executable**
-
-- Manual
+- [**Clatter.Core**](docs/clatter.core/overview.md)
+- [**Clatter.Unity**](docs/clatter.unity/overview.md)
+- **Clatter CLI**
 
 ***
 

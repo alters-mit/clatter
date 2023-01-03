@@ -1,7 +1,7 @@
 ﻿namespace Clatter.Core
 {
     /// <summary>
-    /// A CollisionEvent derives audio data needed for audio events from a collision. The type and nature of the collision will determine whether the collision generates impact audio, scrape audio, or neither.
+    /// A CollisionEvent stores collision data, which will later be converted into audio data. The type and nature of the collision will determine whether the collision generates impact audio, scrape audio, or neither.
     ///
     /// Typically, a CollisionEvent is used in the background to convert physics collision data into an audio event. If you want to generate audio outside of a physics-driven simulation context, you don't need to use CollisionEvents.
     /// </summary>
