@@ -29,15 +29,8 @@ Clatter is intended for usage with [TDW](https://github.com/threedworld-mit/tdw)
 
 - [**Clatter.Core**](docs/clatter.core/overview.md)
 - [**Clatter.Unity**](docs/clatter.unity/overview.md)
-- **Clatter CLI**
-
-## Command-line Executable
-
-Example call:
-
-```powershell
-./clatter.exe --primary_material glass --primary_size 1 --primary_amp 0.2 --primary_resonance 0.2 --primary_mass 1 --secondary_material stone --secondary_size 4 --secondary_amp 0.5 --secondary_resonance 0.1 --secondary_mass 100 --type impact --path out.wav
-```
+- [**Clatter CLI**](docs/cli/overview.md)
+- [**Benchmark**](docs/benchmark.md)
 
 ***
 
@@ -50,6 +43,7 @@ Pre-alpha to-dos:
 - [ ] Add Python bindings for `Clatter.Core.dll`.
 - [ ] Add command-line tools for OS X and Linux.
 - [ ] Add Clatter to TDW.
+- [ ] Add links to Clatter/TDW documentation
 
 Clatter is currently in alpha. It is likely still buggy and unstable. The API will likely change often until the first stable release.
 

@@ -145,11 +145,11 @@ namespace Clatter.Core
             if (aLength < bLength)
             {
                 length = bLength;
-                if (added.Length < bLength)
+                if (added.Length < length)
                 {
-                    Array.Resize(ref added, bLength * 2);
+                    Array.Resize(ref added, length * 2);
                 }
-                Buffer.BlockCopy(b, 0, added, 0, bLength * 8);
+                Buffer.BlockCopy(b, 0, added, 0, length * 8);
                 for (int i = 0; i < aLength; i++)
                 {
                     added[i] += a[i];
@@ -158,11 +158,11 @@ namespace Clatter.Core
             else
             {
                 length = aLength;
-                if (added.Length < aLength)
+                if (added.Length < length)
                 {
-                    Array.Resize(ref added, aLength * 2);
+                    Array.Resize(ref added, length * 2);
                 }
-                Buffer.BlockCopy(a, 0, added, 0, aLength * 8);
+                Buffer.BlockCopy(a, 0, added, 0, length * 8);
                 for (int i = 0; i < bLength; i++)
                 {
                     added[i] += b[i];

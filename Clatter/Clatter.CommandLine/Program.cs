@@ -4,10 +4,14 @@
 namespace Clatter.CommandLine
 {
     /// <summary>
-    /// A command-line program for generating audio.
+    /// A command-line program for generating audio using Clatter.
     /// </summary>
     public class Program
     {
+        private const string HELP_HEADER = "A command-line program for generating audio using Clatter.\n\n" +
+                                           "EXAMPLE CALL:\n\n" +
+                                           "./clatter.exe --primary_material glass_1 --primary_amp 0.2 --primary_resonance 0.2 --primary_mass 1 --secondary_material stone_4 --secondary_amp 0.5 --secondary_resonance 0.1 --secondary_mass 100 --type impact --path out.wav\n\n" +
+                                           "ARGUMENTS:\n\n";
         /// <summary>
         /// Help text per argument.
         /// </summary>
@@ -23,13 +27,14 @@ namespace Clatter.CommandLine
             {"--secondary_resonance [FLOAT]", "The secondary object's resonance value (0-1)."},
             {"--secondary_mass [FLOAT]", "The secondary object's mass."},
             {"--speed [FLOAT]", "The speed of the collision."},
-            {"--scrape_material [STRING]", "If --type is scrape, this sets the secondary object's scrape map. See ScrapeMAterial API documentation for a list of options."},
+            {"--scrape_material [STRING]", "If --type is scrape, this sets the secondary object's scrape map. See ScrapeMaterial API documentation for a list of options."},
             {"--duration [FLOAT]", "If --type is scrape, this sets the duration of the scrape audio."},
             {"--simulation_amp [FLOAT]", "The overall amp (0-1)."},
             {"--path [STRING]", "OPTIONAL. If included, this is a file path to a .wav file. If not included, audio will be sent to stdout."},
             {"--allow_distortion", "OPTIONAL. If included, don't clamp amp values to 0.99."},
             {"--unclamp_contact_time", "OPTIONAL. If included, don't clamp impact contact times to plausible values."},
             {"--scrape_max_speed [FLOAT]", "OPTIONAL. Clamp scrape speeds to this maximum value."},
+            {"--help", "OPTIONAL. Print this message and exit."}
         };
         
         
@@ -38,9 +43,9 @@ namespace Clatter.CommandLine
             // Print the help text and end.
             bool help = false;
             ArgumentParser.TryGetBooleanValue(args, "help", ref help);
-            if (help)
+            if (help || args.Length == 0)
             {
-                string helpText = "";
+                string helpText = HELP_HEADER;
                 foreach (string key in ArgsHelp.Keys)
                 {
                     helpText += key + ": " + ArgsHelp[key] + "\n\n";
@@ -127,15 +132,15 @@ namespace Clatter.CommandLine
         /// <param name="scrape">If true, look for a scrape material.</param>
         private static AudioObjectData GetAudioObjectData(string[] args, uint id, string target, bool scrape)
         {
-            string m = ArgumentParser.GetStringValue(args, target + "_material") + "_" + ArgumentParser.GetStringValue(args, target + "_size");
+            string m = ArgumentParser.GetStringValue(args, target + "_material");
             ImpactMaterial impactMaterial;
             if (!Enum.TryParse(m, out impactMaterial))
             {
                 throw new Exception("Invalid impact material: " + m);
             }
             ImpactMaterialData.Load(impactMaterial);
-            double amp = ArgumentParser.GetDoubleValue(args, target + "_amp").Clamp(0, 1);
-            double resonance = ArgumentParser.GetDoubleValue(args, target + "_resonance").Clamp(0, 1);
+            double amp = ArgumentParser.GetDoubleValue(args, target + "_amp");
+            double resonance = ArgumentParser.GetDoubleValue(args, target + "_resonance");
             double mass = ArgumentParser.GetDoubleValue(args, target + "_mass");
             if (scrape)
             {
