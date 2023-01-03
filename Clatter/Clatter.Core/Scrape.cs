@@ -42,10 +42,6 @@ namespace Clatter.Core
         /// </summary>
         private readonly double[] verticalForce = new double[ScrapeLinearSpace.Length];
         /// <summary>
-        /// A cached array of the summed master.
-        /// </summary>
-        private readonly double[] summedMaster = new double[Globals.framerateInt * 10];
-        /// <summary>
         /// The scrape material data for this scrape.
         /// </summary>
         private readonly ScrapeMaterialData scrapeMaterialData;
@@ -132,14 +128,12 @@ namespace Clatter.Core
             }
             // Convolve and apply roughness.
             double[] conv = impulseResponse.Convolve(verticalForce, ScrapeLinearSpace.Length);
-            int c = 0;
             for (int i = 0; i < conv.Length; i++)
             {
-                summedMaster[i] = conv[c] * scrapeMaterialData.roughnessRatio;
-                c++;
+                conv[i] *= scrapeMaterialData.roughnessRatio;
             }
             // Generate the samples.
-            samples.Set(summedMaster, start: 0, length: ScrapeLinearSpace.Length);
+            samples.Set(conv, start: 0, length: ScrapeLinearSpace.Length);
             scrapeIndex = finalIndex;
             return true;
         }
