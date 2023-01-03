@@ -33,7 +33,7 @@ namespace Clatter.Unity
         /// <summary>
         /// A cached array of pending audio data.
         /// </summary>
-        private ScrapeAudioData[] nextData = new ScrapeAudioData[NUM_NEXT_SAMPLES];
+        private readonly ScrapeAudioData[] nextData = new ScrapeAudioData[NUM_NEXT_SAMPLES];
         /// <summary>
         /// The index of the next audio samples.
         /// </summary>

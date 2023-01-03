@@ -12,7 +12,7 @@ namespace Clatter.Core
     /// Impact events are automatically generate from collision data within `AudioGenerator`. You can also manually create an Impact and use it to generate audio without needing to use an `AudioGenerator`. This can be useful if you want to generate audio without needing to create a physics simulation:
     ///
     /// {code_example:ImpactAudioExample}
-    /// 
+    ///
     /// </summary>
     public class Impact : AudioEvent
     {

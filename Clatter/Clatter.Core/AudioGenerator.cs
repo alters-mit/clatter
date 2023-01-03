@@ -23,7 +23,8 @@ namespace Clatter.Core
     /// - All of the collisions events are impacts. In a real simulation, we could add a `ScrapeMaterial` to a "floor" object to start generating scrape audio.
     ///
     /// {code_example:AudioObjectDataConstructorScrapeMaterial}
-    /// 
+    ///
+    /// In Clatter, audio is generated using some fixed and some random values; see the constructor for `Modes` and Modes.AdjustPowers(). In most cases, you'll want the audio to be truly random. If you want to replicate the exact same audio every time you run your program, set the `seed` parameter in the AudioGenerator constructor.
     /// </summary>
     public class AudioGenerator
     {
@@ -208,12 +209,12 @@ namespace Clatter.Core
                             // Start a new scrape.
                             if (scrapes[collisionEvents[i].ids].state == EventState.start)
                             {
-                                onScrapeStart?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].centroid, scrapes[collisionEvents[i].ids].audioSourceId);
+                                onScrapeStart?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].centroid, scrapes[collisionEvents[i].ids].scrapeId);
                             }
                             // Continue an ongoing scrape.
                             else if (scrapes[collisionEvents[i].ids].state == EventState.ongoing)
                             {
-                                onScrapeOngoing?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].centroid, scrapes[collisionEvents[i].ids].audioSourceId);
+                                onScrapeOngoing?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].centroid, scrapes[collisionEvents[i].ids].scrapeId);
                             }
                         }
                     }
@@ -246,7 +247,7 @@ namespace Clatter.Core
                 else if (scrapes[scrapeKeys[i]].state == EventState.end)
                 {
                     // Announce that the scrape has ended.
-                    onScrapeEnd?.Invoke(scrapes[scrapeKeys[i]].audioSourceId);
+                    onScrapeEnd?.Invoke(scrapes[scrapeKeys[i]].scrapeId);
                     // Remove the event.
                     scrapes.Remove(scrapeKeys[i]);
                 }

@@ -15,7 +15,7 @@ Clatter is intended for usage with [TDW](https://github.com/threedworld-mit/tdw)
 
 1. As a C# library: `Clatter.Core.dll`. The Clatter library can output raw wav data of physics-driven audio sounds or save the data as a .wav file.
 2. As a Unity plugin: `Clatter.Core.dll` plus `Clatter.Unity.dll`. The `Clatter.Unity.dll` library includes helpful scripts that automatically listen for collision events and automatically play generated audio.
-3. As a command-line executable: `clatter.exe`.
+3. As a command-line executable.
 
 ***
 
@@ -34,25 +34,6 @@ Clatter is intended for usage with [TDW](https://github.com/threedworld-mit/tdw)
 ***
 
 # Getting Started
-
-## Clatter.Core
-
-The simplest way to use Clatter is to call methods in the `Creator` class. This minimal example generates an impact sound:
-
-```csharp
-using Clatter.Core;
-
-
-public class Program
-{
-    private static void Main(string[] args)
-    {
-        Creator.SetPrimaryObject(new AudioObjectData(0, ImpactMaterialSized.glass_1, 0.2f, 0.2f, 1));
-        Creator.SetSecondaryObject(new AudioObjectData(1, ImpactMaterialSized.stone_4, 0.5f, 0.1f, 100));
-        Creator.WriteImpact(1, true, "out.wav");
-    }
-}
-```
 
 ## Clatter.Unity
 

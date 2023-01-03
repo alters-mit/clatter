@@ -11,7 +11,7 @@ namespace Clatter.Core
     /// Scrape events are automatically generate from collision data within `AudioGenerator`. You can also manually create a Scrape and use it to generate audio without needing to use an `AudioGenerator`. This can be useful if you want to generate audio without needing to create a physics simulation:
     ///
     /// {code_example:ScrapeAudioExample}
-    /// 
+    ///
     /// </summary>
     public class Scrape : AudioEvent
     {
@@ -26,9 +26,9 @@ namespace Clatter.Core
         /// </summary>
         public static double scrapeMaxSpeed = 5;
         /// <summary>
-        /// The audio source ID. We need to declare this here because scrapes are ongoing sounds.
+        /// The ID of this scrape event. This is used to track an ongoing scrape.
         /// </summary>
-        public readonly int audioSourceId;
+        public readonly int scrapeId;
         /// <summary>
         /// The previous index in the scrape surface array.
         /// </summary>
@@ -77,7 +77,7 @@ namespace Clatter.Core
         public Scrape(ScrapeMaterial scrapeMaterial, AudioObjectData primary, AudioObjectData secondary, Random rng) : base(primary, secondary, rng)
         {
             scrapeMaterialData = ScrapeMaterialData.Get(scrapeMaterial);
-            audioSourceId = rng.Next();
+            scrapeId = rng.Next();
         }
 
 

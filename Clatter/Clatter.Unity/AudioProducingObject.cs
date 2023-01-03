@@ -192,13 +192,11 @@ namespace Clatter.Unity
                 }          
             }
             // Set the physic material.
-            // Auto-set friction values.
             if (autoSetFriction)
             {
                 dynamicFriction = PhysicMaterialValues.DynamicFriction[impactMaterial];
                 staticFriction = PhysicMaterialValues.StaticFriction[impactMaterial];
             }
-            // Set the physic material.
             physicMaterial = new PhysicMaterial()
             {
                 dynamicFriction = dynamicFriction,
