@@ -4,7 +4,14 @@
 namespace Clatter.Core
 {
     /// <summary>
-    /// Audio data for a scrape event.
+    /// Scrape is a subclass of `AudioEvent` used to generate scrape sounds.
+    ///
+    /// A Scrape is a series of continuous events. By repeatedly calling GetAudio(), the scrape event will continue.
+    ///
+    /// Scrape events are automatically generate from collision data within `AudioGenerator`. You can also manually create a Scrape and use it to generate audio without needing to use an `AudioGenerator`. This can be useful if you want to generate audio without needing to create a physics simulation:
+    ///
+    /// {code_example:ScrapeAudioExample}
+    /// 
     /// </summary>
     public class Scrape : AudioEvent
     {

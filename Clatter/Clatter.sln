@@ -8,10 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clatter.CommandLine", "Clat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clatter.ImpactBenchmark", "Clatter.ImpactBenchmark\Clatter.ImpactBenchmark.csproj", "{B7F432F2-5985-4EC5-8086-9EEA75A3ED2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clatter.ImpactTest", "Clatter.ImpactTest\Clatter.ImpactTest.csproj", "{84C9AA3D-35E5-4BE9-AEF4-988F5454FC8D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clatter.ScrapeTest", "Clatter.ScrapeTest\Clatter.ScrapeTest.csproj", "{B3541124-0BEA-4E8A-A223-6778627DC112}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clatter.ScrapeBenchmark", "Clatter.ScrapeBenchmark\Clatter.ScrapeBenchmark.csproj", "{6060AEC7-C31E-4A1F-AC60-8A6BE43B0A2D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "doc_code_examples", "doc_code_examples\doc_code_examples.csproj", "{16B72EEF-5FA8-4523-9D2B-1716F29B0D96}"
@@ -38,14 +34,6 @@ Global
 		{B7F432F2-5985-4EC5-8086-9EEA75A3ED2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7F432F2-5985-4EC5-8086-9EEA75A3ED2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7F432F2-5985-4EC5-8086-9EEA75A3ED2B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{84C9AA3D-35E5-4BE9-AEF4-988F5454FC8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{84C9AA3D-35E5-4BE9-AEF4-988F5454FC8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{84C9AA3D-35E5-4BE9-AEF4-988F5454FC8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{84C9AA3D-35E5-4BE9-AEF4-988F5454FC8D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3541124-0BEA-4E8A-A223-6778627DC112}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3541124-0BEA-4E8A-A223-6778627DC112}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3541124-0BEA-4E8A-A223-6778627DC112}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3541124-0BEA-4E8A-A223-6778627DC112}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6060AEC7-C31E-4A1F-AC60-8A6BE43B0A2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6060AEC7-C31E-4A1F-AC60-8A6BE43B0A2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6060AEC7-C31E-4A1F-AC60-8A6BE43B0A2D}.Release|Any CPU.ActiveCfg = Release|Any CPU

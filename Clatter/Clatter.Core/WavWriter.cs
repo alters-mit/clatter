@@ -5,7 +5,10 @@ using System.IO;
 namespace Clatter.Core
 {
     /// <summary>
-    /// Write audio samples to a .wav file.
+    /// Write audio samples to a .wav file. Instantiate a WavWriter to begin writing audio. Call Write(data) to continuously write chunks of audio data to the file. Call End() to stop writing and append the wav header data to the file.
+    ///
+    /// {code_example:ScrapeAudioExample}
+    /// 
     /// </summary>
     public class WavWriter
     {
@@ -56,7 +59,7 @@ namespace Clatter.Core
 
 
         /// <summary>
-        /// Write audio samples as a .wav file.
+        /// Write audio samples to the .wav file.
         /// </summary>
         /// <param name="data">The audio data.</param>
         /// <param name="length">The length of the data chunk (this might be less than data.Length).</param>
@@ -79,7 +82,7 @@ namespace Clatter.Core
         
         
         /// <summary>
-        /// Write byte data. This assumes that the data is already an int16 byte array.
+        /// Write audio samples to the .wav file.
         /// </summary>
         /// <param name="data">The int16 byte array.</param>
         public void Write(byte[] data)

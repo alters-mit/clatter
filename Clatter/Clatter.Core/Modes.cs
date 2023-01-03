@@ -4,28 +4,28 @@
 namespace Clatter.Core
 {
     /// <summary>
-    /// Audio modes data for an object.
+    /// Audio modes data for an object. This is usually meant to be automatically created and adjusted within an `AudioEvent`.
     /// </summary>
     public class Modes
     {
         /// <summary>
         /// The default length of the arrays.
         /// </summary>
-        private const int DEFAULT_LENGTH = 10;
+        private const int MODES_DATA_LENGTH = 10;
 
 
         /// <summary>
         /// Mode frequencies in Hz.
         /// </summary>
-        public readonly double[] frequencies = new double[DEFAULT_LENGTH];
+        public readonly double[] frequencies = new double[MODES_DATA_LENGTH];
         /// <summary>
-        /// Mode onset powers in dB re 1.
+        /// Mode onset powers in dB.
         /// </summary>
-        public readonly double[] powers = new double[DEFAULT_LENGTH];
+        public readonly double[] powers = new double[MODES_DATA_LENGTH];
         /// <summary>
         /// Mode decay times i.e. the time in ms it takes for each mode to decay 60dB from its onset power.
         /// </summary>
-        public readonly double[] decayTimes = new double[DEFAULT_LENGTH];
+        public readonly double[] decayTimes = new double[MODES_DATA_LENGTH];
         /// <summary>
         /// The cached synth sound array.
         /// </summary>
