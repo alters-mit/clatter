@@ -22,8 +22,9 @@ namespace Clatter.ScrapeBenchmark
             Random rng = new Random();
             Scrape scrape = new Scrape(scrapeMaterial, primary, secondary, rng);
             // Generate the scrape.
-            int count = Scrape.GetNumScrapeEvents(0.5);
+            int count = Scrape.GetNumScrapeEvents(10);
             Stopwatch watch = new Stopwatch();
+            watch.Start();
             for (int i = 0; i < count; i++)
             {
                 scrape.GetAudio(1, rng);

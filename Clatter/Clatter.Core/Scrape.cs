@@ -84,7 +84,7 @@ namespace Clatter.Core
         public override bool GetAudio(double speed, Random rng)
         {
             // Get the speed of the primary object and clamp it.
-            double primarySpeed = Math.Min(primary.speed, scrapeMaxSpeed);
+            double primarySpeed = Math.Min(speed, scrapeMaxSpeed);
             // Get impulse response of the colliding objects.
             if (!gotImpulseResponse)
             {
