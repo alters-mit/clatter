@@ -174,7 +174,7 @@ namespace Clatter.Core
             // Convolve.
             samples = impulseResponse.Convolve(frc, impulseResponseLength);
             double maxSample = 0;
-            for (int i = 0; i < samples.Length; i++)
+            for (int i = 0; i < impulseResponseLength; i++)
             {
                 if (samples[i] > maxSample)
                 {
@@ -184,7 +184,7 @@ namespace Clatter.Core
             maxSample = Math.Abs(maxSample);
             double maxAbsSample = 0;
             double abs;
-            for (int i = 0; i < samples.Length; i++)
+            for (int i = 0; i < impulseResponseLength; i++)
             {
                 samples[i] /= maxSample;
                 abs = Math.Abs(samples[i]);
@@ -194,7 +194,7 @@ namespace Clatter.Core
                 }
             }
             // Scale by the amp value.
-            for (int i = 0; i < samples.Length; i++)
+            for (int i = 0; i < impulseResponseLength; i++)
             {
                 samples[i] = amp * samples[i] / maxAbsSample;
             }
