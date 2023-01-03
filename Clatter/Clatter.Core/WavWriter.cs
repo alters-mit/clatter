@@ -25,10 +25,6 @@ namespace Clatter.Core
         /// </summary>
         private readonly int channels;
         /// <summary>
-        /// If we're writing wav data, this is a cached byte array for copying the audio float array into.
-        /// </summary>
-        private byte[] wavChunk = new byte[2048 * 4];
-        /// <summary>
         /// A header for a .wav file.
         /// </summary>
         private static byte[] wavHeader;
@@ -58,29 +54,6 @@ namespace Clatter.Core
         }
 
 
-        /// <summary>
-        /// Write audio samples to the .wav file.
-        /// </summary>
-        /// <param name="data">The audio data.</param>
-        /// <param name="length">The length of the data chunk (this might be less than data.Length).</param>
-        public void Write(float[] data, int length)
-        {
-            // Resize the wav data array.
-            if (wavChunk.Length != length * 2)
-            {
-                Array.Resize(ref wavChunk, length * 2);
-            }
-            // Convert floats to int16 and copy the byte data into the array.
-            // Source: https://gist.github.com/darktable/2317063
-            for (int i = 0; i < length; i++)
-            {
-                Buffer.BlockCopy(BitConverter.GetBytes((short)(data[i] * Globals.FLOAT_TO_SHORT)), 0, wavChunk, i * 2, 2);
-            }
-            // Write.
-            Write(wavChunk);
-        }
-        
-        
         /// <summary>
         /// Write audio samples to the .wav file.
         /// </summary>

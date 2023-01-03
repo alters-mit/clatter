@@ -6,7 +6,10 @@ namespace Clatter.Unity
 {
     /// <summary>
     /// Physical values per impact material.
-    /// Note that bounciness is not a dictionary because typically this should vary between objects even if they have the same ImpactMaterial.
+    ///
+    /// Note that the keys of each dictionary are `Clatter.Core.ImpactMaterialSized` values. See: Clatter.Core.AudioObjectData.GetImpactMaterialUnsized(impactMaterial).
+    ///
+    /// Bounciness is included here because typically it varies between objects even if they have the same impact material.
     /// </summary>
     public static class PhysicMaterialValues
     {

@@ -67,14 +67,6 @@ namespace Clatter.Core
         /// </summary>
         public double angularSpeed;
         /// <summary>
-        /// The collision contacts area of a previous collision.
-        /// </summary>
-        public double previousArea = 0;
-        /// <summary>
-        /// If true, this object has contacted another object previously and generated contact area.
-        /// </summary>
-        public bool hasPreviousArea = false;
-        /// <summary>
         /// Regex string to parse sized impact materials as unsized impact materials.
         /// </summary>
         private static readonly Regex SizedToUnSized = new Regex("(.*?)_([0-9])");

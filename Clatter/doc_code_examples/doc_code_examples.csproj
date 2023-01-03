@@ -8,6 +8,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Clatter.Core\Clatter.Core.csproj" />
+      <ProjectReference Include="..\Clatter.Unity\Clatter.Unity.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="UnityEngine" Version="1.0.0" />
     </ItemGroup>
 
 </Project>

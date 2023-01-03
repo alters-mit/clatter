@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Clatter.Core;
 using Clatter.Unity;
 using Random = System.Random;

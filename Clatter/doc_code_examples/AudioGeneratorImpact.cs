@@ -44,7 +44,7 @@ public static class AudioGeneratorImpact
                 AudioObjectData primary = objects[objectIDs[objectIndex]];
                 AudioObjectData secondary = objects[objectIDs[objectIndex + 1]];
                 // Generate a collision.
-                CollisionEvent collisionEvent = new CollisionEvent(primary, secondary, AudioEventType.impact, rng.NextDouble() * 1.75, 0.1, Vector3d.Zero);
+                CollisionEvent collisionEvent = new CollisionEvent(primary, secondary, AudioEventType.impact, rng.NextDouble() * 1.75, Vector3d.Zero);
                 // Add the collision.
                 generator.AddCollision(collisionEvent);
                 // Increment the object index for the next collision.

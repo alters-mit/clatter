@@ -24,7 +24,7 @@ namespace Clatter.Core
     ///
     /// {code_example:AudioObjectDataConstructorScrapeMaterial}
     ///
-    /// In Clatter, audio is generated using some fixed and some random values; see the constructor for `Modes` and Modes.AdjustPowers(). In most cases, you'll want the audio to be truly random. If you want to replicate the exact same audio every time you run your program, set the `seed` parameter in the AudioGenerator constructor.
+    /// In Clatter, audio is generated from both fixed values and random values; see the constructor for `Modes` and Modes.AdjustPowers(). In most cases, you'll want the audio to be truly random. If you want to replicate the exact same audio every time you run your program, set the `seed` parameter in the AudioGenerator constructor.
     /// </summary>
     public class AudioGenerator
     {
@@ -139,9 +139,6 @@ namespace Clatter.Core
                 // Generate impact audio.
                 if (collisionEvents[index].type == AudioEventType.impact)
                 {
-                    // Set the previous area.
-                    collisionEvents[index].primary.hasPreviousArea = true;
-                    collisionEvents[index].primary.previousArea = collisionEvents[index].area;
                     // Start a new impact.
                     if (!impacts.ContainsKey(collisionEvents[index].ids))
                     {
@@ -155,9 +152,6 @@ namespace Clatter.Core
                 // Generate scrape audio.
                 else if (collisionEvents[index].type == AudioEventType.scrape && collisionEvents[index].secondary.hasScrapeMaterial)
                 {
-                    // Set the previous area.
-                    collisionEvents[index].primary.hasPreviousArea = true;
-                    collisionEvents[index].primary.previousArea = collisionEvents[index].area;
                     // Start a new scrape.
                     if (!scrapes.ContainsKey(collisionEvents[index].ids))
                     {
@@ -167,10 +161,6 @@ namespace Clatter.Core
                     // Start an impact audio thread.
                     audioThreads[index] = new Thread(() => GetAudio(index, scrapes));
                     audioThreads[index].Start();
-                }
-                else if (collisionEvents[index].type == AudioEventType.none)
-                {
-                    collisionEvents[index].primary.hasPreviousArea = false;
                 }
             }
             // Wait for the threads to finish.

@@ -1,45 +1,63 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 using Clatter.Core;
 
 
 namespace Clatter.Unity
 {
     /// <summary>
-    /// An AudioProducingObject listens to collisions with other AudioProducingObjects and generates audio event data.
+    /// An AudioProducingObject is a MonoBehaviour class for `Clatter.Core.AudioObjectData`.
+    ///
+    /// An AudioProducingObject must have either a Rigidbody or ArticulationBody component and at least one Collider.
+    ///
+    /// AudioProducingObject listens for Unity collision events (enter, stay, exit) and converts them into `Clatter.Core.CollisionEvent` data objects:
+    /// 
+    /// - "Enter" events are always impacts.
+    /// - "Exit" events are always "none" audio events that will end an ongoing audio event series.
+    /// - "Stay" events can be impacts, scrapes, rolls, or none-events. This is determined by a number of factors; see `impactAreaNewCollision`, `impactAreaRatio`, and `rollAngularSpeed`.
+    /// 
+    /// AudioProducingObjects are automatically initialized and updated by `ClatterManager`; you *can* use an AudioProducingObject without `ClatterManager` but it's very difficult to do so. Notice that there is no Update or FixedUpdate call because it's assumed that `ClatterManager` will call AudioProducingObject.OnFixedUpdate().
     /// </summary>
     public class AudioProducingObject : MonoBehaviour
     {
         /// <summary>
-        /// On a stay event, if the previous area is None and the current area is greater than this, the collision is actually an impact. 
+        /// Types of OnCollision callbacks, e.g. OnCollisionEnter.
+        /// </summary>
+        private enum OnCollisionType : byte
+        {
+            enter = 0,
+            stay = 1,
+            exit = 2
+        }
+        
+        
+        /// <summary>
+        /// On a collision stay event, if the previous area is None and the current area is greater than this, the audio event is an impact. 
         /// </summary>
         public static double impactAreaNewCollision = 1e-5;
         /// <summary>
-        /// On a stay event, if the area of the collision increases by at least this factor, the collision is actually an impact.
+        /// On a collision stay event, if the area of the collision increases by at least this factor, the audio event is an impact.
         /// </summary>
         public static double impactAreaRatio = 5;
         /// <summary>
-        /// On a stay event, if the angular velocity is this or greater, the event is a roll, not a scrape.
+        /// On a collision stay event, if the angular speed is this or greater, the audio event is a roll; otherwise, it's a scrape.
         /// </summary>
-        public static double rollAngularVelocity = 0.5;
+        public static double rollAngularSpeed = 0.5;
         /// <summary>
-        /// If true, filter out duplicate collision events (e.g. only register collision ID pair `(0, 1)`, not `(1, 0)`).
+        /// AudioProducingObject tries to filter duplicate events by only accepting objects whose IDs are in the order `lesser, greater`. For example, a collision between object 1 and object 0 won't generate audio but the reciprocal collision between object 0 and object 1 *will*. To allow duplicate events, set this field to `false`.
         /// </summary>
         public static bool filterDuplicates = true;
         /// <summary>
-        /// This object's data.
+        /// Invoked when this object is destroyed. Parameters: The ID of this object, i.e. `this.data.id`.
         /// </summary>
-        public AudioObjectData data;
+        public UnityEvent<uint> onDestroy;
         /// <summary>
-        /// Invoked when this object is destroyed.
-        /// </summary>
-        public Action<uint> onDestroy;
-        /// <summary>
-        /// If true, auto-size the object based on its volume.
+        /// If true, the object's "size bucket" is automatically set based on its volume.
         /// </summary>
         public bool autoSetSize = true;
         /// <summary>
-        /// The size of the object (this affects the generated audio).
+        /// The size of the object (this affects the generated audio). Ignored if `autoSetSize == true`.
         /// </summary>
         [HideInInspector]
         public int size;
@@ -52,7 +70,7 @@ namespace Clatter.Unity
         /// </summary>
         public bool hasScrapeMaterial;
         /// <summary>
-        /// The scrape material, if any.
+        /// The scrape material, if any. Ignored if `hasScrapeMaterial == false`.
         /// </summary>
         [HideInInspector]
         public ScrapeMaterial scrapeMaterial;
@@ -67,7 +85,7 @@ namespace Clatter.Unity
         [Range(0, 1)]
         public double resonance = 0.1f;
         /// <summary>
-        /// If true, automatically set the friction values based on the impact material (see: PhysicsValues.cs).
+        /// If true, the friction values are automatically set based on the impact material.
         /// </summary>
         public bool autoSetFriction = true;
         /// <summary>
@@ -86,14 +104,26 @@ namespace Clatter.Unity
         [Range(0, 1)]
         public float bounciness = 0.2f;
         /// <summary>
-        /// If true, automatically set the mass of the object based on its impact material and volume (see: PhysicsValues.cs). If false, use the mass value in the Rigidbody.
+        /// If true, the mass of the object is automatically set based on its impact material and volume. If false, use the mass value in the Rigidbody.
         /// </summary>
         public bool autoSetMass = true;
         /// <summary>
-        /// The portion from 0 to 1 of the object that is hollow. This is used to convert volume and density to mass (see: autoSetMass).
+        /// The portion from 0 to 1 of the object that is hollow. This is used to convert volume and density to mass. Ignored if `autoSetMass == false`.
         /// </summary>
         [HideInInspector]
         public float hollowness;
+        /// <summary>
+        /// This object's data.
+        /// </summary>
+        public AudioObjectData data;
+        /// <summary>
+        /// The collision contacts area of a previous collision.
+        /// </summary>
+        private double previousArea;
+        /// <summary>
+        /// If true, this object has contacted another object previously and generated contact area.
+        /// </summary>
+        private bool hasPreviousArea;
         /// <summary>
         /// The object's Rigidbody. Can be null.
         /// </summary>
@@ -255,7 +285,7 @@ namespace Clatter.Unity
             // Compare the IDs for filter out duplicate events.
             if (filterDuplicates && data.id > otherData.id)
             {
-                collisionEvent = new CollisionEvent(data, otherData, AudioEventType.none, 0, 0, Vector3d.Zero);
+                collisionEvent = new CollisionEvent(data, otherData, AudioEventType.none, 0, Vector3d.Zero);
                 ClatterManager.instance.generator.AddCollision(collisionEvent);
                 return;
             }
@@ -263,7 +293,7 @@ namespace Clatter.Unity
             int numContacts = collision.contactCount;
             if (numContacts == 0)
             {
-                collisionEvent = new CollisionEvent(data, otherData, AudioEventType.none, 0, 0, Vector3d.Zero);
+                collisionEvent = new CollisionEvent(data, otherData, AudioEventType.none, 0, Vector3d.Zero);
                 ClatterManager.instance.generator.AddCollision(collisionEvent);
                 return;
             }
@@ -327,6 +357,7 @@ namespace Clatter.Unity
             double area = Math.PI * radius * radius;
             AudioObjectData primary;
             AudioObjectData secondary;
+            AudioProducingObject primaryMono;
             // Set the primary and secondary IDs depending on:
             // 1. Whether this is a secondary object.
             // 2. Which object is has a greater speed.
@@ -334,11 +365,13 @@ namespace Clatter.Unity
             {
                 primary = data;
                 secondary = otherData;
+                primaryMono = this;
             }
             else
             {
                 primary = otherData;
                 secondary = data;
+                primaryMono = other;
             }
             AudioEventType audioEventType;
             // Exits are always none.
@@ -355,7 +388,7 @@ namespace Clatter.Unity
             else
             {
                 // There is no previous area.
-                if (!primary.hasPreviousArea)
+                if (!primaryMono.hasPreviousArea)
                 {
                     // The area is big enough to be an impact.
                     if (area > impactAreaNewCollision)
@@ -368,18 +401,27 @@ namespace Clatter.Unity
                         audioEventType = AudioEventType.none;
                     }
                 }
-                // There is previous area, and the ratio between the new area and the previous area is small.
-                else if (primary.previousArea > 0 && area / primary.previousArea < impactAreaRatio)
+                // There is previous area.
+                else if (primaryMono.previousArea > 0)
                 {
-                    // If there is a high angular velocity, this is a roll.
-                    if (angularSpeed > rollAngularVelocity)
+                    // The ratio between the new area and the previous area is small.
+                    if (area / primaryMono.previousArea < impactAreaRatio)
                     {
-                        audioEventType = AudioEventType.roll;
+                        // If there is a high angular velocity, this is a roll.
+                        if (angularSpeed > rollAngularSpeed)
+                        {
+                            audioEventType = AudioEventType.roll;
+                        }
+                        // If there is little angular velocity, this is a scrape.
+                        else
+                        {
+                            audioEventType = AudioEventType.scrape;
+                        }          
                     }
-                    // If there is little angular velocity, this is a scrape.
+                    // This is an impact.
                     else
                     {
-                        audioEventType = AudioEventType.scrape;
+                        audioEventType = AudioEventType.impact;
                     }
                 }
                 // This is a non-event.
@@ -388,8 +430,18 @@ namespace Clatter.Unity
                     audioEventType = AudioEventType.none;
                 }
             }
+            // Set the previous area.
+            if (audioEventType == AudioEventType.none)
+            {
+                primaryMono.hasPreviousArea = false;
+            }
+            else
+            {
+                primaryMono.hasPreviousArea = true;
+                primaryMono.previousArea = area; 
+            }
             // Get the event.
-            collisionEvent = new CollisionEvent(primary, secondary, audioEventType, normalSpeed, area, centroid);
+            collisionEvent = new CollisionEvent(primary, secondary, audioEventType, normalSpeed, centroid);
             // Add the collision.
             ClatterManager.instance.generator.AddCollision(collisionEvent);
         }
