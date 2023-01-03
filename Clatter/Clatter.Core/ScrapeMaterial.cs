@@ -1,10 +1,12 @@
 ﻿namespace Clatter.Core
 {
     /// <summary>
-    /// Audio materials for scrape sounds.
-    /// Scrape materials are always un-sized, unlike ImpactMaterialSized values.
-    /// Due to separate recording processes, scrape materials don't have the same names as impact materials.
-    /// Scrape materials also don't have a 1 to 1 mapping with impact materials; see: ScrapeMaterialData.ImpactMaterialsToScrapeMaterials.
+    /// Audio materials for scrape sounds. Scrape materials are always un-sized, unlike `ImpactMaterial` values.
+    /// 
+    /// Due to separate recording processes, scrape materials don't have the same names as impact materials and don't map exactly to `ImpactMaterialUnsized` values. See: ScrapeMaterialData.ImpactMaterialUnsizedToScrapeMaterial:
+    ///
+    /// {code_example:ImpactMaterialToScrapeMaterial}
+    /// 
     /// </summary>
     public enum ScrapeMaterial : byte
     {

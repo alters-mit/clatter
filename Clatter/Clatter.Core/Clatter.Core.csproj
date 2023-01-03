@@ -45,7 +45,6 @@
         <Compile Include="AudioGenerator.cs" />
         <Compile Include="AudioObjectData.cs" />
         <Compile Include="CollisionEvent.cs" />
-        <Compile Include="Creator.cs" />
         <Compile Include="DoubleExtensions.cs" />
         <Compile Include="EventState.cs" />
         <Compile Include="Globals.cs" />

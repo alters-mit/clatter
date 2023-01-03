@@ -29,9 +29,9 @@ namespace Clatter.Core
         /// </summary>
         public double roughnessRatio;
         /// <summary>
-        /// A dictionary of ImpactMaterial values mapped to ScrapeMaterial values. Not all impact materials map to scrape materials and vice versa.
+        /// A dictionary of `ImpactMaterialUnsized` values mapped to `ScrapeMaterial` values. Not all impact materials map to scrape materials and vice versa.
         /// </summary>
-        public static readonly Dictionary<ImpactMaterialUnsized, ScrapeMaterial> ImpactMaterialsToScrapeMaterials = new Dictionary<ImpactMaterialUnsized, ScrapeMaterial>()
+        public static readonly Dictionary<ImpactMaterialUnsized, ScrapeMaterial> ImpactMaterialUnsizedToScrapeMaterial = new Dictionary<ImpactMaterialUnsized, ScrapeMaterial>()
         {
             { ImpactMaterialUnsized.metal, ScrapeMaterial.sanded_acrylic },
             { ImpactMaterialUnsized.cardboard, ScrapeMaterial.plywood },

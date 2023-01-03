@@ -5,23 +5,14 @@ using System.Diagnostics;
 namespace Clatter.Core
 {
     /// <summary>
-    /// Impact is a subclass of `AudioEvent` used to generate impact audio.
+    /// Impact is a subclass of `AudioEvent` used to generate impact sounds.
     ///
     /// An Impact is actually a *series* of events. By reusing the same Impact object, data from previous impacts can affect the current impact. This is useful for situations such as an object repeatedly bouncing on a table.
     ///
-    /// This is a minimal example of how to generate impact audio:
+    /// You can create an Impact and use it to generate audio without needing to use an `AudioGenerator`. This can be useful if you want to generate audio without needing to create a physics simulation:
     ///
-    /// ```csharp
-    /// using System;
-    /// using Clatter.Core;
-    ///
-    /// rng = new Random();
-    /// AudioObjectData primary = new AudioObjectData(0, ImpactMaterialSized.glass_1, 0.2f, 0.2f, 1);
-    /// AudioObjectData secondary = new AudioObjectData(1, ImpactMaterialSized.stone_4, 0.5f, 0.1f, 100);
-    /// Impact impact = new Impact(primary, secondary, rng);
-    /// impact.GetAudio(1, rng);
-    /// byte[] wavData = impact.samples.ToInt16Bytes();
-    /// ```
+    /// {code_example:ImpactAudioExample}
+    /// 
     /// </summary>
     public class Impact : AudioEvent
     {

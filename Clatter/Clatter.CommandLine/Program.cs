@@ -8,15 +8,54 @@ namespace Clatter.CommandLine
     /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Help text per argument.
+        /// </summary>
+        private static readonly Dictionary<string, string> ArgsHelp = new()
+        {
+            {"--type [STRING]", "The type of audio event. Options: impact, scrape"},
+            {"--primary_material [STRING]", "The primary object's ImpactMaterial. See ImpactMaterial API documentation for a list of options."},
+            {"--primary_amp [FLOAT]", "The primary object's amp value (0-1)."},
+            {"--primary_resonance [FLOAT]", "The primary object's resonance value (0-1)."},
+            {"--primary_mass [FLOAT]", "The primary object's mass."},
+            {"--secondary_material [STRING]", "The secondary object's ImpactMaterial. See ImpactMaterial API documentation for a list of options."},
+            {"--secondary_amp [FLOAT]", "The secondary object's amp value (0-1)."},
+            {"--secondary_resonance [FLOAT]", "The secondary object's resonance value (0-1)."},
+            {"--secondary_mass [FLOAT]", "The secondary object's mass."},
+            {"--speed [FLOAT]", "The speed of the collision."},
+            {"--scrape_material [STRING]", "If --type is scrape, this sets the secondary object's scrape map. See ScrapeMAterial API documentation for a list of options."},
+            {"--duration [FLOAT]", "If --type is scrape, this sets the duration of the scrape audio."},
+            {"--simulation_amp [FLOAT]", "The overall amp (0-1)."},
+            {"--path [STRING]", "OPTIONAL. If included, this is a file path to a .wav file. If not included, audio will be sent to stdout."},
+            {"--allow_distortion", "OPTIONAL. If included, don't clamp amp values to 0.99."},
+            {"--unclamp_contact_time", "OPTIONAL. If included, don't clamp impact contact times to plausible values."},
+            {"--scrape_max_speed [FLOAT]", "OPTIONAL. Clamp scrape speeds to this maximum value."},
+        };
+        
+        
         private static void Main(string[] args)
         {
+            // Print the help text and end.
+            bool help = false;
+            ArgumentParser.TryGetBooleanValue(args, "help", ref help);
+            if (help)
+            {
+                string helpText = "";
+                foreach (string key in ArgsHelp.Keys)
+                {
+                    helpText += key + ": " + ArgsHelp[key] + "\n\n";
+                }
+                Console.WriteLine(helpText.Trim());
+                return;
+            }
             // Set static values.
             ArgumentParser.TryGetDoubleValue(args, "simulation_amp", ref AudioEvent.simulationAmp);
+            AudioEvent.simulationAmp = AudioEvent.simulationAmp.Clamp(0, 1);
             ArgumentParser.TryGetBooleanValue(args, "allow_distortion", ref AudioEvent.preventDistortion);
-            ArgumentParser.TryGetBooleanValue(args, "clamp_contact_time", ref AudioEvent.clampContactTime);
+            ArgumentParser.TryGetBooleanValue(args, "unclamp_contact_time", ref AudioEvent.clampContactTime);
             ArgumentParser.TryGetDoubleValue(args, "scrape_max_speed", ref Scrape.scrapeMaxSpeed);
             // Set the primary object.
-            Creator.SetPrimaryObject(GetAudioObjectData(args, 0, "primary", false));
+            AudioObjectData primary = GetAudioObjectData(args, 0, "primary", false);
             // Get the audio type.
             string audioType = ArgumentParser.GetStringValue(args, "type");
             // Check if this is a scrape.
@@ -37,7 +76,7 @@ namespace Clatter.CommandLine
                 throw new Exception("Invalid audio type: " + audioType);
             }
             // Set the secondary object.
-            Creator.SetSecondaryObject(GetAudioObjectData(args, 1, "secondary", scrape));
+            AudioObjectData secondary = GetAudioObjectData(args, 1, "secondary", scrape);
             // Get the speed.
             double speed = ArgumentParser.GetDoubleValue(args, "speed");
             // Get the path to the output file.
@@ -47,11 +86,11 @@ namespace Clatter.CommandLine
             {
                 if (scrape)
                 {
-                    Creator.WriteScrape(speed, scrapeDuration, path);
+                    WriteScrape(primary, secondary, speed, scrapeDuration, path);
                 }
                 else
                 {
-                    Creator.WriteImpact(speed, true, path);
+                    WriteImpact(primary, secondary, speed, path);
                 }         
             }
             // Write to stdout.
@@ -61,11 +100,11 @@ namespace Clatter.CommandLine
                 byte[] buffer;
                 if (scrape)
                 {
-                    buffer = Creator.GetScrape(speed, scrapeDuration);
+                    buffer = GetScrape(primary, secondary, speed, scrapeDuration);
                 }
                 else
                 {
-                    buffer = Creator.GetImpact(speed, true);
+                    buffer = GetImpact(primary, secondary, speed);
                 }
                 // Write the audio data. Source: https://stackoverflow.com/a/27007411
                 using (Stream outStream = Console.OpenStandardOutput())
@@ -94,8 +133,9 @@ namespace Clatter.CommandLine
             {
                 throw new Exception("Invalid impact material: " + m);
             }
-            double amp = ArgumentParser.GetDoubleValue(args, target + "_amp");
-            double resonance = ArgumentParser.GetDoubleValue(args, target + "_resonance");
+            ImpactMaterialData.Load(impactMaterial);
+            double amp = ArgumentParser.GetDoubleValue(args, target + "_amp").Clamp(0, 1);
+            double resonance = ArgumentParser.GetDoubleValue(args, target + "_resonance").Clamp(0, 1);
             double mass = ArgumentParser.GetDoubleValue(args, target + "_mass");
             if (scrape)
             {
@@ -105,12 +145,99 @@ namespace Clatter.CommandLine
                 {
                     throw new Exception("Invalid scrape material: " + s);
                 }
+                ScrapeMaterialData.Load(scrapeMaterial);
                 return new AudioObjectData(id, impactMaterial, amp, resonance, mass, scrapeMaterial);
             }
             else
             {
                 return new AudioObjectData(id, impactMaterial, amp, resonance, mass);
             }
+        }
+
+
+        /// <summary>
+        /// Generate an impact sound.
+        /// This assumes that you have called SetPrimaryObject and SetSecondaryObject.
+        /// </summary>
+        /// <param name="primary">The primary object.</param>
+        /// <param name="secondary">The secondary object.</param>
+        /// <param name="speed">The speed of the impact.</param>
+        private static byte[] GetImpact(AudioObjectData primary, AudioObjectData secondary, double speed)
+        {
+            Random rng = new Random();
+            Impact impact = new Impact(primary, secondary, rng);
+            // Generate audio.
+            bool ok = impact.GetAudio(speed, rng);
+            if (!ok)
+            {
+                return new byte[0];
+            }
+            else
+            {
+                return impact.samples.ToInt16Bytes();
+            }
+        }
+        
+        
+        /// <summary>
+        /// Generate a scrape sound.
+        /// This assumes that you have called SetPrimaryObject and SetSecondaryObject, and that in the latter call you provided a scrape material.
+        /// </summary>
+        /// <param name="primary">The primary object.</param>
+        /// <param name="secondary">The secondary object.</param>
+        /// <param name="speed">The speed of the scrape.</param>
+        /// <param name="duration">The duration of the scrape in seconds. This will be rounded to the nearest tenth of a second.</param>
+        private static byte[] GetScrape(AudioObjectData primary, AudioObjectData secondary, double speed, double duration)
+        {
+            Random rng = new Random();
+            // Get the number of scrape events.
+            int count = Scrape.GetNumScrapeEvents(duration);
+            // Get the scrape material.
+            primary.speed = speed;
+            // Get the scrape.
+            Scrape scrape = new Scrape(secondary.scrapeMaterial, primary, secondary, rng);
+            byte[] audio = new byte[Scrape.SAMPLES_LENGTH * 2 * count];
+            int c = Scrape.SAMPLES_LENGTH * 2;
+            for (int i = 0; i < count; i++)
+            {
+                // Continue the scrape.
+                scrape.GetAudio(speed, rng);
+                // Get the audio and copy it to the buffer.
+                Buffer.BlockCopy(scrape.samples.ToInt16Bytes(), 0, audio, i * c, c);
+            }
+            return audio;
+        }
+        
+        
+        /// <summary>
+        /// Generate an impact sound and write it to disk as a .wav file.
+        /// </summary>
+        /// <param name="primary">The primary object.</param>
+        /// <param name="secondary">The secondary object.</param>
+        /// <param name="speed">The speed of the impact.</param>
+        /// <param name="path">The path to the output file.</param>
+        private static void WriteImpact(AudioObjectData primary, AudioObjectData secondary, double speed, string path)
+        {
+            WavWriter writer = new WavWriter(path);
+            writer.Write(GetImpact(primary, secondary, speed));
+            writer.End();
+        }
+        
+        
+        /// <summary>
+        /// Generate a scrape sound and write it to disk as a .wav file.
+        /// This assumes that you have called SetPrimaryObject and SetSecondaryObject, and that in the latter call you provided a scrape material.
+        /// </summary>
+        /// <param name="primary">The primary object.</param>
+        /// <param name="secondary">The secondary object.</param>
+        /// <param name="speed">The speed of the scrape.</param>
+        /// <param name="duration">The duration of the scrape in seconds. This will be rounded to the nearest tenth of a second.</param>
+        /// <param name="path">The path to the output file.</param>
+        private static void WriteScrape(AudioObjectData primary, AudioObjectData secondary, double speed, double duration, string path)
+        {
+            WavWriter writer = new WavWriter(path);
+            writer.Write(GetScrape(primary, secondary, speed, duration));
+            writer.End();
         }
     }   
 }

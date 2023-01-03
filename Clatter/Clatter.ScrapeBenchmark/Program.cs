@@ -9,20 +9,25 @@ namespace Clatter.ScrapeBenchmark
         private static void Main(string[] args)
         {
             // Load the materials.
+            ImpactMaterial primaryMaterial = ImpactMaterial.glass_1;
+            ImpactMaterial secondaryMaterial = ImpactMaterial.stone_4;
             ScrapeMaterial scrapeMaterial = ScrapeMaterial.ceramic;
+            ImpactMaterialData.Load(primaryMaterial);
+            ImpactMaterialData.Load(secondaryMaterial);
             ScrapeMaterialData.Load(scrapeMaterial);
-            ImpactMaterial primaryImpactMaterial = ImpactMaterial.metal_1;
-            ImpactMaterial secondaryImpactMaterial = ImpactMaterial.stone_4;
-            ImpactMaterialData.Load(primaryImpactMaterial);
-            ImpactMaterialData.Load(secondaryImpactMaterial);
             // Set the objects.
-            Creator.SetPrimaryObject(new AudioObjectData(0, primaryImpactMaterial, 0.2f, 0.2f, 1));
-            Creator.SetSecondaryObject(new AudioObjectData(1, secondaryImpactMaterial, 0.5f, 0.1f, 100, scrapeMaterial));
-            // Generate audio.
-            Creator.SetRandom(0);
+            AudioObjectData primary = new AudioObjectData(0, primaryMaterial, 0.2, 0.2, 1);
+            AudioObjectData secondary = new AudioObjectData(1, secondaryMaterial, 0.5, 0.1, 100, scrapeMaterial);
+            // Initialize the scrape.
+            Random rng = new Random();
+            Scrape scrape = new Scrape(scrapeMaterial, primary, secondary, rng);
+            // Generate the scrape.
+            int count = Scrape.GetNumScrapeEvents(0.5);
             Stopwatch watch = new Stopwatch();
-            watch.Start();
-            Creator.GetScrape(1f, 10f);
+            for (int i = 0; i < count; i++)
+            {
+                scrape.GetAudio(1, rng);
+            }
             watch.Stop();
             Console.WriteLine(watch.Elapsed.TotalSeconds);
         }

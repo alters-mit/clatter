@@ -136,5 +136,15 @@ namespace Clatter.Core
             scrapeIndex = finalIndex;
             return true;
         }
+
+
+        /// <summary>
+        /// Returns the number of scrape events given a duration.
+        /// </summary>
+        /// <param name="duration">The duration of the scrape in seconds.</param>
+        public static int GetNumScrapeEvents(double duration)
+        {
+            return (int)(duration * Globals.framerate / SAMPLES_LENGTH);
+        }
     }
 }
