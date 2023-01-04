@@ -81,21 +81,20 @@ namespace Clatter.Core
         /// <param name="speed">The collision speed.</param>
         /// <param name="rng">The random number generator.</param>
         public abstract bool GetAudio(double speed, Random rng);
-
-
+        
+        
         /// <summary>
-        /// Synthesize impact audio. Returns true if successful.
+        /// Randomly adjust Modes values. Returns the new amp value.
         /// </summary>
-        /// <param name="speed">The collision speed.</param>
+        /// <param name="speed">The speed of the collision.</param>
         /// <param name="rng">The random number generator.</param>
-        /// <param name="impulseResponse">The impulse response.</param>
-        protected bool GetImpact(double speed, Random rng, out double[] impulseResponse)
+        protected double AdjustModes(double speed, Random rng)
         {
-            // ReSharper disable once LocalVariableHidesMember
-            double amp;
             // Re-scale the amplitude.
+            double amp;
             if (collisionCount == 0)
             {
+                // Set initial modes data.
                 double log10RelativeAmp = 20 * Math.Log10(secondary.amp / primary.amp);
                 for (int i = 0; i < modesB.decayTimes.Length; i++)
                 {
@@ -115,90 +114,27 @@ namespace Clatter.Core
                 modesA.AdjustPowers(rng);
                 modesB.AdjustPowers(rng);
             }
-            // Generate the sound.
-            double[] rawSamples;
-            // This should rarely happen, if ever.
-            if (!SynthImpactModes(amp, out rawSamples, out impulseResponse))
-            {
-                return false;
-            }
-            // Update the samples.
-            samples.Set(rawSamples, 0, rawSamples.Length);
-            // Update the collision count.
-            collisionCount++;
-            return true;
+            return amp;
         }
-
-
+        
+        
         /// <summary>
-        /// Synth impact modes.
+        /// Returns an impulse response array.
         /// </summary>
-        /// <param name="amp">The audio amp.</param>
-        /// <param name="samples">The samples.</param>
-        /// <param name="impulseResponse">The impulse response.</param>
-        private bool SynthImpactModes(double amp, out double[] samples, out double[] impulseResponse)
+        /// <param name="amp">The amplitude multiplier of the sound.</param>
+        /// <param name="impulseResponse">The generated impulse response.</param>
+        /// <returns></returns>
+        protected int GetImpulseResponse(double amp, ref double[] impulseResponse)
         {
             if (amp <= 0)
             {
-                samples = null;
-                impulseResponse = null;
-                return false;
+                return 0;
             }
-            impulseResponse = Array.Empty<double>();
             // Sum the modes.
             modesA.Sum(primary.resonance);
             modesB.Sum(secondary.resonance);
             int impulseResponseLength = Modes.Add(modesA.synthSound, modesA.synthSoundLength, modesB.synthSound, modesB.synthSoundLength, ref impulseResponse);
-            if (impulseResponseLength == 0)
-            {
-                samples = null;
-                return false;
-            }
-            // Get the contact time.
-            double maxT = 0.001 * Math.Min(primary.mass, secondary.mass);
-            if (clampContactTime)
-            {
-                maxT = Math.Min(maxT, 2e-3);
-            }
-            // Convolve with force, with contact time scaled by the object mass.
-            double[] frc = LinSpace.Get(0, Math.PI, (int)Math.Ceiling(maxT * Globals.framerate));
-            // Clamp the amp.
-            if (preventDistortion && amp > 0.99)
-            {
-                amp = 0.99;
-            }
-            for (int i = 0; i < frc.Length; i++)
-            {
-                frc[i] = Math.Sin(frc[i]);
-            }
-            // Convolve.
-            samples = impulseResponse.Convolve(frc, impulseResponseLength);
-            double maxSample = 0;
-            for (int i = 0; i < samples.Length; i++)
-            {
-                if (samples[i] > maxSample)
-                {
-                    maxSample = samples[i];
-                }
-            }
-            maxSample = Math.Abs(maxSample);
-            double maxAbsSample = 0;
-            double abs;
-            for (int i = 0; i < samples.Length; i++)
-            {
-                samples[i] /= maxSample;
-                abs = Math.Abs(samples[i]);
-                if (abs > maxAbsSample)
-                {
-                    maxAbsSample = abs;
-                }
-            }
-            // Scale by the amp value.
-            for (int i = 0; i < samples.Length; i++)
-            {
-                samples[i] = amp * samples[i] / maxAbsSample;
-            }
-            return true;
+            return impulseResponseLength;
         }
     }
 }

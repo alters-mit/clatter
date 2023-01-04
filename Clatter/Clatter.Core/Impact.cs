@@ -28,7 +28,7 @@ namespace Clatter.Core
         /// The cached impulse response array.
         /// </summary>
         // ReSharper disable once NotAccessedField.Local
-        private double[] impulseResponse;
+        private double[] impulseResponse = new double[9000];
         /// <summary>
         /// The stopwatch used to record time.
         /// </summary>
@@ -62,10 +62,65 @@ namespace Clatter.Core
             }
             else
             {
+                // Adjust the modes and get the amp value.
+                double amp = AdjustModes(speed, rng);
+                // Get the impulse response.
+                int impulseResponseLength = GetImpulseResponse(amp, ref impulseResponse);
+                if (impulseResponseLength == 0)
+                {
+                    return false;
+                }
+                // Get the contact time.
+                double maxT = 0.001 * Math.Min(primary.mass, secondary.mass);
+                if (clampContactTime)
+                {
+                    maxT = Math.Min(maxT, 2e-3);
+                }
+                // Convolve with force, with contact time scaled by the object mass.
+                double[] frc = LinSpace.Get(0, Math.PI, (int)Math.Ceiling(maxT * Globals.framerate));
+                // Clamp the amp.
+                if (preventDistortion && amp > 0.99)
+                {
+                    amp = 0.99;
+                }
+                for (int i = 0; i < frc.Length; i++)
+                {
+                    frc[i] = Math.Sin(frc[i]);
+                }
+                // Convolve.
+                double[] rawSamples = impulseResponse.Convolve(frc, impulseResponseLength);
+                double maxSample = 0;
+                for (int i = 0; i < rawSamples.Length; i++)
+                {
+                    if (rawSamples[i] > maxSample)
+                    {
+                        maxSample = rawSamples[i];
+                    }
+                }
+                maxSample = Math.Abs(maxSample);
+                double maxAbsSample = 0;
+                double abs;
+                for (int i = 0; i < rawSamples.Length; i++)
+                {
+                    rawSamples[i] /= maxSample;
+                    abs = Math.Abs(rawSamples[i]);
+                    if (abs > maxAbsSample)
+                    {
+                        maxAbsSample = abs;
+                    }
+                }
+                // Scale by the amp value.
+                for (int i = 0; i < rawSamples.Length; i++)
+                {
+                    rawSamples[i] = amp * rawSamples[i] / maxAbsSample;
+                }
+                // Update the samples.
+                samples.Set(rawSamples, 0, rawSamples.Length);
                 // Restart the clock.
                 watch.Restart();
-                // Get an impact.
-                return GetImpact(speed, rng, out impulseResponse);
+                // Update the collision count.
+                collisionCount++;
+                return true;
             }
         }
     }

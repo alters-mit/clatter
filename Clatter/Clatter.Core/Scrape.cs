@@ -84,7 +84,8 @@ namespace Clatter.Core
             // Get impulse response of the colliding objects.
             if (!gotImpulseResponse)
             {
-                if (!GetImpact(speed, rng, out impulseResponse))
+                int impulseResponseLength = GetImpulseResponse(AdjustModes(speed, rng), ref impulseResponse);
+                if (impulseResponseLength == 0)
                 {
                     return false;
                 }

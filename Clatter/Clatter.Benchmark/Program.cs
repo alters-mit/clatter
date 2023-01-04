@@ -38,7 +38,7 @@ namespace Clatter.Benchmark
             // Set some useful globals.
             Random rng = new Random(0);
             Impact.maxTimeBetweenImpacts = 1000;
-            Impact.minTimeBetweenImpacts = 0.0001;
+            Impact.minTimeBetweenImpacts = 0;
             // Initialize the impact.
             Impact impact = new Impact(primary, secondary, rng);
             // Run the benchmark.
