@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List
+from typing import Dict, List, Union
 from subprocess import call
 from pathlib import Path
 import xml.etree.ElementTree as ET
@@ -86,7 +86,6 @@ class Field:
             self.type = self.type.split("const")[1].strip()
         else:
             self.const = False
-        print(self.name, self.type, self.readonly, self.const)
         self.description: str = get_description(e)
         initializer: Element = e.find("initializer")
         self.default_value: str = ""
@@ -312,36 +311,7 @@ def get_sidebar() -> str:
 
 
 def get_html_prefix() -> str:
-    q = """<!doctype html>
-
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Clatter</title>
-    <meta name="description" content="Clatter API Documentation">
-    <meta name="author" content="Esther Alter">
-
-    <link rel="stylesheet" href="../style.css?">    
-    <script src="../highlight/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
-
-</head>
-
-<body>
-
-    <div class="navbar clear nav-top">
-        <div class="row content">
-            <a class="right" href="#">Clatter API Documentation</a>
-            <a class="right" href="mailto:alters@mit.edu" target="_blank">alters@mit.edu</a>
-        </div>
-    </div>
-
-    <div class="container clear">
-        <div class="row wrapper"> 
-    """
+    q = Path("html_prefix.txt").read_text(encoding="utf-8")
     q += sidebar + '\n\t\t<div class="right-col">\n\n'
     return q
 
@@ -351,7 +321,7 @@ def get_html_suffix() -> str:
     :return: The suffix of an HTML page.
     """
 
-    return "</div></div></body></html>"
+    return "</div></div></div></body></html>"
 
 
 def get_overview(namespace: str) -> str:
@@ -384,7 +354,7 @@ def snake_case(camel_case: str) -> str:
     return re.sub(r'(?<!^)(?=[A-Z])', '_', camel_case).lower()
 
 
-def get_klass(name: str, namespace: str) -> dict:
+def get_klass(name: str, namespace: str) -> Union[Klass, EnumDef]:
     d = Path("xml")
     # Get the filename from the 8cs file.
     root = ET.parse(d.joinpath(f"_{snake_case(name)}_8cs.xml").resolve().absolute())
@@ -394,12 +364,14 @@ def get_klass(name: str, namespace: str) -> dict:
         filename: str = inner_class.attrib["refid"] + ".xml"
         # Load the actual file.
         root: ElementTree = ET.parse(d.joinpath(filename).resolve().absolute())
-        k = Klass(name=name, namespace=namespace, et=root)
+        return Klass(name=name, namespace=namespace, et=root)
     else:
         section_def: Element = compound_def.find("sectiondef")
         # This is an enum.
         if section_def.attrib["kind"] == "enum":
-            e = EnumDef(name=name, e=section_def)
+            return EnumDef(name=name, e=section_def)
+        else:
+            raise Exception(ET.tostring(compound_def).decode())
 
 
 # doxygen()

@@ -54,7 +54,7 @@ p {
 }
 
 a {
-    color: #E30B5C;
+    color: #126eba;
 }
 
 a:hover {
@@ -68,7 +68,7 @@ code {
 
 .navbar {
     overflow: hidden;
-    background-color: #61AFEF;
+    background-color: #126eba;
     color: #333;
     top: 0;
     width: 100%;
@@ -98,7 +98,7 @@ code {
 }
 
 .top {
-    background-color: #61AFEF;
+    background-color: #126eba;
     height: 650px;
 }
 
@@ -108,7 +108,7 @@ code {
 }
 
 .nav-top {
-    border-top: 0px solid #61AFEF;
+    border-top: 0px solid #126eba;
 }
 
 .row {
@@ -142,7 +142,7 @@ code {
     font-weight: 600;
     text-align: left;
     text-decoration: none;
-    color: #E30B5C;
+    color: #126eba;
     display: block;
     padding-bottom: 12px;
 }
@@ -154,7 +154,7 @@ code {
     line-height: 30px;
     display: block;
     text-decoration: none;
-    color: #E30B5C;
+    color: #126eba;
 }
 
 .sidepanel a.sub-section {
@@ -164,7 +164,7 @@ code {
     line-height: 25px;
     display: block;
     text-decoration: none;
-    color: #E30B5C;
+    color: #126eba;
     padding-left: 20px;
 }
 
@@ -215,12 +215,32 @@ code {
 }
 
 .right-col a {
-    color: #E30B5C;
+    color: #126eba;
     text-decoration: underline;
 }
 
 .right-col ol {
     margin-block-start: 10px;
+}
+
+.content footer p {
+    float: left;
+    width: 100%;
+    margin-top: 1%;
+    margin-bottom: 0px;
+    line-height: 4px;
+    text-align: left;
+    font-size: 75%;
+    color: #b3b3b3;
+    background-color: #fff;
+}
+
+.content footer p a {
+    float: left;
+    width: 100%;
+    text-align: left;
+    color: #b3b3b3;
+    background-color: #fff;
 }
 
 .logo {
@@ -244,7 +264,7 @@ code {
 .divider {
     width: 40px;
     height: 4px;
-    background: #61AFEF;
+    background: #126eba;
     border-radius: 30px;
     margin: auto;
     margin-top: 8px;
@@ -265,8 +285,10 @@ code {
     background-color: #fff;
 }
 
+
+
 .footer a {
-    color: #333;
+    color: #b3b3b3;
 }
 
 .resp-break {

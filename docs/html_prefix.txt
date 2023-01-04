@@ -1,0 +1,34 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Clatter</title>
+    <meta name="description" content="Clatter API Documentation">
+    <meta name="author" content="Esther Alter">
+
+    <link rel="stylesheet" href="../style.css?">
+    <script src="../highlight/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</head>
+
+<body>
+
+    <div class="navbar clear nav-top">
+        <div class="row content">
+        	<footer>
+				<p><a href="https://www.doxygen.nl/manual/config.html">Doxygen</a></p>
+				<p><a href="https://github.com/charlyllo/doctemplate">doctemplate</a></p>
+				<p><a href="https://highlightjs.org">highlight.js</a></p
+			</footer>
+            <a class="right" href="#">Clatter API Documentation</a>
+            <a class="right" href="mailto:alters@mit.edu" target="_blank">alters@mit.edu</a>
+        </div>
+    </div>
+
+    <div class="container clear">
+        <div class="row wrapper">
