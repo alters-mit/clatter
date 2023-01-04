@@ -115,7 +115,7 @@ namespace Clatter.Core
             int verticalInterpolationIndex = 0;
             double vertical = 0.5 * Math.Pow(primarySpeed / scrapeMaxSpeed, 2);
             double horizontal = 0.05 * (primarySpeed / scrapeMaxSpeed);
-            for (int i = 0; i < ScrapeLinearSpace.Length; i++)
+            for (int i = 0; i < SAMPLES_LENGTH; i++)
             {
                 // Get the horizontal force.
                 horizontalForce[i] = horizontal * ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.dsdx, scrapeMaterialData.dsdx[scrapeIndex], scrapeMaterialData.dsdx[scrapeIndex + length], scrapeIndex, ref horizontalInterpolationIndex, numPts);
@@ -123,18 +123,17 @@ namespace Clatter.Core
                 verticalForce[i] = vertical * medianFilter.ProcessSample(Math.Tanh(ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.d2sdx2, scrapeMaterialData.d2sdx2[scrapeIndex], scrapeMaterialData.d2sdx2[scrapeIndex + length], scrapeIndex, ref verticalInterpolationIndex, numPts)
                     / curveMass));
             }
-            for (int i = 0; i < verticalForce.Length; i++)
+            for (int i = 0; i < SAMPLES_LENGTH; i++)
             {
                 verticalForce[i] += horizontalForce[i];
             }
             // Convolve and apply roughness.
-            double[] conv = impulseResponse.Convolve(verticalForce, ScrapeLinearSpace.Length);
-            for (int i = 0; i < conv.Length; i++)
+            impulseResponse.Convolve(verticalForce, ScrapeLinearSpace.Length, ref samples.samples);
+            for (int i = 0; i < SAMPLES_LENGTH; i++)
             {
-                conv[i] *= scrapeMaterialData.roughnessRatio;
+                samples.samples[i] *= scrapeMaterialData.roughnessRatio;
             }
-            // Generate the samples.
-            samples.Set(conv, start: 0, length: ScrapeLinearSpace.Length);
+            samples.length = SAMPLES_LENGTH;
             scrapeIndex = finalIndex;
             return true;
         }

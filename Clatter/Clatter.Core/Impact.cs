@@ -88,34 +88,33 @@ namespace Clatter.Core
                     frc[i] = Math.Sin(frc[i]);
                 }
                 // Convolve.
-                double[] rawSamples = impulseResponse.Convolve(frc, impulseResponseLength);
+                impulseResponse.Convolve(frc, impulseResponseLength, ref samples.samples);
                 double maxSample = 0;
-                for (int i = 0; i < rawSamples.Length; i++)
+                for (int i = 0; i < impulseResponseLength; i++)
                 {
-                    if (rawSamples[i] > maxSample)
+                    if (samples.samples[i] > maxSample)
                     {
-                        maxSample = rawSamples[i];
+                        maxSample = samples.samples[i];
                     }
                 }
                 maxSample = Math.Abs(maxSample);
                 double maxAbsSample = 0;
                 double abs;
-                for (int i = 0; i < rawSamples.Length; i++)
+                for (int i = 0; i < impulseResponseLength; i++)
                 {
-                    rawSamples[i] /= maxSample;
-                    abs = Math.Abs(rawSamples[i]);
+                    samples.samples[i] /= maxSample;
+                    abs = Math.Abs(samples.samples[i]);
                     if (abs > maxAbsSample)
                     {
                         maxAbsSample = abs;
                     }
                 }
                 // Scale by the amp value.
-                for (int i = 0; i < rawSamples.Length; i++)
+                for (int i = 0; i < impulseResponseLength; i++)
                 {
-                    rawSamples[i] = amp * rawSamples[i] / maxAbsSample;
+                    samples.samples[i] = amp * samples.samples[i] / maxAbsSample;
                 }
-                // Update the samples.
-                samples.Set(rawSamples, 0, rawSamples.Length);
+                samples.length = impulseResponseLength;
                 // Restart the clock.
                 watch.Restart();
                 // Update the collision count.

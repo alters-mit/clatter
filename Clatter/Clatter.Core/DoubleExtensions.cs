@@ -29,26 +29,29 @@ namespace Clatter.Core
                 return d;             
             }
         }
-        
-        
+
+
         /// <summary>
         /// Convolve an array with the given kernel.
         /// Source: https://stackoverflow.com/a/7239016
         /// This code is a more optimized version of the source.
         /// </summary>
-        /// <param name="a">A floating number array.</param>
+        /// <param name="a">(this)</param>
         /// <param name="kernel">A convolution kernel.</param>
         /// <param name="length">The length of the convolved array.</param>
-        public static double[] Convolve(this double[] a, double[] kernel, int length)
+        /// <param name="result">The output array.</param>
+        public static void Convolve(this double[] a, double[] kernel, int length, ref double[] result)
         {
-            double[] result = new double[length];
+            if (result.Length < length)
+            {
+                Array.Resize(ref result, length * 2);
+            }
             double sum;
             int n1;
             int n2;
             int inputLength = a.Length;
             int kernelLength = kernel.Length;
-            int resultLength = result.Length;
-            for (int i = resultLength - 1; i >= 0; i--)
+            for (int i = length - 1; i >= 0; i--)
             {
                 sum = 0;
                 n1 = i < inputLength ? 0 : i - inputLength - 1;
@@ -59,7 +62,6 @@ namespace Clatter.Core
                 }
                 result[i] = sum;
             }
-            return result;
         }
 
 
