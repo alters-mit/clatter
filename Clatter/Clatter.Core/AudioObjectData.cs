@@ -103,7 +103,7 @@ namespace Clatter.Core
         }
         
         
-                /// <summary>
+        /// <summary>
         /// Parse a size and an ImpactMaterialUnsized value to get an ImpactMaterial value.
         /// </summary>
         /// <param name="impactMaterialUnsized">The unsized impact material.</param>

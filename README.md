@@ -45,7 +45,8 @@ Pre-alpha to-dos:
 - [ ] Add command-line tools for OS X and Linux.
 - [ ] Add Clatter to TDW.
 - [ ] Add links to Clatter/TDW documentation
-- [ ] Add a  license.
+- [ ] Add a license.
+- [ ] Add attribution.
 
 Clatter is currently in alpha. It is likely still buggy and unstable. The API will likely change often until the first stable release.
 

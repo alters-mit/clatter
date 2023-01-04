@@ -9,3 +9,6 @@ ClatterUnityExamples/Logs/
 ClatterUnityExamples/Library/
 ClatterUnityExamples/Temp/
 ClatterUnityExamples/.vsconfig
+docs/xml/
+docs/html/clatter*/
+docs/scratch.py

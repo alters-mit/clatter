@@ -34,7 +34,7 @@ namespace Clatter.Core
         /// <summary>
         /// Create a Median Filter.
         /// </summary>
-        /// /// <param name="windowSize">The window size.</param>
+        /// <param name="windowSize">The window size.</param>
         public MedianFilter(int windowSize)
         {
             // Set the buffer.
