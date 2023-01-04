@@ -19,6 +19,3 @@ For a full list of arguments:
 ```powershell
 ./clatter.exe --help
 ```
-
-You can omit `--path [STRING]` to send the output to stdout:
-

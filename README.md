@@ -8,7 +8,8 @@ Clatter is intended for usage with [TDW](https://github.com/threedworld-mit/tdw)
 
 - Unique and powerful audio synthesis capabilities. Unlike most physics driven audio generators, Clatter generates audio out of pre-computed data, rather than relying on modifying or mixing pre-existing audio files.
 - Built-in support for Unity.
-- An intuitive, highly flexible API.
+- Highly performant. Clatter uses efficient memory management and multithreaded processes to generate audio.
+- An intuitive, flexible API.
 - Python API bindings.
 
  **There are three ways to use Clatter:**
@@ -44,14 +45,14 @@ Pre-alpha to-dos:
 - [ ] Add command-line tools for OS X and Linux.
 - [ ] Add Clatter to TDW.
 - [ ] Add links to Clatter/TDW documentation
+- [ ] Add a  license.
 
 Clatter is currently in alpha. It is likely still buggy and unstable. The API will likely change often until the first stable release.
 
-- We intend to support *rolling sounds* but this hasn't yet been implemented.
+- We intend to support rolling sounds but this hasn't yet been implemented.
 - Softer impact materials such as "fabric" don't sound as good as harder materials. This will be corrected in the near-future.
 - Impacts tend to sound best for small objects. We're working on adding better support for larger objects.
 - Some scrape materials may sound distorted or "scratchy". We'll fix these.
-- Clatter is pure-C# and likely can be further optimized.
 
 # How to Cite Clatter
 
