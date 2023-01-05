@@ -77,7 +77,7 @@ namespace Clatter.Unity
 
 
         /// <summary>
-        /// Gracefully end the audio.
+        /// Gracefully end the audio and prepare to self-destruct.
         /// </summary>
         public void End()
         {

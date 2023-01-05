@@ -78,12 +78,12 @@ namespace Clatter.Unity
         /// The audio amplitude.
         /// </summary>
         [Range(0, 1)]
-        public double amp = 0.1f;
+        public double amp = 0.1;
         /// <summary>
         /// The resonance value.
         /// </summary>
         [Range(0, 1)]
-        public double resonance = 0.1f;
+        public double resonance = 0.1;
         /// <summary>
         /// If true, the friction values are automatically set based on the impact material.
         /// </summary>
@@ -448,7 +448,7 @@ namespace Clatter.Unity
 
 
         /// <summary>
-        /// Update the object. This must be called from another script.
+        /// Update the directional and angular speeds of the underlying `Clatter.Core.AudioObjectData`. This method is not equivalent to FixedUpdate(), but it is called automatically by `ClatterManager`.
         /// </summary>
         public void OnFixedUpdate()
         {

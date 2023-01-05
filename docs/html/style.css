@@ -216,6 +216,11 @@ code {
     margin-block-end: 10px;
 }
 
+.right-col li {
+    font-size: 18px;
+    line-height: 26px;
+}
+
 
 .right-col table{
     width: 100%;

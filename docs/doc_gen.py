@@ -453,7 +453,7 @@ def get_overview(namespace: str) -> str:
 
 
 def get_readme() -> str:
-    md: str = Path("../README.md").resolve().read_text(encoding="utf-8")
+    md: str = Path("overview.md").resolve().read_text(encoding="utf-8")
     return get_html_prefix() + markdown(md) + get_html_suffix()
 
 

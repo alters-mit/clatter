@@ -2,7 +2,7 @@
 
 **Clatter is a C# library that can synthesize plausible sounds from physics-driven events.** Given a collision, the mass of the two objects, their "audio materials", the relative velocity, and so on, Clatter will generate a unique sound. Currently, Clatter is capable of generating impact and scrape sounds.
 
-**TODO add documentation link**
+[Github Repo](https://github.com/alters-mit/clatter)
 
 ## Features
 
@@ -14,26 +14,15 @@
 ## Ways to use Clatter
 
 1. As a component within [ThreeDWorld (TDW)](https://github.com/threedworld-mit/tdw), a research simulation platform. This is the original purpose of Clatter, but it can easily be used outside of TDW. **If you are a TDW user, you only need to read the TDW/Clatter documentation here TODO ADD LINK.**
-2. As a C# library: `Clatter.Core.dll`. The Clatter library can output raw wav data of physics-driven audio sounds or save the data as a .wav file.
-3. As a Unity plugin: `Clatter.Core.dll` plus `Clatter.Unity.dll`. The `Clatter.Unity.dll` library includes helpful scripts that automatically listen for collision events and automatically play generated audio.
-4. As a command-line executable.
+2. As a C# library: [`Clatter.Core.dll`](clatter.core_overview.html). The Clatter library can output raw wav data of physics-driven audio sounds or save the data as a .wav file.
+3. As a Unity plugin: `Clatter.Core.dll` plus [`Clatter.Unity.dll`](clatter.unity_overview.html). The `Clatter.Unity.dll` library includes helpful scripts that automatically listen for collision events and automatically play generated audio.
+4. As a command-line executable. **TODO ADD DOC**
 
 ## Installation
 
 **TODO**
 
 ## Roadmap
-
-Pre-alpha to-dos:
-
-- [ ] Add documentation.
-- [ ] Add releases and build tools.
-- [ ] Add Python bindings for `Clatter.Core.dll`.
-- [ ] Add command-line tools for OS X and Linux.
-- [ ] Add Clatter to TDW.
-- [ ] Add links to Clatter/TDW documentation
-- [ ] Add a license.
-- [ ] Add attribution.
 
 Clatter is currently in alpha. It is likely still buggy and unstable. The API will likely change often until the first stable release.
 
@@ -44,7 +33,7 @@ Clatter is currently in alpha. It is likely still buggy and unstable. The API wi
 
 ## How to cite Clatter
 
-Please read Clatter's [license](LICENSE.md).
+Please read Clatter's [license](LICENSE.md) TODO ADD LINK.
 
 Clatter was developed by Esther Alter. If you are using Clatter in a game, please list it and myself in the credits.
 
@@ -74,3 +63,11 @@ PyImpact was developed by James Traer, Maddie Cusimano, Josh McDermott, Vin Agar
      PDF-URL= "http://mcdermottlab.mit.edu/papers/Agarwal_etal_2021_scraping_rolling_synthesis_DAFx.pdf",
 }
 ```
+
+## Tools used to create this documentation
+
+- [Doxygen](https://www.doxygen.nl/manual/config.html)
+- [doctemplate](https://github.com/charlyllo/doctemplate)
+- [highlight.js](https://highlightjs.org)
+- [B612](https://fonts.google.com/specimen/B612)
+- [Fira Mono](https://fonts.google.com/specimen/Fira+Mono)

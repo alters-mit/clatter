@@ -11,7 +11,7 @@ namespace Clatter.Unity
     ///
     /// Internally, ClatterManager stores data for each `AudioProducingObject` in the scene and has a `Clatter.Core.AudioGenerator`. When a collision occurs between two `AudioProducingObject` components, the collision will be converted into a `Clatter.Core.CollisionEvent` and announced to the ClatterManager, which will in turn feed it to the AudioGenerator (see AudioGenerator.AddCollision(collisionEvent)). ClatterManager then converts the generated audio into `ImpactSound` or `ScrapeSound` components, which will play the sound and then self-destruct. 
     ///
-    /// ClatterManager *can* automatically update like any other MonoBehaviour class i.e. via Update() and FixedUpdate(). It might be convenient, especially to handle potential script execution order bugs, to manually update ClatterManager instead by setting `auto == false`. 
+    /// ClatterManager *can* automatically update like any other MonoBehaviour class i.e. via Update() and FixedUpdate(). It might be convenient, especially to handle potential script execution order bugs, to manually update ClatterManager instead by setting `auto == false`. Either way, ClatterManager will call AudioProducingObject.Initialize(id) and AudioProducingObject.OnFixedUpdate() for each `AudioProducingObject` in the scene. 
     ///
     /// In Clatter, audio is generated from both fixed values and random values; see the constructor for `Clatter.Core.Modes` and Modes.AdjustPowers(). In most cases, you'll want the audio to be truly random. If you want to replicate the exact same audio every time you run your program, uncheck "Generate Random Seed" and then enter a seed.
     ///
@@ -107,7 +107,7 @@ namespace Clatter.Unity
 
 
         /// <summary>
-        /// Call this once per frame to update ClatterManager. If `auto == true`, this method is automatically called in Update(). This method updates the internal `Clatter.Core.AudioGenerator` (see AudioGenerator.Update()) as well as each `AudioProducingObject` the scene (see AudioProducingObject.OnUpdate()).
+        /// Call this once per frame to update ClatterManager. If `auto == true`, this method is automatically called in Update(). This method updates the internal `Clatter.Core.AudioGenerator` (see AudioGenerator.Update()) as well as each `AudioProducingObject` the scene; see AudioProducingObject.OnUpdate().
         /// </summary>
         public void OnUpdate()
         {
@@ -134,7 +134,7 @@ namespace Clatter.Unity
 
 
         /// <summary>
-        /// Call this once per physics frame to update ClatterManager. If `auto == true`, this method is automatically called in FixedUpdate(). This method updates each `AudioProducingObject` the scene (see AudioProducingObject.OnFixedUpdate()).
+        /// Call this once per physics frame to update ClatterManager. If `auto == true`, this method is automatically called in FixedUpdate(). This method updates each `AudioProducingObject` the scene; see: AudioProducingObject.OnFixedUpdate().
         /// </summary>
         public void OnFixedUpdate()
         {
