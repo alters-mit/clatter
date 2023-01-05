@@ -51,7 +51,7 @@ namespace Clatter.Unity
         /// <summary>
         /// Invoked when this object is destroyed. Parameters: The ID of this object, i.e. `this.data.id`.
         /// </summary>
-        public UnityEvent<uint> onDestroy;
+        public UnityEvent<uint> onDestroy = new UnityEvent<uint>();
         /// <summary>
         /// If true, the object's "size bucket" is automatically set based on its volume.
         /// </summary>
@@ -325,6 +325,13 @@ namespace Clatter.Unity
             }
             // Get the average normal speed.
             double normalSpeed = normalSpeeds / numContacts;
+            // Ignore zero-velocity events.
+            if (normalSpeed <= 0)
+            {
+                collisionEvent = new CollisionEvent(data, otherData, AudioEventType.none, 0, Vector3d.Zero);
+                ClatterManager.instance.generator.AddCollision(collisionEvent);
+                return;
+            }
             // Get the approximate area.
             // Get the centroid.
             Vector3d centroid = Vector3d.Zero;

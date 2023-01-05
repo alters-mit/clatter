@@ -37,7 +37,13 @@ namespace Clatter.Core
         /// <summary>
         /// The cached modes array.
         /// </summary>
-        private double[] mode = new double[Globals.DEFAULT_SAMPLES_LENGTH];
+        [ThreadStatic]
+        private static double[] mode;
+        /// <summary>
+        /// If true, we've set the mode array on this thread.
+        /// </summary>
+        [ThreadStatic]
+        private static bool setMode;
 
 
         /// <summary>
@@ -74,9 +80,14 @@ namespace Clatter.Core
         /// <param name="resonance">The object's audio resonance value.</param>
         public void Sum(double resonance)
         {
+            if (!setMode)
+            {
+                setMode = true;
+                mode = new double[Globals.DEFAULT_SAMPLES_LENGTH];
+            }
             for (int i = 0; i < frequencies.Length; i++)
             {
-                int modeCount = (int)Math.Ceiling((decayTimes[i] * (80 + powers[i]) / 60) / 1e3 * Globals.framerate);
+                int modeCount = (int)Math.Ceiling((decayTimes[i] * (80.0 + powers[i]) / 60.0) / 1e3 * Globals.framerate);
                 // Clamp the count to positive values.
                 if (modeCount < 0)
                 {
@@ -106,7 +117,7 @@ namespace Clatter.Core
                     synthSoundLength = modeCount;
                     if (synthSound.Length < synthSoundLength)
                     {
-                        Array.Resize(ref synthSound, synthSoundLength * 2);
+                        Array.Resize(ref synthSound, synthSoundLength);
                     }
                     Buffer.BlockCopy(mode, 0, synthSound, 0, synthSoundLength * 8);
                 }
@@ -147,7 +158,7 @@ namespace Clatter.Core
                 length = bLength;
                 if (added.Length < length)
                 {
-                    Array.Resize(ref added, length * 2);
+                    Array.Resize(ref added, length);
                 }
                 Buffer.BlockCopy(b, 0, added, 0, length * 8);
                 for (int i = 0; i < aLength; i++)
