@@ -22,11 +22,10 @@
         <div class="row content">
         	<footer>
 				<p><a href="https://www.doxygen.nl/manual/config.html">Doxygen</a></p>
-				<p><a href="https://github.com/charlyllo/doctemplate">doctemplate</a></p>
-				<p><a href="https://highlightjs.org">highlight.js</a></p
+				<p>HTML/CSS/JS: <a href="https://github.com/charlyllo/doctemplate">doctemplate</a>&nbsp;and&nbsp;<a href="https://highlightjs.org">highlight.js</a></p>
+				<p>Fonts: <a href="https://fonts.google.com/specimen/B612">B612</a>&nbsp;and&nbsp;<a href="https://fonts.google.com/specimen/Fira+Mono">Fira Mono</a></p>
 			</footer>
-            <a class="right" href="#">Clatter API Documentation</a>
-            <a class="right" href="mailto:alters@mit.edu" target="_blank">alters@mit.edu</a>
+            <a class="right" href="https://github.com/alters-mit/clatter">GitHub Repo</a>
         </div>
     </div>
 

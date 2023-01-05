@@ -3,7 +3,6 @@ using Clatter.Core;
 using Clatter.Unity;
 using Random = System.Random;
 
-
 /// <summary>
 /// Drop lots of marbles, generating impact sounds.
 /// </summary>

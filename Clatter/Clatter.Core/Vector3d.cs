@@ -55,15 +55,6 @@ namespace Clatter.Core
                 vector[2] = value;
             }
         }
-        public Vector3d Normalized
-        {
-            get
-            {
-                Vector3d vector2d = new Vector3d(vector);
-                vector2d.Normalize();
-                return vector2d;
-            }
-        }
         /// <summary>
         /// The magnitude of the vector.
         /// </summary>
@@ -105,9 +96,9 @@ namespace Clatter.Core
         public Vector3d(double x, double y, double z)
         {
             vector = new double[3];
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
+            X = x;
+            Y = y;
+            Z = z;
         }
 
 

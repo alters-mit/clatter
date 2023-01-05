@@ -1,6 +1,5 @@
 ﻿using Clatter.Core;
 
-
 public class ScrapeAudioExample
 {
     private static void Main(string[] args)

@@ -1,7 +1,9 @@
 ﻿namespace Clatter.Core
 {
     /// <summary>
-    /// Samples caches an array of audio data as doubles to speed up data caching and minimize memory allocation.
+    /// Cached audio data as an array of doubles that can be converted to an array of floats (for usage in Unity) or a byte array of int16 data (for .wav files).
+    ///
+    /// To avoid unnecessary memory allocations, the samples array is usually longer than the "actual" data size. Always use Samples.length instead of Samples.samples.Length to evaluate the size of the array.
     ///
     /// See: `Impact` and `Scrape`, both of which have a samples field.
     /// </summary>

@@ -9,6 +9,12 @@ namespace Clatter.Core
     public static class DoubleExtensions
     {
         /// <summary>
+        /// Conversion factor for float to short.
+        /// </summary>
+        private const int FLOAT_TO_SHORT = 32767;
+        
+        
+        /// <summary>
         /// Clamp this value to be between a and b.
         /// </summary>
         /// <param name="d">(this)</param>
@@ -134,7 +140,7 @@ namespace Clatter.Core
             for (int i = 0; i < length; i++)
             {
                 // Cast to short.
-                s = (short)(a[i] * Globals.FLOAT_TO_SHORT);
+                s = (short)(a[i] * FLOAT_TO_SHORT);
                 // Convert to bytes.
                 s.GetBytes(shortArray);
                 // Copy the bytes

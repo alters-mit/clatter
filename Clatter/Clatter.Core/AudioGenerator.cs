@@ -9,32 +9,30 @@ namespace Clatter.Core
     /// <summary>
     /// An AudioGenerator can generate audio within a dynamic physics simulation.
     ///
-    /// AudioGenerator is not *required* for audio generation but is usually your best option, for two reasons:
-    ///
-    /// 1. AudioGenerator automatically converts `CollisionEvent` data into audio data.
-    /// 2. AudioGenerator is multi-threaded; concurrent collisions generate audio on separate threads.
+    /// AudioGenerator is not *required* for audio generation but is usually your best option, for two reasons. First, AudioGenerator automatically converts `CollisionEvent` data into audio data, meaning that it's suitable for physics simulation. Second, AudioGenerator is multi-threaded, meaning that concurrent audio generation is very fast.
     ///
     /// AudioGenerator is structured like a UnityEngine MonoBehaviour object but it isn't a subclass of MonoBehaviour and won't update like one; Update() needs to be called manually.
+    ///
+    /// **Regarding randomness:** AudioGenerator has an rng parameter that is a System.Random object. In Clatter, audio is generated from both fixed values and random values; see the constructor for `Modes` and Modes.AdjustPowers(). In most cases, you'll want the audio to be truly random. If you want to replicate the exact same audio every time you run your program, set a random seed: `Random rng = new Random(0)`.
     ///
     /// This is a minimal example of how to process multiple concurrent collisions with an AudioGenerator and, using `WavWriter`, write .wav files. Note that we're making a few implausible assumptions:
     ///
     /// - All of the objects are randomly generated. In a real simulation, you'll probably want more control over the objects' audio values.
     /// - All of the collisions have a centroid of (0, 0, 0). In a real simulation, the collisions should probably be spatialized.
-    /// - All of the collisions events are impacts. In a real simulation, we could add a `ScrapeMaterial` to a "floor" object to start generating scrape audio.
+    /// - All of the collision events are impacts. In a real simulation, we could add a `ScrapeMaterial` to a "floor" object to start generating scrape audio.
     ///
-    /// {code_example:AudioObjectDataConstructorScrapeMaterial}
-    ///
-    /// In Clatter, audio is generated from both fixed values and random values; see the constructor for `Modes` and Modes.AdjustPowers(). In most cases, you'll want the audio to be truly random. If you want to replicate the exact same audio every time you run your program, set the `seed` parameter in the AudioGenerator constructor.
+    /// {code_example:AudioGeneratorImpact}
+    /// 
     /// </summary>
     public class AudioGenerator
     {
         /// <summary>
-        /// Invoked when audio samples are generated.
+        /// Delegate for actions that are invoked during audio generation.
         /// </summary>
         /// <param name="samples">The audio samples.</param>
         /// <param name="centroid">The position of the audio source.</param>
         /// <param name="audioSourceId">The audio source ID.</param>
-        public delegate void AudioEvent(Samples samples, Vector3d centroid, int audioSourceId);
+        public delegate void AudioGenerationAction(Samples samples, Vector3d centroid, int audioSourceId);
 
 
         /// <summary>
@@ -46,15 +44,15 @@ namespace Clatter.Core
         /// <summary>
         /// Invoked when impact audio is generated.
         /// </summary>
-        public AudioEvent onImpact;
+        public AudioGenerationAction onImpact;
         /// <summary>
         /// Invoked when audio is generated for a new scrape event.
         /// </summary>
-        public AudioEvent onScrapeStart;
+        public AudioGenerationAction onScrapeStart;
         /// <summary>
         /// Invoked when audio is generated for an ongoing scrape event.
         /// </summary>
-        public AudioEvent onScrapeOngoing;
+        public AudioGenerationAction onScrapeOngoing;
         /// <summary>
         /// Invoked when a scrape ends.
         /// </summary>

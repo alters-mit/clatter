@@ -1,13 +1,19 @@
 @font-face {
-    font-family: 'B612-Regular';
+    font-family: 'OpenDyslexic-Regular';
     src:
-        url('fonts/b612/B612-Regular.ttf');
+        url('fonts/open_dyslexic/OpenDyslexic-Regular.otf');
 }
 
 @font-face {
     font-family: 'B612-Bold';
     src:
         url('fonts/b612/B612-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'B612-Regular';
+    src:
+        url('fonts/b612/B612-Regular.ttf');
 }
 
 @font-face {
@@ -57,6 +63,11 @@ a {
     color: #126eba;
 }
 
+th {
+    font-family: 'B612-Regular', sans-serif;
+    color: #333;
+}
+
 a:hover {
     text-decoration: underline;
 }
@@ -64,7 +75,6 @@ a:hover {
 code {
     font-family: 'Fira', serif;
 }
-
 
 .navbar {
     overflow: hidden;
@@ -81,7 +91,6 @@ code {
 }
 
 .navbar a {
-    margin-right: 40px;
     color: #333;
 }
 
@@ -139,7 +148,6 @@ code {
 .sidepanel a.title {
     font-family: 'B612-Bold', serif;
     font-size: 18px;
-    font-weight: 600;
     text-align: left;
     text-decoration: none;
     color: #126eba;
@@ -194,24 +202,49 @@ code {
 }
 
 .right-col h1 {
-    font-size: 300%;
+    font-size: 275%;
     line-height: 100%;
-    margin-bottom: 5%;
+    margin-bottom: 4%;
 }
 
 .right-col h2 {
     font-size: 175%;
-    line-height: 100%;
+    line-height: 130%;
     margin-bottom: 5px;
     text-align: left;
     margin-block-start: 20px;
     margin-block-end: 10px;
 }
 
+
+.right-col table{
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'B612-Regular', sans-serif;
+}
+.right-col td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.right-col th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+    font-weight: normal;
+}
+
+.right-col tr:nth-child(even){
+    background-color: #eee;
+}
+.right-col tr:first-child th {
+    background-color: #aaa;
+}
+
 .right-col p {
-    font-size: 16px;
-    line-height: 22px;
-    margin-bottom: 36px;
+    font-size: 18px;
+    line-height: 26px;
+    margin-bottom: 26px;
 }
 
 .right-col a {
@@ -221,6 +254,10 @@ code {
 
 .right-col ol {
     margin-block-start: 10px;
+}
+
+.right-col p.subtitle {
+    color: #b3b3b3;
 }
 
 .content footer p {
@@ -236,11 +273,7 @@ code {
 }
 
 .content footer p a {
-    float: left;
-    width: 100%;
-    text-align: left;
     color: #b3b3b3;
-    background-color: #fff;
 }
 
 .logo {
@@ -264,7 +297,7 @@ code {
 .divider {
     width: 40px;
     height: 4px;
-    background: #126eba;
+    background: #666666;
     border-radius: 30px;
     margin: auto;
     margin-top: 8px;

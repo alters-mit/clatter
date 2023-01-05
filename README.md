@@ -12,7 +12,7 @@ Clatter is intended for usage with [TDW](https://github.com/threedworld-mit/tdw)
 - An intuitive, flexible API.
 - Python API bindings.
 
- **There are three ways to use Clatter:**
+**There are three ways to use Clatter:**
 
 1. As a C# library: `Clatter.Core.dll`. The Clatter library can output raw wav data of physics-driven audio sounds or save the data as a .wav file.
 2. As a Unity plugin: `Clatter.Core.dll` plus `Clatter.Unity.dll`. The `Clatter.Unity.dll` library includes helpful scripts that automatically listen for collision events and automatically play generated audio.

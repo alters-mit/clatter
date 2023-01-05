@@ -1,12 +1,12 @@
-﻿using Clatter.Core;
-
+﻿using System;
+using System.Collections.Generic;
+using Clatter.Core;
 
 public static class AudioGeneratorImpact
 {
     private static AudioGenerator generator;
     private static Queue<byte[]> audioData = new Queue<byte[]>();
-
-
+    
     public static void Main(string[] args)
     {
         Random rng = new Random();
@@ -19,16 +19,12 @@ public static class AudioGeneratorImpact
             objects[i] = new AudioObjectData(i, ImpactMaterial.glass_1, rng.NextDouble(), rng.NextDouble(), rng.NextDouble() * 5);
             objectIDs[i] = i;
         }
-        
         // Create the audio generator.
         generator = new AudioGenerator(objects);
-        
         // Listen for impact events.
         generator.onImpact += OnImpact;
-        
         // Get the output directory.
         string outputDirectory = Path.GetFullPath("output");
-        
         // Iterate for 15 frames.
         for (int i = 0; i < 15; i++)
         {
@@ -54,10 +50,8 @@ public static class AudioGeneratorImpact
                     objectIndex = 0;
                 }
             }
-            
             // Update.
             generator.Update();
-            
             // Write the audio wav data.
             int audioIndex = 0;
             while (audioData.Count > 0)

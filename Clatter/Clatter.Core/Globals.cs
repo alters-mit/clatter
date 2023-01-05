@@ -1,7 +1,7 @@
 ﻿namespace Clatter.Core
 {
     /// <summary>
-    /// Global values used across clatter.
+    /// Global values used across Clatter.
     /// </summary>
     public static class Globals
     {
@@ -9,12 +9,8 @@
         /// The default length of an array of audio samples.
         /// </summary>
         public const int DEFAULT_SAMPLES_LENGTH = 6000;
-        /// <summary>
-        /// Conversion factor for float to short.
-        /// </summary>
-        public const int FLOAT_TO_SHORT = 32767;
-        
-        
+
+
         /// <summary>
         /// The audio samples framerate.
         /// </summary>

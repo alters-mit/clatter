@@ -1,7 +1,7 @@
 ﻿namespace Clatter.Core
 {
     /// <summary>
-    /// The type of collision audio event. Roll audio is not yet supported.
+    /// The type of collision audio event.
     /// </summary>
     public enum AudioEventType : byte
     {

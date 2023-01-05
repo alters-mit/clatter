@@ -9,7 +9,7 @@ namespace Clatter.Core
     public static class PhysicsValues
     {
         /// <summary>
-        /// Density in kg/m^3 per ImpactMaterial.
+        /// Density in kg/m^3 per ImpactMaterialUnsized.
         /// </summary>
         public static readonly Dictionary<ImpactMaterialUnsized, int> Density = new Dictionary<ImpactMaterialUnsized, int>()
         {

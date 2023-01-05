@@ -19,11 +19,11 @@ namespace Clatter.Core
     ///
     /// In many cases, it is possible to derive the AudioObjectData constructor parameters from other physical values:
     ///
-    /// **Example A.** Derive mass from volume. In this example, we need to convert the `ImpactMaterial` to an `ImpactMaterialUnsized` in order to look up the density:
+    /// In this example, we'll derive mass from an `ImpactMaterialUnsized` value and volume:
     ///
     /// {code_example:MassFromVolume}
     ///
-    /// **Example B.** Derive the "size bucket" from an `ImpactMaterialUnsized` value and volume:
+    /// In this example, we'll derive the "size bucket" from an `ImpactMaterialUnsized` value and volume:
     ///
     /// {code_example:SizeBucket}
     /// 
@@ -155,7 +155,7 @@ namespace Clatter.Core
         
 
         /// <summary>
-        /// Returns the object's "size bucket" given its volume..
+        /// Returns the object's "size bucket" given its volume.
         /// </summary>
         /// <param name="volume">The object's volume.</param>
         public static int GetSize(double volume)

@@ -50,7 +50,12 @@ namespace Clatter.Core
             watch.Start();
         }
 
-
+        
+        /// <summary>
+        /// Generate audio. Returns true if audio was generated. This will set the `samples` field.
+        /// </summary>
+        /// <param name="speed">The collision speed.</param>
+        /// <param name="rng">The random number generator.</param>
         public override bool GetAudio(double speed, Random rng)
         {
             // Get the elapsed time.
