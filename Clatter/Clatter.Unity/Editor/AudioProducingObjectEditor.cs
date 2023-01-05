@@ -31,6 +31,10 @@ namespace Clatter.Unity.Editor
             {
                 s.hollowness = EditorGUILayout.Slider("Hollowness", s.hollowness, 0, 1);
             }
+            else
+            {
+                s.mass = EditorGUILayout.DoubleField("Mass", s.mass);
+            }
         }
     }
 }

@@ -49,10 +49,6 @@ namespace Clatter.Unity
         /// </summary>
         public static bool filterDuplicates = true;
         /// <summary>
-        /// Invoked when this object is destroyed. Parameters: The ID of this object, i.e. `this.data.id`.
-        /// </summary>
-        public UnityEvent<uint> onDestroy = new UnityEvent<uint>();
-        /// <summary>
         /// If true, the object's "size bucket" is automatically set based on its volume.
         /// </summary>
         public bool autoSetSize = true;
@@ -112,6 +108,15 @@ namespace Clatter.Unity
         /// </summary>
         [HideInInspector]
         public float hollowness;
+        /// <summary>
+        /// The mass of the object. Ignored if `autoSetMass == true`.
+        /// </summary>
+        [HideInInspector]
+        public double mass;
+        /// <summary>
+        /// Invoked when this object is destroyed. Parameters: The ID of this object, i.e. `this.data.id`.
+        /// </summary>
+        public UnityEvent<uint> onDestroy = new UnityEvent<uint>();
         /// <summary>
         /// This object's data.
         /// </summary>
@@ -187,7 +192,6 @@ namespace Clatter.Unity
             hasRigidbody = r != null;
             hasArticulationBody = articulationBody != null;
             // Get the mass.
-            double mass;
             // Auto-set the mass.
             if (autoSetMass)
             {
