@@ -162,9 +162,9 @@ namespace Clatter.Unity
         /// </summary>
         private PhysicMaterial physicMaterial;
         /// <summary>
-        /// The floor audio data.
+        /// The default audio data. This is used whenever an `AudioProducingObject` collides with a non-`AudioProducingObject` object.
         /// </summary>
-        public static AudioObjectData floor = new AudioObjectData(0, ImpactMaterial.wood_medium_4, 0.5f, 0.1f, 100, ScrapeMaterial.plywood);
+        public static AudioObjectData defaultAudioObjectData = new AudioObjectData(0, ImpactMaterial.wood_medium_4, 0.5f, 0.1f, 100, ScrapeMaterial.plywood);
 
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Clatter.Unity
             {
                 angularSpeed = data.angularSpeed;
                 // The other object is the floor.
-                otherData = floor;
+                otherData = defaultAudioObjectData;
             }
             CollisionEvent collisionEvent;
             // Compare the IDs for filter out duplicate events.
