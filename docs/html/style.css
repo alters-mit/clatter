@@ -60,7 +60,7 @@ p {
 }
 
 a {
-    color: #126eba;
+    color: #E30B5C;
 }
 
 th {
@@ -78,7 +78,7 @@ code {
 
 .navbar {
     overflow: hidden;
-    background-color: #126eba;
+    background-color: #E30B5C;
     color: #333;
     top: 0;
     width: 100%;
@@ -107,7 +107,7 @@ code {
 }
 
 .top {
-    background-color: #126eba;
+    background-color: #E30B5C;
     height: 650px;
 }
 
@@ -117,7 +117,7 @@ code {
 }
 
 .nav-top {
-    border-top: 0px solid #126eba;
+    border-top: 0px solid #E30B5C;
 }
 
 .row {
@@ -150,7 +150,7 @@ code {
     font-size: 18px;
     text-align: left;
     text-decoration: none;
-    color: #126eba;
+    color: #E30B5C;
     display: block;
     padding-bottom: 12px;
 }
@@ -162,7 +162,7 @@ code {
     line-height: 30px;
     display: block;
     text-decoration: none;
-    color: #126eba;
+    color: #E30B5C;
 }
 
 .sidepanel a.sub-section {
@@ -172,7 +172,7 @@ code {
     line-height: 25px;
     display: block;
     text-decoration: none;
-    color: #126eba;
+    color: #E30B5C;
     padding-left: 20px;
 }
 
@@ -253,7 +253,7 @@ code {
 }
 
 .right-col a {
-    color: #126eba;
+    color: #E30B5C;
     text-decoration: underline;
 }
 
