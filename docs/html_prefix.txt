@@ -20,7 +20,8 @@
 
     <div class="navbar clear nav-top">
         <div class="row content">
-            <a class="right" href="https://github.com/alters-mit/clatter">GitHub Repo</a>
+            <p>Clatter API </p>
+            <p><a class="right" href="https://github.com/alters-mit/clatter">GitHub Repo</a></p>
         </div>
     </div>
 
