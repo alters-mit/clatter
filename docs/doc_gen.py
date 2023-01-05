@@ -413,7 +413,7 @@ def get_sidebar() -> str:
     """
 
     sidebar = '<div class="sidepanel">\n'
-    sidebar += f'\t\t\t\t<a class="title" href="overview.html">Overview</a>\n\n'
+    sidebar += '\t\t\t\t<a class="title" href="overview.html">Overview</a>\n\n'
     sidebar += f'\n\t\t\t\t<div class="divider left"></div>\n\n'
     for namespace in namespaces:
         # Add a title.
@@ -423,6 +423,9 @@ def get_sidebar() -> str:
         for f in namespaces[namespace]:
             sidebar += f'\t\t\t\t<a class="section" href="{f}.html">{f}</a>\n'
         sidebar += f'\n\t\t\t\t<div class="divider left"></div>\n\n'
+    sidebar += '\t\t\t\t<a class="title" href="cli_overview.html">Clatter CLI</a>\n\n'
+    sidebar += f'\n\t\t\t\t<div class="divider left"></div>\n\n'
+    sidebar += '\t\t\t\t<a class="title" href="benchmark.html">Benchmark</a>\n\n'
     sidebar = f"\t\t{sidebar.strip()}\n\t\t\t</div>"
     return sidebar
 
@@ -455,6 +458,11 @@ def get_overview(namespace: str) -> str:
 def get_readme() -> str:
     md: str = Path("overview.md").resolve().read_text(encoding="utf-8")
     return get_html_prefix() + markdown(md) + get_html_suffix()
+
+
+def get_benchmark() -> str:
+    md = Path("benchmark.md").read_text()
+    return get_html_prefix() + markdown(md, extensions=['markdown.extensions.tables']) + get_html_suffix()
 
 
 def doxygen() -> None:
@@ -515,3 +523,7 @@ for ns in namespaces:
             html = klass.html()
             html = get_html_prefix() + html + get_html_suffix()
             dst.joinpath(klass.name + ".html").write_text(html)
+# Add the CLI doc.
+dst.joinpath("cli_overview.html").write_text(get_overview("cli").replace("powershell", ""))
+dst.joinpath("benchmark.html").write_text(get_benchmark())
+

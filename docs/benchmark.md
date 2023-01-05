@@ -4,7 +4,7 @@ To benchmark Clatter, compile and run the Clatter.Benchmark project.
 
 There are two benchmarks:
 
-- The impact benchmark generates a series of 100 impact sounds and returns the total elapsed time in seconds. The elapsed time per impact is *roughly* `1 / elapsed`.
+- The impact benchmark generates a series of 100 impact sounds and returns the total elapsed time in seconds.
 - The scrape benchmark generates a scrape that is 10 seconds long and returns the total elapsed time in seconds.
 - The threaded benchmark generates 100 trials. Per trial, it creates 200 objects and generates 100 impact audio sounds. Audio generation is multi-threaded (via `AudioGenerator`). This returns two results: the total time elapsed, and the average time elapsed per trial. The average time can be compared to the impact benchmark.
 
@@ -12,7 +12,7 @@ There are two benchmarks:
 
 | Benchmark | Time (seconds) |
 | --- | --- |
-| Impact | 0.7697801 |
-| Scrape | 2.8397312 |
-| Threaded (total) | 14.060787399999997 |
-| Threaded (average) | 0.14060787399999997 |
+| Impact | 0.5231505 |
+| Scrape | 1.286521 |
+| Threaded (total) | 10.745710299999997 |
+| Threaded (average) | 0.10745710299999997 |

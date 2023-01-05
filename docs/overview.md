@@ -16,7 +16,7 @@
 1. As a component within [ThreeDWorld (TDW)](https://github.com/threedworld-mit/tdw), a research simulation platform. This is the original purpose of Clatter, but it can easily be used outside of TDW. **If you are a TDW user, you only need to read the TDW/Clatter documentation here TODO ADD LINK.**
 2. As a C# library: [`Clatter.Core.dll`](clatter.core_overview.html). The Clatter library can output raw wav data of physics-driven audio sounds or save the data as a .wav file.
 3. As a Unity plugin: `Clatter.Core.dll` plus [`Clatter.Unity.dll`](clatter.unity_overview.html). The `Clatter.Unity.dll` library includes helpful scripts that automatically listen for collision events and automatically play generated audio.
-4. As a command-line executable. **TODO ADD DOC**
+4. As a [command-line executable](cli_overview.html).
 
 ## Installation
 
