@@ -2,6 +2,7 @@ import re
 from typing import Dict, List, Union
 from subprocess import call
 from pathlib import Path
+from shutil import rmtree
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import ElementTree, Element
 from markdown import markdown
@@ -504,15 +505,19 @@ def get_klass(name: str, namespace: str) -> Union[Klass, EnumDef]:
             raise Exception(ET.tostring(compound_def).decode())
 
 
+# Generate XML with Doxygen.
 doxygen()
+# Get the namespaces.
 namespaces = get_namespaces()
+# Get the sidebar html.
 sidebar = get_sidebar()
 dst = Path("html/html").resolve()
-# Write the README.
+# Write the overview doc.
 dst.joinpath("overview.html").write_text(get_readme())
 for ns in namespaces:
     # Write the overview doc.
     dst.joinpath(f"{ns.lower()}_overview.html").write_text(get_overview(ns))
+    # Generate class and enum docs.
     for kl in namespaces[ns]:
         klass = get_klass(name=kl, namespace=ns)
         if isinstance(klass, Klass):
@@ -523,7 +528,8 @@ for ns in namespaces:
             html = klass.html()
             html = get_html_prefix() + html + get_html_suffix()
             dst.joinpath(klass.name + ".html").write_text(html)
-# Add the CLI doc.
+# Add the CLI and benchmark docs.
 dst.joinpath("cli_overview.html").write_text(get_overview("cli").replace("powershell", ""))
 dst.joinpath("benchmark.html").write_text(get_benchmark())
-
+# Remove the XML.
+rmtree(Path("xml").absolute())
