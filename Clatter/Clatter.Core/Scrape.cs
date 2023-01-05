@@ -132,6 +132,7 @@ namespace Clatter.Core
             {
                 verticalForce[i] += horizontalForce[i];
             }
+
             // Convolve and apply roughness.
             impulseResponse.Convolve(verticalForce, ScrapeLinearSpace.Length, ref samples.samples);
             for (int i = 0; i < SAMPLES_LENGTH; i++)

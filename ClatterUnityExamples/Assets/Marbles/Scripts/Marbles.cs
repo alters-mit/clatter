@@ -43,7 +43,7 @@ public class Marbles : MonoBehaviour
         f.amp = 0.5f;
         f.resonance = 0.1f;
         f.autoSetMass = false;
-        f.data = AudioProducingObject.floor;
+        f.data = AudioProducingObject.defaultAudioObjectData;
         // Add the floor's Rigidbody and set the mass.
         Rigidbody fr = floor.AddComponent<Rigidbody>();
         fr.isKinematic = true;

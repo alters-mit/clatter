@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using System.Linq;
 
@@ -199,6 +198,8 @@ namespace Clatter.Core
                             if (scrapes[collisionEvents[i].ids].state == EventState.start)
                             {
                                 onScrapeStart?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].centroid, scrapes[collisionEvents[i].ids].scrapeId);
+                                // Mark the scrape as ongoing.
+                                scrapes[collisionEvents[i].ids].state = EventState.ongoing;
                             }
                             // Continue an ongoing scrape.
                             else if (scrapes[collisionEvents[i].ids].state == EventState.ongoing)
@@ -227,13 +228,8 @@ namespace Clatter.Core
             ulong[] scrapeKeys = scrapes.Keys.ToArray();
             for (int i = 0; i < scrapeKeys.Length; i++)
             {
-                // Mark the scrape as ongoing.
-                if (scrapes[scrapeKeys[i]].state == EventState.start)
-                {
-                    scrapes[scrapeKeys[i]].state = EventState.ongoing;
-                }
                 // Mark the scrape as ended.
-                else if (scrapes[scrapeKeys[i]].state == EventState.end)
+                if (scrapes[scrapeKeys[i]].state == EventState.end)
                 {
                     // Announce that the scrape has ended.
                     onScrapeEnd?.Invoke(scrapes[scrapeKeys[i]].scrapeId);
@@ -284,7 +280,7 @@ namespace Clatter.Core
         /// <param name="collisionIndex">The index of the collision event.</param>
         /// <param name="audioEvents">The audio events.</param>
         private void GetAudio<T>(int collisionIndex, Dictionary<ulong, T> audioEvents)
-            where T : Core.AudioEvent
+            where T : AudioEvent
         {
             // Try to generate audio.
             try

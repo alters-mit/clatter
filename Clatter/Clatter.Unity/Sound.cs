@@ -81,6 +81,10 @@ namespace Clatter.Unity
         /// </summary>
         public void End()
         {
+            if (gameObject == null)
+            {
+                return;
+            }
             // Stop playing audio.
             if (playAudio != null)
             {
