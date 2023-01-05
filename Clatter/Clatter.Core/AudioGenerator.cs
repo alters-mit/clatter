@@ -177,11 +177,10 @@ namespace Clatter.Core
                     // Kill the thread.
                     if (destroyed)
                     {
-                        audioThreads[i].Join();
-                        threadDeaths[i] = true;
+                        break;
                     }
                     // This thread is dead.
-                    else if (threadDeaths[i])
+                    if (threadDeaths[i])
                     {
                         // Remove the thread.
                         audioThreads[i] = null;
@@ -214,6 +213,18 @@ namespace Clatter.Core
                         threadsDone = false;
                     }
                 }
+            }
+            // Kill any lingering threads.
+            if (destroyed)
+            {
+                for (int i = 0; i < audioThreads.Length; i++)
+                {
+                    if (audioThreads[i] != null)
+                    {
+                        audioThreads[i].Join();
+                    }
+                }
+                return;
             }
             // Remove any impact events that have ended.
             ulong[] impactKeys = impacts.Keys.ToArray();
@@ -285,7 +296,8 @@ namespace Clatter.Core
             // Try to generate audio.
             try
             {
-                if (!audioEvents[collisionEvents[collisionIndex].ids].GetAudio(collisionEvents[collisionIndex].speed, rng))
+                if (!audioEvents[collisionEvents[collisionIndex].ids]
+                        .GetAudio(collisionEvents[collisionIndex].speed, rng))
                 {
                     audioEvents[collisionEvents[collisionIndex].ids].state = EventState.end;
                 }
