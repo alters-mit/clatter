@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
@@ -44,7 +44,7 @@ namespace Clatter.Core
         /// <summary>
         /// Listen for threads this many times before giving up. This is used to break a potential infinite loop. You should only adjust this value if you're getting a lot of `AudioGeneratorTimeoutException`s thrown.
         /// </summary>
-        public static uint maxNumThreatIterations = 1000;
+        public static uint maxNumThreadIterations = 100000;
         /// <summary>
         /// Invoked when impact audio is generated.
         /// </summary>
@@ -66,7 +66,7 @@ namespace Clatter.Core
         /// </summary>
         private readonly Random rng;
         /// <summary>
-        /// An array of collision events. See numEvents for the actual number of events..
+        /// An array of collision events. See numEvents for the actual number of events.
         /// </summary>
         private CollisionEvent[] collisionEvents = new CollisionEvent[DEFAULT_MAX_NUM_EVENTS];
         /// <summary>
@@ -168,14 +168,14 @@ namespace Clatter.Core
             // Wait for the threads to finish.
             bool threadsDone = false;
             uint threadIterations = 0;
-            while (!threadsDone && threadIterations < maxNumThreatIterations)
+            while (!threadsDone && threadIterations < maxNumThreadIterations)
             {
                 threadsDone = true;
                 // Iterate through each thread.
                 for (int i = 0; i < numEvents; i++)
                 {
                     // Ignore null threads.
-                    if (audioThreads[i] == null)
+                    if (collisionEvents[i].type == AudioEventType.none || audioThreads[i] == null)
                     {
                         continue;
                     }
@@ -275,10 +275,10 @@ namespace Clatter.Core
             // Resize the arrays if needed.
             if (numEvents >= collisionEvents.Length)
             {
-                Array.Resize(ref collisionEvents, numEvents * 2);
-                Array.Resize(ref audioThreads, numEvents * 2);
-                Array.Resize(ref threadDeaths, numEvents * 2);
-                Array.Resize(ref falses, numEvents * 2);
+                Array.Resize(ref collisionEvents, numEvents);
+                Array.Resize(ref audioThreads, numEvents);
+                Array.Resize(ref threadDeaths, numEvents);
+                Array.Resize(ref falses, numEvents);
             }
             // Add the event.
             collisionEvents[numEvents] = collisionEvent;
@@ -307,8 +307,7 @@ namespace Clatter.Core
             // Try to generate audio.
             try
             {
-                if (!audioEvents[collisionEvents[collisionIndex].ids]
-                        .GetAudio(collisionEvents[collisionIndex].speed, rng))
+                if (!audioEvents[collisionEvents[collisionIndex].ids].GetAudio(collisionEvents[collisionIndex].speed, rng))
                 {
                     audioEvents[collisionEvents[collisionIndex].ids].state = EventState.end;
                 }
