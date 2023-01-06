@@ -201,13 +201,13 @@ namespace Clatter.Unity
         /// </summary>
         /// <param name="samples">The audio samples.</param>
         /// <param name="position">The position of the audio source.</param>
-        /// <param name="audioSourceID">The ID of the audio source.</param>
-        private T OnAudioStart<T>(Samples samples, Vector3d position, int audioSourceID)
+        /// <param name="audioSourceId">The ID of the audio source.</param>
+        private T OnAudioStart<T>(Samples samples, Vector3d position, int audioSourceId)
             where T : Sound
         {
-            T sound = Sound.Create<T>(samples, position, audioSourceID);
+            T sound = Sound.Create<T>(samples, position, audioSourceId);
             // Remember the audio source.
-            sounds.Add(audioSourceID, sound);
+            sounds.Add(audioSourceId, sound);
             // Remember to destroy the audio source.
             sound.onEnd += OnSoundEnd;
             return sound;
@@ -219,20 +219,20 @@ namespace Clatter.Unity
         /// </summary>
         /// <param name="samples">The audio samples.</param>
         /// <param name="position">The position of the audio source.</param>
-        /// <param name="audioSourceID">The ID of the audio source.</param>
-        private void OnScrapeOngoing(Samples samples, Vector3d position, int audioSourceID)
+        /// <param name="audioSourceId">The ID of the audio source.</param>
+        private void OnScrapeOngoing(Samples samples, Vector3d position, int audioSourceId)
         {
-            scrapeSounds[audioSourceID].UpdateAudio(samples, position);
+            scrapeSounds[audioSourceId].UpdateAudio(samples, position);
         }
 
 
         /// <summary>
         /// End scrape audio.
         /// </summary>
-        /// <param name="audioSourceID">The ID of the audio source.</param>
-        private void OnScrapeEnd(int audioSourceID)
+        /// <param name="audioSourceId">The ID of the audio source.</param>
+        private void OnScrapeEnd(int audioSourceId)
         {
-            scrapeSounds[audioSourceID].End();
+            scrapeSounds[audioSourceId].End();
         }
 
 

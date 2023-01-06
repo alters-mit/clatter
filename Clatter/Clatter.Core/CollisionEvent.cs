@@ -24,9 +24,9 @@
         /// </summary>
         public readonly AudioEventType type;
         /// <summary>
-        /// The centroid of the collision.
+        /// The position of the collision.
         /// </summary>
-        public readonly Vector3d centroid;
+        public readonly Vector3d position;
         /// <summary>
         /// The speed of the collision.
         /// </summary>
@@ -40,14 +40,14 @@
         /// <param name="secondary">The secondary object.</param>
         /// <param name="type">The type of the audio event (impact, scrape, roll, none).</param>
         /// <param name="speed">The speed of the collision.</param>
-        /// <param name="centroid">The centroid of the collision.</param>
-        public CollisionEvent(AudioObjectData primary, AudioObjectData secondary, AudioEventType type, double speed, Vector3d centroid)
+        /// <param name="position">The centroid of the collision.</param>
+        public CollisionEvent(AudioObjectData primary, AudioObjectData secondary, AudioEventType type, double speed, Vector3d position)
         {
             this.primary = primary;
             this.secondary = secondary;
             this.type = type;
             this.speed = speed;
-            this.centroid = centroid;
+            this.position = position;
             // Get an object ID pair as a long. Source: https://stackoverflow.com/a/827267
             ids = ((ulong)primary.id << 32) | secondary.id;
         }

@@ -30,9 +30,9 @@ namespace Clatter.Core
         /// Delegate for actions that are invoked during audio generation.
         /// </summary>
         /// <param name="samples">The audio samples.</param>
-        /// <param name="centroid">The position of the audio source.</param>
+        /// <param name="position">The position of the audio source.</param>
         /// <param name="audioSourceId">The audio source ID.</param>
-        public delegate void AudioGenerationAction(Samples samples, Vector3d centroid, int audioSourceId);
+        public delegate void AudioGenerationAction(Samples samples, Vector3d position, int audioSourceId);
 
 
         /// <summary>
@@ -41,6 +41,10 @@ namespace Clatter.Core
         private const int DEFAULT_MAX_NUM_EVENTS = 200;
 
         
+        /// <summary>
+        /// Listen for threads this many times before giving up. This is used to break a potential infinite loop. You should only adjust this value if you're getting a lot of `AudioGeneratorTimeoutException`s thrown.
+        /// </summary>
+        public static uint maxNumThreatIterations = 1000;
         /// <summary>
         /// Invoked when impact audio is generated.
         /// </summary>
@@ -163,7 +167,8 @@ namespace Clatter.Core
             }
             // Wait for the threads to finish.
             bool threadsDone = false;
-            while (!threadsDone)
+            uint threadIterations = 0;
+            while (!threadsDone && threadIterations < maxNumThreatIterations)
             {
                 threadsDone = true;
                 // Iterate through each thread.
@@ -188,7 +193,7 @@ namespace Clatter.Core
                         if (collisionEvents[i].type == AudioEventType.impact && impacts[collisionEvents[i].ids].state != EventState.end)
                         {
                             // Play impact samples at the centroid using a new random audio source ID.
-                            onImpact?.Invoke(impacts[collisionEvents[i].ids].samples, collisionEvents[i].centroid, rng.Next());
+                            onImpact?.Invoke(impacts[collisionEvents[i].ids].samples, collisionEvents[i].position, rng.Next());
                         }
                         // Announce scrape audio.
                         else if (collisionEvents[i].type == AudioEventType.scrape)
@@ -196,14 +201,14 @@ namespace Clatter.Core
                             // Start a new scrape.
                             if (scrapes[collisionEvents[i].ids].state == EventState.start)
                             {
-                                onScrapeStart?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].centroid, scrapes[collisionEvents[i].ids].scrapeId);
+                                onScrapeStart?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].position, scrapes[collisionEvents[i].ids].scrapeId);
                                 // Mark the scrape as ongoing.
                                 scrapes[collisionEvents[i].ids].state = EventState.ongoing;
                             }
                             // Continue an ongoing scrape.
                             else if (scrapes[collisionEvents[i].ids].state == EventState.ongoing)
                             {
-                                onScrapeOngoing?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].centroid, scrapes[collisionEvents[i].ids].scrapeId);
+                                onScrapeOngoing?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].position, scrapes[collisionEvents[i].ids].scrapeId);
                             }
                         }
                     }
@@ -213,17 +218,18 @@ namespace Clatter.Core
                         threadsDone = false;
                     }
                 }
+                threadIterations++;
+            }
+            // The while loop iterated too many times.
+            if (!threadsDone)
+            {
+                JoinThreads();
+                throw new AudioGeneratorTimeoutException(threadIterations);
             }
             // Kill any lingering threads.
             if (destroyed)
             {
-                for (int i = 0; i < audioThreads.Length; i++)
-                {
-                    if (audioThreads[i] != null)
-                    {
-                        audioThreads[i].Join();
-                    }
-                }
+                JoinThreads();
                 return;
             }
             // Remove any impact events that have ended.
@@ -258,9 +264,14 @@ namespace Clatter.Core
         /// <summary>
         /// Register a new collision audio event.
         /// </summary>
-        /// <param name="collisionEvent">The event.</param>
+        /// <param name="collisionEvent">The collision event.</param>
         public void AddCollision(CollisionEvent collisionEvent)
         {
+            // If we try to add a spurious collision, fix it here.
+            if (collisionEvent.speed <= 0 && collisionEvent.type != AudioEventType.none)
+            {
+                collisionEvent = new CollisionEvent(collisionEvent.primary, collisionEvent.secondary, AudioEventType.none, 0, collisionEvent.position);
+            }
             // Resize the arrays if needed.
             if (numEvents >= collisionEvents.Length)
             {
@@ -306,6 +317,21 @@ namespace Clatter.Core
             finally
             {
                 threadDeaths[collisionIndex] = true;
+            }
+        }
+
+
+        /// <summary>
+        /// Join all lingering threads.
+        /// </summary>
+        private void JoinThreads()
+        {
+            for (int i = 0; i < audioThreads.Length; i++)
+            {
+                if (audioThreads[i] != null)
+                {
+                    audioThreads[i].Join();
+                }
             }
         }
     }

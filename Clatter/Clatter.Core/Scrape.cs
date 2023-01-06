@@ -86,10 +86,6 @@ namespace Clatter.Core
         {
             // Get the speed of the primary object and clamp it.
             double primarySpeed = Math.Min(speed, scrapeMaxSpeed);
-            if (primarySpeed <= 0)
-            {
-                return false;
-            }
             // Get impulse response of the colliding objects.
             if (!gotImpulseResponse)
             {

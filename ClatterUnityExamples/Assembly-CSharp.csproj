@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Assets\Marbles\Scripts\Marbles.cs" />
     <Compile Include="Assets\Scrape\ForceApplier.cs" />
+    <Compile Include="Assets\ScrapeManual\ScrapeGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
