@@ -135,6 +135,12 @@ namespace Clatter.Core
             // Iterate through all valid events.
             for (int i = 0; i < numEvents; i++)
             {
+                // Ignore collisions that are too slow.
+                if (collisionEvents[i].speed < AudioEvent.minSpeed || collisionEvents[i].type == AudioEventType.none)
+                {
+                    eventDeaths[i] = true;
+                    continue;
+                }
                 // Get a thread-safe index.
                 int index = i;
                 // Generate impact audio.

@@ -46,7 +46,17 @@ public class ScrapeGenerator : MonoBehaviour
         // Gracefully end.
         generator.End();
         sound.End();
+
+#if UNITY_EDITOR
+
+        UnityEditor.EditorApplication.isPlaying = false;
+
+#else
+
         Application.Quit();
+
+#endif
+
     }
 
 

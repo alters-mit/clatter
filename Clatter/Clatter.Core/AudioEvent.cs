@@ -21,6 +21,10 @@ namespace Clatter.Core
         /// </summary>
         public static bool clampContactTime = true;
         /// <summary>
+        /// The minimum collision speed.
+        /// </summary>
+        public static double minSpeed = 0.00001;
+        /// <summary>
         /// The audio samples generated from this event.
         /// </summary>
         public readonly Samples samples = new Samples();
