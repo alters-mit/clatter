@@ -40,11 +40,7 @@ namespace Clatter.Core
         /// </summary>
         private const int DEFAULT_MAX_NUM_EVENTS = 200;
 
-        
-        /// <summary>
-        /// Listen for threads this many times before giving up. This is used to break a potential infinite loop. You should only adjust this value if you're getting a lot of `AudioGeneratorTimeoutException`s thrown.
-        /// </summary>
-        public static uint maxNumThreadIterations = 100000;
+
         /// <summary>
         /// Invoked when impact audio is generated.
         /// </summary>
@@ -167,8 +163,7 @@ namespace Clatter.Core
             }
             // Wait for the threads to finish.
             bool threadsDone = false;
-            uint threadIterations = 0;
-            while (!threadsDone && threadIterations < maxNumThreadIterations)
+            while (!threadsDone)
             {
                 threadsDone = true;
                 // Iterate through each thread.
@@ -218,13 +213,6 @@ namespace Clatter.Core
                         threadsDone = false;
                     }
                 }
-                threadIterations++;
-            }
-            // The while loop iterated too many times.
-            if (!threadsDone)
-            {
-                JoinThreads();
-                throw new AudioGeneratorTimeoutException(threadIterations);
             }
             // Kill any lingering threads.
             if (destroyed)
