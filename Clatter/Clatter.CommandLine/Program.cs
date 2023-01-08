@@ -58,7 +58,7 @@ namespace Clatter.CommandLine
             AudioEvent.simulationAmp = AudioEvent.simulationAmp.Clamp(0, 1);
             ArgumentParser.TryGetBooleanValue(args, "allow_distortion", ref AudioEvent.preventDistortion);
             ArgumentParser.TryGetBooleanValue(args, "unclamp_contact_time", ref AudioEvent.clampContactTime);
-            ArgumentParser.TryGetDoubleValue(args, "scrape_max_speed", ref Scrape.scrapeMaxSpeed);
+            ArgumentParser.TryGetDoubleValue(args, "scrape_max_speed", ref Scrape.maxSpeed);
             // Set the primary object.
             AudioObjectData primary = GetAudioObjectData(args, 0, "primary", false);
             // Get the audio type.

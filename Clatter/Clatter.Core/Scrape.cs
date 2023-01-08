@@ -20,11 +20,11 @@ namespace Clatter.Core
         /// </summary>
         public const int SAMPLES_LENGTH = 4410;
 
-
+        
         /// <summary>
         /// The maximum speed allowed for a scrape.
         /// </summary>
-        public static double scrapeMaxSpeed = 5;
+        public static double maxSpeed = 5;
         /// <summary>
         /// The ID of this scrape event. This is used to track an ongoing scrape.
         /// </summary>
@@ -84,7 +84,12 @@ namespace Clatter.Core
         public override bool GetAudio(double speed)
         {
             // Get the speed of the primary object and clamp it.
-            double primarySpeed = Math.Min(speed, scrapeMaxSpeed);
+            double primarySpeed = Math.Min(speed, maxSpeed);
+            int numPts = (int)(Math.Floor((primarySpeed / 10) / ScrapeMaterialData.SCRAPE_M_PER_PIXEL) + 1);
+            if (numPts <= 1)
+            {
+                return false;
+            }
             // Get impulse response of the colliding objects.
             if (!gotImpulseResponse)
             {
@@ -94,11 +99,6 @@ namespace Clatter.Core
                     return false;
                 }
                 gotImpulseResponse = true;
-            }
-            int numPts = (int)(Math.Floor((primarySpeed / 10) / ScrapeMaterialData.SCRAPE_M_PER_PIXEL) + 1);
-            if (numPts <= 1)
-            {
-                return false;
             }
             // Get the final index.
             int finalIndex = scrapeIndex + numPts;
@@ -117,15 +117,14 @@ namespace Clatter.Core
             // Apply interpolation.
             int horizontalInterpolationIndex = 0;
             int verticalInterpolationIndex = 0;
-            double vertical = 0.5 * Math.Pow(primarySpeed / scrapeMaxSpeed, 2);
-            double horizontal = 0.05 * (primarySpeed / scrapeMaxSpeed);
+            double vertical = 0.5 * Math.Pow(primarySpeed / maxSpeed, 2);
+            double horizontal = 0.05 * (primarySpeed / maxSpeed);
             for (int i = 0; i < SAMPLES_LENGTH; i++)
             {
                 // Get the horizontal force.
                 horizontalForce[i] = horizontal * ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.dsdx, scrapeMaterialData.dsdx[scrapeIndex], scrapeMaterialData.dsdx[scrapeIndex + length], scrapeIndex, ref horizontalInterpolationIndex, numPts);
                 // Get the curve value.
-                verticalForce[i] = vertical * medianFilter.ProcessSample(Math.Tanh(ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.d2sdx2, scrapeMaterialData.d2sdx2[scrapeIndex], scrapeMaterialData.d2sdx2[scrapeIndex + length], scrapeIndex, ref verticalInterpolationIndex, numPts)
-                    / curveMass));
+                verticalForce[i] = vertical * medianFilter.ProcessSample(Math.Tanh(ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.d2sdx2, scrapeMaterialData.d2sdx2[scrapeIndex], scrapeMaterialData.d2sdx2[scrapeIndex + length], scrapeIndex, ref verticalInterpolationIndex, numPts) / curveMass));
             }
             for (int i = 0; i < SAMPLES_LENGTH; i++)
             {

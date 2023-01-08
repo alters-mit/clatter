@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Linq;
 
 
 namespace Clatter.Core
@@ -74,7 +73,11 @@ namespace Clatter.Core
         /// </summary>
         private bool[] threadDeaths = new bool[DEFAULT_MAX_NUM_EVENTS];
         /// <summary>
-        /// An array of falses used to clear threadDeaths.
+        /// Booleans indicating whether the collision event is still being evaluated.
+        /// </summary>
+        private bool[] eventDeaths = new bool[DEFAULT_MAX_NUM_EVENTS];
+        /// <summary>
+        /// An array of falses used to clear threadDeaths and eventDeaths.
         /// </summary>
         private bool[] falses = new bool[DEFAULT_MAX_NUM_EVENTS];
         /// <summary>
@@ -169,19 +172,42 @@ namespace Clatter.Core
                 // Iterate through each thread.
                 for (int i = 0; i < numEvents; i++)
                 {
-                    // Ignore null threads.
-                    if (collisionEvents[i].type == AudioEventType.none || audioThreads[i] == null)
-                    {
-                        continue;
-                    }
                     // Kill the thread.
                     if (destroyed)
                     {
                         break;
                     }
+                    // We already checked this event.
+                    if (eventDeaths[i])
+                    {
+                        continue;
+                    }
+                    // Stop an ongoing event if the speed is too slow or if there was a "none" collision.
+                    if ((collisionEvents[i].speed == 0 && collisionEvents[i].type != AudioEventType.none) || collisionEvents[i].type == AudioEventType.none)
+                    {
+                        // End an impact.
+                        if (collisionEvents[i].type == AudioEventType.impact)
+                        {
+                            impacts.Remove(collisionEvents[i].ids);
+                        }
+                        // End a scrape.
+                        else if (collisionEvents[i].type == AudioEventType.scrape)
+                        {
+                            EndScrape(i);
+                        }
+                        eventDeaths[i] = true;
+                        continue;
+                    }
+                    // Ignore null threads.
+                    if (audioThreads[i] == null)
+                    {
+                        eventDeaths[i] = true;
+                        continue;
+                    }
                     // This thread is dead.
                     if (threadDeaths[i])
                     {
+                        eventDeaths[i] = true;
                         // Remove the thread.
                         audioThreads[i] = null;
                         // Announce impact audio.
@@ -205,6 +231,10 @@ namespace Clatter.Core
                             {
                                 onScrapeOngoing?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].position, scrapes[collisionEvents[i].ids].scrapeId);
                             }
+                            else
+                            {
+                                EndScrape(i);
+                            }
                         }
                     }
                     // This thread is alive.
@@ -220,32 +250,11 @@ namespace Clatter.Core
                 JoinThreads();
                 return;
             }
-            // Remove any impact events that have ended.
-            ulong[] impactKeys = impacts.Keys.ToArray();
-            for (int i = 0; i < impactKeys.Length; i++)
-            {
-                if (impacts[impactKeys[i]].state == EventState.end)
-                {
-                    impacts.Remove(impactKeys[i]);
-                }
-            }
-            // Update or remove scrape events.
-            ulong[] scrapeKeys = scrapes.Keys.ToArray();
-            for (int i = 0; i < scrapeKeys.Length; i++)
-            {
-                // Mark the scrape as ended.
-                if (scrapes[scrapeKeys[i]].state == EventState.end)
-                {
-                    // Announce that the scrape has ended.
-                    onScrapeEnd?.Invoke(scrapes[scrapeKeys[i]].scrapeId);
-                    // Remove the event.
-                    scrapes.Remove(scrapeKeys[i]);
-                }
-            }
             // Reset the collision events index for the next frame.
             numEvents = 0;
             // Reset the thread life states.
             Buffer.BlockCopy(falses, 0, threadDeaths, 0, falses.Length);
+            Buffer.BlockCopy(falses, 0, eventDeaths, 0, falses.Length);
         }
 
 
@@ -255,17 +264,13 @@ namespace Clatter.Core
         /// <param name="collisionEvent">The collision event.</param>
         public void AddCollision(CollisionEvent collisionEvent)
         {
-            // If we try to add a spurious collision, fix it here.
-            if (collisionEvent.speed <= 0 && collisionEvent.type != AudioEventType.none)
-            {
-                collisionEvent = new CollisionEvent(collisionEvent.primary, collisionEvent.secondary, AudioEventType.none, 0, collisionEvent.position);
-            }
             // Resize the arrays if needed.
             if (numEvents >= collisionEvents.Length)
             {
                 Array.Resize(ref collisionEvents, numEvents);
                 Array.Resize(ref audioThreads, numEvents);
                 Array.Resize(ref threadDeaths, numEvents);
+                Array.Resize(ref eventDeaths, numEvents);
                 Array.Resize(ref falses, numEvents);
             }
             // Add the event.
@@ -320,6 +325,15 @@ namespace Clatter.Core
                     audioThreads[i].Join();
                 }
             }
+        }
+
+
+        private void EndScrape(int index)
+        {
+            // Announce that the scrape has ended.
+            onScrapeEnd?.Invoke(scrapes[collisionEvents[index].ids].scrapeId);
+            // Remove the event.
+            scrapes.Remove(collisionEvents[index].ids);
         }
     }
 }
