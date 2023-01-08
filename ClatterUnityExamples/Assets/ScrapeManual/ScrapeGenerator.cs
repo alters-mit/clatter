@@ -28,6 +28,7 @@ public class ScrapeGenerator : MonoBehaviour
         generator.onScrapeStart += OnScrapeStart;
         // Listen to the ongoing scrape.
         generator.onScrapeOngoing += OnScrapeOngoing;
+        generator.onScrapeEnd += OnScrapeEnd;
         // Get the number of scrape events.
         int count = Scrape.GetNumScrapeEvents(duration);
         Vector3d position = Vector3d.Zero;
@@ -71,5 +72,11 @@ public class ScrapeGenerator : MonoBehaviour
     private void OnScrapeOngoing(Samples samples, Vector3d position, int audioSourceId)
     {
         sound.UpdateAudio(samples, position);
+    }
+
+
+    private void OnScrapeEnd(int audioSourceId)
+    {
+        sound.End();
     }
 }

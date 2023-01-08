@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using UnityEngine;
 using Clatter.Core;
@@ -77,7 +77,7 @@ namespace Clatter.Unity
 
 
         /// <summary>
-        /// Gracefully end the audio and prepare to self-destruct.
+        /// Gracefully end the audio and prepare to self-destruct. You MUST call this method at some point; otherwise, the Unity thread will hang indefinitely.
         /// </summary>
         public void End()
         {
