@@ -138,6 +138,16 @@ namespace Clatter.Core
                 // Ignore collisions that are too slow.
                 if (collisionEvents[i].speed < AudioEvent.minSpeed || collisionEvents[i].type == AudioEventType.none)
                 {
+                    // End an impact.
+                    if (collisionEvents[i].type == AudioEventType.impact && impacts.ContainsKey(collisionEvents[i].ids))
+                    {
+                        impacts.Remove(collisionEvents[i].ids);
+                    }
+                    // End a scrape.
+                    else if (collisionEvents[i].type == AudioEventType.scrape && scrapes.ContainsKey(collisionEvents[i].ids))
+                    {
+                        EndScrape(i);
+                    }
                     eventDeaths[i] = true;
                     continue;
                 }
@@ -188,22 +198,6 @@ namespace Clatter.Core
                     {
                         continue;
                     }
-                    // Stop an ongoing event if the speed is too slow or if there was a "none" collision.
-                    if ((collisionEvents[i].speed == 0 && collisionEvents[i].type != AudioEventType.none) || collisionEvents[i].type == AudioEventType.none)
-                    {
-                        // End an impact.
-                        if (collisionEvents[i].type == AudioEventType.impact)
-                        {
-                            impacts.Remove(collisionEvents[i].ids);
-                        }
-                        // End a scrape.
-                        else if (collisionEvents[i].type == AudioEventType.scrape)
-                        {
-                            EndScrape(i);
-                        }
-                        eventDeaths[i] = true;
-                        continue;
-                    }
                     // Ignore null threads.
                     if (audioThreads[i] == null)
                     {
@@ -215,6 +209,7 @@ namespace Clatter.Core
                     {
                         eventDeaths[i] = true;
                         // Remove the thread.
+                        audioThreads[i].Join();
                         audioThreads[i] = null;
                         // Announce impact audio.
                         if (collisionEvents[i].type == AudioEventType.impact && impacts[collisionEvents[i].ids].state != EventState.end)
@@ -329,6 +324,7 @@ namespace Clatter.Core
                 if (audioThreads[i] != null)
                 {
                     audioThreads[i].Join();
+                    audioThreads[i] = null;
                 }
             }
         }
