@@ -46,7 +46,7 @@ namespace Clatter.Benchmark
             watch.Start();
             for (int i = 0; i < 100; i++)
             {
-                impact.GetAudio(1, rng);
+                impact.GetAudio(1);
             }
             watch.Stop();
             return watch.Elapsed.TotalSeconds;
@@ -74,7 +74,7 @@ namespace Clatter.Benchmark
             watch.Start();
             for (int i = 0; i < count; i++)
             {
-                scrape.GetAudio(1, rng);
+                scrape.GetAudio(1);
             }
             watch.Stop();
             return watch.Elapsed.TotalSeconds;

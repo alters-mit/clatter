@@ -69,7 +69,7 @@ namespace Clatter.Core
         /// <param name="scrapeMaterial">The scrape material.</param>
         /// <param name="primary">The primary object (the smaller, moving object).</param>
         /// <param name="secondary">The secondary object (the scrape surface).</param>
-        /// <param name="rng">The random number generator. This is used to randomly adjust audio data before generating new audio.</param>
+        /// <param name="rng">The random number generator.</param>
         public Scrape(ScrapeMaterial scrapeMaterial, AudioObjectData primary, AudioObjectData secondary, Random rng) : base(primary, secondary, rng)
         {
             scrapeMaterialData = ScrapeMaterialData.Get(scrapeMaterial);
@@ -81,15 +81,14 @@ namespace Clatter.Core
         /// Generate audio. Returns true if audio was generated. This will set the `samples` field.
         /// </summary>
         /// <param name="speed">The collision speed.</param>
-        /// <param name="rng">The random number generator.</param>
-        public override bool GetAudio(double speed, Random rng)
+        public override bool GetAudio(double speed)
         {
             // Get the speed of the primary object and clamp it.
             double primarySpeed = Math.Min(speed, scrapeMaxSpeed);
             // Get impulse response of the colliding objects.
             if (!gotImpulseResponse)
             {
-                int impulseResponseLength = GetImpulseResponse(AdjustModes(speed, rng), ref impulseResponse);
+                int impulseResponseLength = GetImpulseResponse(AdjustModes(speed), ref impulseResponse);
                 if (impulseResponseLength == 0)
                 {
                     return false;

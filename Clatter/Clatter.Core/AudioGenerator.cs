@@ -141,7 +141,7 @@ namespace Clatter.Core
                     if (!impacts.ContainsKey(collisionEvents[index].ids))
                     {
                         impacts.Add(collisionEvents[index].ids,
-                            new Impact(collisionEvents[index].primary, collisionEvents[index].secondary, rng));
+                            new Impact(collisionEvents[index].primary, collisionEvents[index].secondary, new Random(rng.Next())));
                     }
                     // Start an impact audio thread.
                     audioThreads[index] = new Thread(() => GetAudio(index, impacts));
@@ -154,7 +154,7 @@ namespace Clatter.Core
                     if (!scrapes.ContainsKey(collisionEvents[index].ids))
                     {
                         scrapes.Add(collisionEvents[index].ids,
-                            new Scrape(collisionEvents[index].secondary.scrapeMaterial, collisionEvents[index].primary, collisionEvents[index].secondary, rng));
+                            new Scrape(collisionEvents[index].secondary.scrapeMaterial, collisionEvents[index].primary, collisionEvents[index].secondary, new Random(rng.Next())));
                     }
                     // Start an impact audio thread.
                     audioThreads[index] = new Thread(() => GetAudio(index, scrapes));
@@ -295,7 +295,7 @@ namespace Clatter.Core
             // Try to generate audio.
             try
             {
-                if (!audioEvents[collisionEvents[collisionIndex].ids].GetAudio(collisionEvents[collisionIndex].speed, rng))
+                if (!audioEvents[collisionEvents[collisionIndex].ids].GetAudio(collisionEvents[collisionIndex].speed))
                 {
                     audioEvents[collisionEvents[collisionIndex].ids].state = EventState.end;
                 }

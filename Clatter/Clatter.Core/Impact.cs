@@ -44,7 +44,7 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="primary">The primary object.</param>
         /// <param name="secondary">The secondary object.</param>
-        /// <param name="rng">The random number generator. This is used to randomly adjust audio data before generating new audio.</param>
+        /// <param name="rng">The random number generator.</param>
         public Impact(AudioObjectData primary, AudioObjectData secondary, Random rng) : base(primary, secondary, rng)
         {
             watch.Start();
@@ -55,8 +55,7 @@ namespace Clatter.Core
         /// Generate audio. Returns true if audio was generated. This will set the `samples` field.
         /// </summary>
         /// <param name="speed">The collision speed.</param>
-        /// <param name="rng">The random number generator.</param>
-        public override bool GetAudio(double speed, Random rng)
+        public override bool GetAudio(double speed)
         {
             // Get the elapsed time.
             dt = watch.Elapsed.TotalSeconds;
@@ -68,7 +67,7 @@ namespace Clatter.Core
             else
             {
                 // Adjust the modes and get the amp value.
-                double amp = AdjustModes(speed, rng);
+                double amp = AdjustModes(speed);
                 // Get the impulse response.
                 int impulseResponseLength = GetImpulseResponse(amp, ref impulseResponse);
                 if (impulseResponseLength == 0)

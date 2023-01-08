@@ -1,4 +1,5 @@
-﻿using Clatter.Core;
+﻿using System;
+using Clatter.Core;
 
 public class ScrapeAudioExample
 {
@@ -15,15 +16,14 @@ public class ScrapeAudioExample
         AudioObjectData primary = new AudioObjectData(0, primaryMaterial, 0.2, 0.2, 1);
         AudioObjectData secondary = new AudioObjectData(1, secondaryMaterial, 0.5, 0.1, 100, scrapeMaterial);
         // Initialize the scrape.
-        Random rng = new Random();
-        Scrape scrape = new Scrape(scrapeMaterial, primary, secondary, rng);
+        Scrape scrape = new Scrape(scrapeMaterial, primary, secondary, new Random());
         // Start writing audio.
         WavWriter writer = new WavWriter("out.wav", overwrite: true);
         // Generate the scrape.
         int count = Scrape.GetNumScrapeEvents(0.5);
         for (int i = 0; i < count; i++)
         {
-            scrape.GetAudio(1, rng);
+            scrape.GetAudio(1);
             writer.Write(scrape.samples.ToInt16Bytes());
         }
         writer.End();

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using Clatter.Core;
 
 public static class AudioGeneratorImpact

@@ -12,10 +12,11 @@ public class ImpactAudioExample
         // Set the objects.
         AudioObjectData primary = new AudioObjectData(0, primaryMaterial, 0.2, 0.2, 1);
         AudioObjectData secondary = new AudioObjectData(1, secondaryMaterial, 0.5, 0.1, 100);
-        // Set some useful globals.
-        Random rng = new Random();
-        Impact impact = new Impact(primary, secondary, rng);
-        impact.GetAudio(1, rng);
+        // Create the impact event.
+        Impact impact = new Impact(primary, secondary, new Random());
+        // Generate audio.
+        impact.GetAudio(1);
+        // Write the audio as a .wav file.
         WavWriter writer = new WavWriter("out.wav", overwrite: true);
         writer.Write(impact.samples.ToInt16Bytes());
         writer.End();

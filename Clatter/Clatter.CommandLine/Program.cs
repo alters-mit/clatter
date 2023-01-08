@@ -169,10 +169,9 @@ namespace Clatter.CommandLine
         /// <param name="speed">The speed of the impact.</param>
         private static byte[] GetImpact(AudioObjectData primary, AudioObjectData secondary, double speed)
         {
-            Random rng = new Random();
-            Impact impact = new Impact(primary, secondary, rng);
+            Impact impact = new Impact(primary, secondary, new Random());
             // Generate audio.
-            bool ok = impact.GetAudio(speed, rng);
+            bool ok = impact.GetAudio(speed);
             if (!ok)
             {
                 return new byte[0];
@@ -194,19 +193,18 @@ namespace Clatter.CommandLine
         /// <param name="duration">The duration of the scrape in seconds. This will be rounded to the nearest tenth of a second.</param>
         private static byte[] GetScrape(AudioObjectData primary, AudioObjectData secondary, double speed, double duration)
         {
-            Random rng = new Random();
             // Get the number of scrape events.
             int count = Scrape.GetNumScrapeEvents(duration);
             // Get the scrape material.
             primary.speed = speed;
             // Get the scrape.
-            Scrape scrape = new Scrape(secondary.scrapeMaterial, primary, secondary, rng);
+            Scrape scrape = new Scrape(secondary.scrapeMaterial, primary, secondary, new Random());
             byte[] audio = new byte[Scrape.SAMPLES_LENGTH * 2 * count];
             int c = Scrape.SAMPLES_LENGTH * 2;
             for (int i = 0; i < count; i++)
             {
                 // Continue the scrape.
-                scrape.GetAudio(speed, rng);
+                scrape.GetAudio(speed);
                 // Get the audio and copy it to the buffer.
                 Buffer.BlockCopy(scrape.samples.ToInt16Bytes(), 0, audio, i * c, c);
             }

@@ -41,6 +41,10 @@ namespace Clatter.Core
         /// </summary>
         protected readonly AudioObjectData secondary;
         /// <summary>
+        /// The random number generator. Each audio event has its own Random object for thread safety.
+        /// </summary>
+        protected readonly Random rng;
+        /// <summary>
         /// The amplitude of the first collision.
         /// </summary>
         private double initialAmp;
@@ -63,11 +67,12 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="primary">The primary object.</param>
         /// <param name="secondary">The secondary object.</param>
-        /// <param name="rng">The random number generator. This is used to randomly adjust audio data before generating new audio.</param>
+        /// <param name="rng">The random number generator.</param>
         protected AudioEvent(AudioObjectData primary, AudioObjectData secondary, Random rng)
         {
             this.primary = primary;
             this.secondary = secondary;
+            this.rng = rng;
             // Generate the modes.
             modesB = new Modes(ImpactMaterialData.impactMaterials[primary.impactMaterial], rng);
             modesA = new Modes(ImpactMaterialData.impactMaterials[secondary.impactMaterial], rng);
@@ -79,16 +84,14 @@ namespace Clatter.Core
         /// Generate audio. Returns true if audio was generated. This will set the `samples` field.
         /// </summary>
         /// <param name="speed">The collision speed.</param>
-        /// <param name="rng">The random number generator.</param>
-        public abstract bool GetAudio(double speed, Random rng);
+        public abstract bool GetAudio(double speed);
         
         
         /// <summary>
         /// Randomly adjust Modes values. Returns the new amp value.
         /// </summary>
         /// <param name="speed">The speed of the collision.</param>
-        /// <param name="rng">The random number generator.</param>
-        protected double AdjustModes(double speed, Random rng)
+        protected double AdjustModes(double speed)
         {
             // Re-scale the amplitude.
             double amp;
