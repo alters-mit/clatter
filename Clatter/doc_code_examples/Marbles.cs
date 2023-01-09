@@ -3,28 +3,18 @@ using Clatter.Core;
 using Clatter.Unity;
 using Random = System.Random;
 
-/// <summary>
-/// Drop lots of marbles, generating impact sounds.
-/// </summary>
+// Drop lots of marbles, generating impact sounds.
 public class Marbles : MonoBehaviour
 {
-    /// <summary>
-    /// The diameter of a marble.
-    /// </summary>
+    // The diameter of a marble.
     private const float DIAMETER = 0.013f;
-    /// <summary>
-    /// The spacing between the marbles.
-    /// </summary>
+    // The spacing between the marbles.
     private const float SPACING = 0.1f;
-    /// <summary>
-    /// The padded half-extent of the floor.
-    /// </summary>
+    // The padded half-extent of the floor.
     private const float EXTENT = 0.4f;
 
-
-    /// <summary>
-    /// The random seed.
-    /// </summary>
+    
+    // The random seed.
     public int seed;
 
 
