@@ -27,7 +27,7 @@ namespace Clatter.Core
         /// <summary>
         /// The audio samples generated from this event.
         /// </summary>
-        public readonly Samples samples = new Samples();
+        public readonly Samples samples;
         /// <summary>
         /// The current state of the AudioEvent.
         /// </summary>
@@ -74,6 +74,7 @@ namespace Clatter.Core
         /// <param name="rng">The random number generator.</param>
         protected AudioEvent(AudioObjectData primary, AudioObjectData secondary, Random rng)
         {
+            samples = new Samples(GetSamplesSize());
             this.primary = primary;
             this.secondary = secondary;
             this.rng = rng;
@@ -143,5 +144,11 @@ namespace Clatter.Core
             int impulseResponseLength = Modes.Add(modesA.synthSound, modesA.synthSoundLength, modesB.synthSound, modesB.synthSoundLength, ref impulseResponse);
             return impulseResponseLength;
         }
+
+
+        /// <summary>
+        /// Returns the default size of the samples.samples array.
+        /// </summary>
+        protected abstract int GetSamplesSize();
     }
 }

@@ -9,8 +9,18 @@ namespace Clatter.Benchmark
         public static void Main(string[] args)
         {
             // Get the path to the output.
-            string path = Path.GetFullPath(".").Replace("\\", "/");
-            path = Path.GetFullPath(Path.Combine(path.Split("/clatter/")[0], "clatter/docs/benchmark.md"));
+            string[] directories = Path.GetFullPath(".").Replace("\\", "/").Split("/");
+            Queue<string> ds = new Queue<string>();
+            for (int i = 0; i < directories.Length; i++)
+            {
+                ds.Enqueue(directories[i]);
+                if (directories[i].ToLower() == "clatter")
+                {
+                    break;
+                }
+            }
+            string path = Path.Combine(ds.ToArray());
+            path = Path.Combine(path, "docs", "benchmark.md");
             string text = File.ReadAllText(path).Split("**RESULTS:**")[0].Trim() + "\n\n**RESULTS:**\n\n";
             double impact = ImpactBenchmark();
             double scrape = ScrapeBenchmark();

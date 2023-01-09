@@ -12,7 +12,7 @@ There are two benchmarks:
 
 | Benchmark | Time (seconds) |
 | --- | --- |
-| Impact | 0.5632031 |
-| Scrape | 1.4053515 |
-| Threaded (total) | 11.207928899999999 |
-| Threaded (average) | 0.11207928899999998 |
+| Impact | 0.5940313 |
+| Scrape | 2.2093879 |
+| Threaded (total) | 14.4022984 |
+| Threaded (average) | 0.144022984 |

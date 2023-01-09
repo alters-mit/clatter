@@ -126,5 +126,10 @@ namespace Clatter.Core
                 return true;
             }
         }
+
+        protected override int GetSamplesSize()
+        {
+            return Globals.DEFAULT_SAMPLES_LENGTH;
+        }
     }
 }

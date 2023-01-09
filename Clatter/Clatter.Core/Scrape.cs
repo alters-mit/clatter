@@ -151,5 +151,11 @@ namespace Clatter.Core
         {
             return (int)(duration * Globals.framerate / SAMPLES_LENGTH);
         }
+
+
+        protected override int GetSamplesSize()
+        {
+            return SAMPLES_LENGTH;
+        }
     }
 }

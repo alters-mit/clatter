@@ -12,11 +12,17 @@
         /// <summary>
         /// The audio samples.
         /// </summary>
-        public double[] samples = new double[Globals.DEFAULT_SAMPLES_LENGTH];
+        public double[] samples;
         /// <summary>
         /// The length of the samples.
         /// </summary>
         public int length;
+
+
+        public Samples(int size)
+        {
+            samples = new double[size];
+        }
         
 
         /// <summary>
