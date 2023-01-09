@@ -74,11 +74,7 @@ namespace Clatter.Unity
             sound.source = go.AddComponent<AudioSource>();
             sound.source.spatialize = true;
             // Set the audio clip.
-            sound.SetAudioClip(sound.samples.ToFloats());
-            // Listen for when the audio clip ends.
-            sound.hasClip = true;
-            sound.playAudio = sound.PlayAudio();
-            sound.StartCoroutine(sound.playAudio);
+            sound.Play(sound.samples.ToFloats());
             return sound;
         }
 
@@ -108,7 +104,7 @@ namespace Clatter.Unity
         /// Create and set the audio clip.
         /// </summary>
         /// <param name="data">The audio data.</param>
-        protected void SetAudioClip(float[] data)
+        protected void Play(float[] data)
         {
             // Flag this sound as playing.
             playing = true;
@@ -119,6 +115,10 @@ namespace Clatter.Unity
             source.clip.SetData(data, 0);
             // Play the clip.
             source.Play();
+            // Listen for when the audio clip ends.
+            hasClip = true;
+            playAudio = PlayAudio();
+            StartCoroutine(playAudio);
         }
         
         
@@ -133,23 +133,18 @@ namespace Clatter.Unity
         /// </summary>
         private IEnumerator PlayAudio()
         {
+            clip = source.clip; 
+            // Wait until the clip ends.
+            yield return new WaitForSeconds(clip.length);
+            // Destroy the clip.
+            Destroy(clip);
+            hasClip = false;
+            // Start listening for timeouts.
             Stopwatch watch = new Stopwatch();
             watch.Start();
             // Play the audio.
-            while (playing)
+            while (playing && !hasClip)
             {
-                // Check if is an audio clip.
-                if (hasClip)
-                {
-                    clip = source.clip; 
-                    // Wait until the clip ends.
-                    yield return new WaitForSeconds(clip.length);
-                    // Destroy the clip.
-                    Destroy(clip);
-                    hasClip = false;
-                    // Start listening for timeouts.
-                    watch.Restart();
-                }
                 // Timeout. End now.
                 if (watch.Elapsed.TotalSeconds >= timeout)
                 {

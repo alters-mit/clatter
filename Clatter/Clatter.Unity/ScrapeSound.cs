@@ -83,7 +83,7 @@ namespace Clatter.Unity
             if (nextDataIndex >= 0 && nextData[nextDataIndex].allocated)
             {
                 // Set the audio data.
-                SetAudioClip(nextData[nextDataIndex].data);
+                Play(nextData[nextDataIndex].data);
                 // Un-allocate the samples.
                 nextData[nextDataIndex].allocated = false;
                 nextDataIndex = -1;
