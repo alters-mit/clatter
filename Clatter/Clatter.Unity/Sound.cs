@@ -149,12 +149,16 @@ namespace Clatter.Unity
                     hasClip = false;
                     // Start listening for timeouts.
                     watch.Restart();
-                    OnAudioClipEnd();
                 }
                 // Timeout. End now.
-                else if (watch.Elapsed.TotalSeconds >= timeout)
+                if (watch.Elapsed.TotalSeconds >= timeout)
                 {
                     End();
+                }
+                // There is no audio clip. Do something!
+                else
+                {
+                    OnAudioClipEnd();
                 }
             }
         }

@@ -237,9 +237,9 @@ namespace Clatter.Core
                 }
             }
             // Kill any lingering threads.
+            JoinThreads();
             if (destroyed)
             {
-                JoinThreads();
                 return;
             }
             // Remove any events that ended.
