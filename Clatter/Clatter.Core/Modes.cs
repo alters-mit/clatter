@@ -96,7 +96,7 @@ namespace Clatter.Core
                 // Resize the mode array.
                 if (mode.Length < modeCount)
                 {
-                    Array.Resize(ref mode, modeCount * 2);
+                    Array.Resize(ref mode, modeCount);
                 }
                 if (modeCount > 0)
                 {
