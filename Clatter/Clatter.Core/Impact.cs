@@ -21,7 +21,7 @@ namespace Clatter.Core
         /// </summary>
         public static double minTimeBetweenImpacts = 0.25;
         /// <summary>
-        /// The maximum time in seconds between impacts. This can prevent strange "droning" sounds caused by too many impacts in rapid succession.
+        /// The maximum time in seconds between impacts, after which this impact series ends.
         /// </summary>
         public static double maxTimeBetweenImpacts = 3;
         /// <summary>
@@ -59,9 +59,14 @@ namespace Clatter.Core
         {
             // Get the elapsed time.
             dt = watch.Elapsed.TotalSeconds;
-            // If the latest collision was too recent, ignore this one.
+            // Prevent droning and/or end the impact event series.
             if (collisionCount > 0 && (dt < minTimeBetweenImpacts || dt > maxTimeBetweenImpacts))
             {
+                // End the impact event series.
+                if (dt > maxTimeBetweenImpacts)
+                {
+                    state = EventState.end;
+                }
                 return false;
             }
             else

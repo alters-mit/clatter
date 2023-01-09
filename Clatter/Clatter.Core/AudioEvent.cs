@@ -29,7 +29,7 @@ namespace Clatter.Core
         /// </summary>
         public readonly Samples samples;
         /// <summary>
-        /// The current state of the AudioEvent.
+        /// The current state of the AudioEvent. This is not the same thing as whether any audio is playing. An `Impact` ends when too much time has elapsed since the most recent impact collision. A `Scrape` ends when the object is moving too slowly.
         /// </summary>
         public EventState state = EventState.start;
         /// <summary>

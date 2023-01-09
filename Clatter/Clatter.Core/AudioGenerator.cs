@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
 
 namespace Clatter.Core
@@ -138,16 +139,6 @@ namespace Clatter.Core
                 // Ignore collisions that are too slow.
                 if (collisionEvents[i].speed < AudioEvent.minSpeed || collisionEvents[i].type == AudioEventType.none)
                 {
-                    // End an impact.
-                    if (impacts.ContainsKey(collisionEvents[i].ids))
-                    {
-                        impacts.Remove(collisionEvents[i].ids);
-                    }
-                    // End a scrape.
-                    else if (scrapes.ContainsKey(collisionEvents[i].ids))
-                    {
-                        EndScrape(i);
-                    }
                     eventDeaths[i] = true;
                     continue;
                 }
@@ -250,6 +241,23 @@ namespace Clatter.Core
             {
                 JoinThreads();
                 return;
+            }
+            // Remove any events that ended.
+            ulong[] eventIds = impacts.Keys.ToArray();
+            for (int i = 0; i < eventIds.Length; i++)
+            {
+                if (impacts[eventIds[i]].state == EventState.end)
+                {
+                    impacts.Remove(eventIds[i]);
+                }
+            }
+            eventIds = scrapes.Keys.ToArray();
+            for (int i = 0; i < eventIds.Length; i++)
+            {
+                if (scrapes[eventIds[i]].state == EventState.end)
+                {
+                    scrapes.Remove(eventIds[i]);
+                }
             }
             // Reset the collision events index for the next frame.
             numEvents = 0;
