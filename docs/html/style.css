@@ -134,13 +134,12 @@ code {
 }
 
 .sidepanel {
-    width: 200px;
-    margin-top: 8%;
+    width: 10%;
+    margin-top: 11%;
     background-color: #fff;
     overflow-x: hidden;
     position: fixed;
     height: 80%;
-
 }
 
 .sidepanel a.title {
@@ -193,10 +192,10 @@ code {
 }
 
 .right-col {
-    margin-top: 8%;
+    margin-top: 9%;
     text-align: left;
-    width: 100%;
-    margin-left: 220px;
+    width: 80%;
+    margin-left: 20%;
 }
 
 .right-col h1 {

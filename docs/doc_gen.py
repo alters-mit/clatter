@@ -57,6 +57,26 @@ def get_description(e: Element, is_paragraphs: bool, brief_description: bool = T
     return " ".join(descriptions)
 
 
+def get_description_with_code_examples(description: str) -> str:
+    """
+    Replace code_example tags in a description with actual code examples.
+
+    :return: The modified description.
+    """
+
+    # Add code examples.
+    while "code_example" in description:
+        match = re.search(r"{code_example:(.*?)}", description, flags=re.MULTILINE)
+        code_example_filename = match.group(1)
+        code_example = Path(f"../Clatter/doc_code_examples/{code_example_filename}.cs").resolve().read_text(encoding="utf-8-sig")
+        code_example = "<pre><code>" + code_example + "</code></pre>\n\n"
+        desc_split = description.split(match.group(0))
+        if len(desc_split[1].strip()) > 0:
+            code_example = "</p>\n" + code_example + "<p>"
+        description = description.replace(match.group(0), code_example)
+    return description
+
+
 def get_type(e: Element) -> str:
     """
     :param e: An XML element.
@@ -90,6 +110,7 @@ class EnumDef:
         html += f'<p class="subtitle">enum in {self.namespace}</p>\n\n'
         # Add the description.
         description = self.description.replace("\n\n", "%%").replace("\n", "\n\n").replace("%%", "\n\n")
+        description = get_description_with_code_examples(description)
         html += markdown(f'{description.strip()}\n\n')
         table = "<table>\n\t<tr>\n\t\t<th><strong>Name</strong></th>\n\t\t<th><strong>Value</strong></th>\n\t</tr>\n"
         for value in self.values:
@@ -282,16 +303,7 @@ class Klass:
         html += f'<p class="subtitle">{member_type} in {self.namespace}</p>\n\n'
         # Add the description.
         description = self.description.replace("\n\n", "%%").replace("\n", "\n\n").replace("%%", "\n\n")
-        # Add code examples.
-        while "code_example" in description:
-            match = re.search(r"{code_example:(.*?)}", description, flags=re.MULTILINE)
-            code_example_filename = match.group(1)
-            code_example = Path(f"../Clatter/doc_code_examples/{code_example_filename}.cs").resolve().read_text(encoding="utf-8-sig")
-            code_example = "<pre><code>" + code_example + "</code></pre>\n\n"
-            desc_split = description.split(match.group(0))
-            if len(desc_split[1].strip()) > 0:
-                code_example = "</p>\n" + code_example + "<p>"
-            description = description.replace(match.group(0), code_example)
+        description = get_description_with_code_examples(description)
         html += markdown(f'{description.strip()}\n\n')
         constants = [f for f in self.public_static_fields if f.const]
         static_fields = [f for f in self.public_static_fields if not f.const]
@@ -512,6 +524,8 @@ namespaces = get_namespaces()
 # Get the sidebar html.
 sidebar = get_sidebar()
 dst = Path("html/html").resolve()
+if not dst.exists():
+    dst.mkdir()
 # Write the overview doc.
 dst.joinpath("overview.html").write_text(get_readme())
 for ns in namespaces:
