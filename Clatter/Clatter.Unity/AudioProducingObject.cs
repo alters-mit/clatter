@@ -49,9 +49,17 @@ namespace Clatter.Unity
         /// </summary>
         public static double rollAngularSpeed = 0.5;
         /// <summary>
+        /// On a collision stay event, if we think the collision is an impact but any of the contact points are this far away or greater, the audio event is none.
+        /// </summary>
+        public static float maxContactSeparation = 1e-8f;
+        /// <summary>
         /// AudioProducingObject tries to filter duplicate events by only accepting objects whose IDs are in the order `lesser, greater`. For example, a collision between object 1 and object 0 won't generate audio but the reciprocal collision between object 0 and object 1 *will*. To allow duplicate events, set this field to `false`.
         /// </summary>
         public static bool filterDuplicates = true;
+        /// <summary>
+        /// The maximum number of contact points that will be evaluated when setting the contact area and speed. A higher number can mean somewhat greater precision but at the cost of performance.
+        /// </summary>
+        public static int maxNumContacts = 16;
         /// <summary>
         /// If true, the object's "size bucket" is automatically set based on its volume.
         /// </summary>
@@ -156,11 +164,11 @@ namespace Clatter.Unity
         /// <summary>
         /// A cached array of contact points.
         /// </summary>
-        private Vector3[] contactPoints = Array.Empty<Vector3>();
+        private Vector3[] contactPoints;
         /// <summary>
         /// A cached array of contact normals.
         /// </summary>
-        private Vector3[] contactNormals = Array.Empty<Vector3>();
+        private Vector3[] contactNormals;
         /// <summary>
         /// The object's physic material.
         /// </summary>
@@ -177,6 +185,8 @@ namespace Clatter.Unity
         /// <param name="id">This object's ID.</param>
         public void Initialize(uint id)
         {
+            contactPoints = new Vector3[maxNumContacts];
+            contactNormals = new Vector3[maxNumContacts];
             // Get the bounds of the object.
             Bounds b = new Bounds(gameObject.transform.position, Vector3.zero);
             foreach (Renderer re in gameObject.GetComponentsInChildren<Renderer>())
@@ -293,28 +303,23 @@ namespace Clatter.Unity
             // Compare the IDs for filter out duplicate events.
             if (filterDuplicates && data.id > otherData.id)
             {
-                collisionEvent = new CollisionEvent(data, otherData, AudioEventType.none, 0, Vector3d.Zero);
-                ClatterManager.instance.generator.AddCollision(collisionEvent);
+                NoneCollisionEvent(out collisionEvent, otherData);
                 return;
             }
             // Get the number of contacts.
             int numContacts = collision.contactCount;
             if (numContacts == 0)
             {
-                collisionEvent = new CollisionEvent(data, otherData, AudioEventType.none, 0, Vector3d.Zero);
-                ClatterManager.instance.generator.AddCollision(collisionEvent);
+                NoneCollisionEvent(out collisionEvent, otherData);
                 return;
             }
-            // Resize the arrays.
+            // Resize the array so we can copy the contacts directly into it.
             if (numContacts > contacts.Length)
             {
-                Array.Resize(ref contacts, numContacts * 2);
+                Array.Resize(ref contacts, numContacts);
             }
-            if (numContacts > contactPoints.Length)
-            {
-                Array.Resize(ref contactPoints, numContacts * 2);
-                Array.Resize(ref contactNormals, numContacts * 2);
-            }
+            // Only evaluate up to maxNumContacts.
+            numContacts = numContacts > maxNumContacts ? maxNumContacts : numContacts;
             // Get the contacts.
             collision.GetContacts(contacts);
             for (int i = 0; i < numContacts; i++)
@@ -336,11 +341,9 @@ namespace Clatter.Unity
             // Ignore zero-velocity events.
             if (normalSpeed <= 0)
             {
-                collisionEvent = new CollisionEvent(data, otherData, AudioEventType.none, 0, Vector3d.Zero);
-                ClatterManager.instance.generator.AddCollision(collisionEvent);
+                NoneCollisionEvent(out collisionEvent, otherData);
                 return;
             }
-            // Get the approximate area.
             // Get the centroid.
             Vector3d centroid = Vector3d.Zero;
             for (int i = 0; i < numContacts; i++)
@@ -368,7 +371,7 @@ namespace Clatter.Unity
             }
             // Get the radius.
             double radius = Vector3d.Distance(centroid, maxPoint);
-            // Get the area.
+            // Get the approximate area.
             double area = Math.PI * radius * radius;
             AudioObjectData primary;
             AudioObjectData secondary;
@@ -431,21 +434,40 @@ namespace Clatter.Unity
                     // The ratio between the new area and the previous area is small.
                     if (area / primaryMono.previousArea < impactAreaRatio)
                     {
-                        // If there is a high angular velocity, this is a roll.
+                        // If the angular speed is fast, this is a roll.
                         if (angularSpeed > rollAngularSpeed)
                         {
                             audioEventType = AudioEventType.roll;
                         }
-                        // If there is little angular velocity, this is a scrape.
+                        // If the angular speed is slow, this is a scrape.
                         else
                         {
                             audioEventType = AudioEventType.scrape;
                         }          
                     }
-                    // This is an impact.
+                    // This is an impact or a none-event.
                     else
                     {
-                        audioEventType = AudioEventType.impact;
+                        // Check the contact point separations.
+                        bool isImpact = true;
+                        for (int i = 0; i < numContacts; i++)
+                        {
+                            if (contacts[i].separation >= maxContactSeparation)
+                            {
+                                isImpact = false;
+                                break;
+                            }
+                        }
+                        // The contact separation is low. This is an impact.
+                        if (isImpact)
+                        {
+                            audioEventType = AudioEventType.impact;                 
+                        }
+                        // The contact separation is high. This is an none-event.
+                        else
+                        {
+                            audioEventType = AudioEventType.none;    
+                        }
                     }
                 }
                 // This is a non-event.
@@ -487,6 +509,18 @@ namespace Clatter.Unity
                 data.speed = articulationBody.velocity.magnitude;
                 data.angularSpeed = articulationBody.angularVelocity.magnitude;
             }
+        }
+        
+        
+        /// <summary>
+        /// Set the collision event as a none-type event.
+        /// </summary>
+        /// <param name="collisionEvent">The collision event.</param>
+        /// <param name="otherData">The other object.</param>
+        private void NoneCollisionEvent(out CollisionEvent collisionEvent, AudioObjectData otherData)
+        {
+            collisionEvent = new CollisionEvent(data, otherData, AudioEventType.none, 0, Vector3d.Zero);
+            ClatterManager.instance.generator.AddCollision(collisionEvent);
         }
 
 
