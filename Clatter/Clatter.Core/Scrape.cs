@@ -4,7 +4,7 @@
 namespace Clatter.Core
 {
     /// <summary>
-    /// Scrape is a subclass of `AudioEvent` used to generate scrape sounds.
+    /// Generates scrape audio.
     ///
     /// A Scrape is a series of continuous events. By repeatedly calling GetAudio(), the scrape event will continue.
     ///

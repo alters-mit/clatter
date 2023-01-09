@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace Clatter.Core
 {
     /// <summary>
-    /// Impact is a subclass of `AudioEvent` used to generate impact sounds.
+    /// Generates impact audio.
     ///
     /// An Impact is actually a *series* of events. By reusing the same Impact object, data from previous impacts can affect the current impact. This is useful for situations such as an object repeatedly bouncing on a table.
     ///

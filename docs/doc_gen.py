@@ -1,3 +1,4 @@
+from copy import copy
 import re
 from typing import Dict, List, Union
 from subprocess import call
@@ -147,6 +148,7 @@ class Field:
             self.default_value = ET.tostring(initializer, encoding="utf-8", method="text").decode().split("=")[1].strip()
         self.static: bool = e.attrib["static"] == "yes"
         self.protection: str = e.attrib["prot"]
+        self.inherited_from: str = ""
 
 
 class Property(Field):
@@ -207,6 +209,7 @@ class Method:
         self.protection: str = e.attrib["prot"]
         self.virtual: bool = e.attrib["virt"] == "virtual"
         self.constructor: bool = class_name == self.name
+        self.inherited_from: str = ""
         parameters: Dict[str, str] = dict()
         parameter_elements: List[Element] = e.findall("param")
         for pe in parameter_elements:
@@ -240,6 +243,9 @@ class Method:
             text += f"<p><code>public {self.type} {self.name}{self.args_string}</code></p>\n\n"
         if not self.constructor and len(self.description.strip()) > 0:
             text += f'{markdown(self.description.strip())}\n\n'
+        # Add a mention re: inheritance.
+        if self.inherited_from != "":
+            text += f'<p>Inherited from <a href="{self.inherited_from}.html"><code>{self.inherited_from}</code></a>.</p>\n\n'
         if len(self.parameters) > 0:
             table = "<table>\n\t<tr>\n\t\t<th><strong>Name</strong></th><th>\n\t\t<strong>Type</strong></th>\n\t\t<th><strong>Description</strong></th>\n\t</tr>\n"
             for parameter in self.parameters:
@@ -263,7 +269,7 @@ class Klass:
         self.namespace: str = namespace
         cd: Element = et.find("compounddef")
         self.is_class: bool = cd.attrib["id"].startswith("class")
-        self.abstract: bool = cd.attrib["abstract"] == "yes" if "abtract" in cd.attrib else False
+        self.abstract: bool = cd.attrib["abstract"] == "yes" if "abstract" in cd.attrib else False
         self.description: str = get_description(e=cd, is_paragraphs=True)
         self.public_static_fields: List[Field] = list()
         self.public_fields: List[Field] = list()
@@ -288,6 +294,29 @@ class Klass:
                 continue
             else:
                 raise Exception(name, section_kind)
+        # Get the lineage.
+        self.inheritance: List[str] = list()
+        if self.is_class:
+            inheritance_graph: Element = cd.find("inheritancegraph")
+            if inheritance_graph is not None:
+                # Get my ID.
+                nodes = inheritance_graph.findall("node")
+                node_id: str = ""
+                for node in nodes:
+                    inheritance_name = node.find("label").text.split(".")[-1]
+                    if inheritance_name == self.name:
+                        node_id = node.attrib["id"]
+                        break
+                for node in inheritance_graph.findall("node"):
+                    inheritance_name = node.find("label").text.split(".")[-1]
+                    if inheritance_name == self.name:
+                        continue
+                    child_node = node.find("childnode")
+                    # Only add child nodes if this klass is the child.
+                    if child_node is not None and child_node.attrib["refid"] == node_id:
+                        continue
+                    if inheritance_name is not None:
+                        self.inheritance.append(inheritance_name)
 
     def html(self) -> str:
         # Get the header.
@@ -301,6 +330,11 @@ class Klass:
         else:
             member_type = "struct"
         html += f'<p class="subtitle">{member_type} in {self.namespace}</p>\n\n'
+        if len(self.inheritance) > 0:
+            inheritance_p = f'<p class="subtitle">Inherits from '
+            for inh in self.inheritance:
+                inheritance_p += f'<a href="{inh}.html"><code>{inh}</code></a>, '
+            html += inheritance_p[:-2] + f'</p>\n\n'
         # Add the description.
         description = self.description.replace("\n\n", "%%").replace("\n", "\n\n").replace("%%", "\n\n")
         description = get_description_with_code_examples(description)
@@ -345,6 +379,9 @@ class Klass:
         for field in fields:
             if field.readonly and not field.const:
                 field.description += " Readonly."
+            # Add a mention re: inheritance.
+            if field.inherited_from != "":
+                field.description += f' Inherited from <a href="{field.inherited_from}.html"><code>{field.inherited_from}</code></a>.\n\n'
             table += f"\t<tr>\n\t\t<th>{field.name}</th>\n\t\t<th>{field.type}</th>\n\t\t<th>{field.description}</th>\n\t\t<th>{field.default_value}</th>\n\t</tr>\n"
         table += "</table>"
         return table
@@ -531,17 +568,61 @@ dst.joinpath("overview.html").write_text(get_readme())
 for ns in namespaces:
     # Write the overview doc.
     dst.joinpath(f"{ns.lower()}_overview.html").write_text(get_overview(ns))
-    # Generate class and enum docs.
+    # Generate class, struct, and enum docs.
+    klasses: Dict[str, Klass] = dict()
     for kl in namespaces[ns]:
         klass = get_klass(name=kl, namespace=ns)
         if isinstance(klass, Klass):
-            html = klass.html()
-            html = get_html_prefix() + html + get_html_suffix()
-            dst.joinpath(klass.name + ".html").write_text(html)
+            # Append this class to review class inheritance later.
+            if klass.is_class:
+                klasses[klass.name] = klass
+            # This is a struct. Generate the doc.
+            else:
+                html = klass.html()
+                html = get_html_prefix() + html + get_html_suffix()
+                dst.joinpath(klass.name + ".html").write_text(html)
+        # This is an enum. Generate the doc.
         elif isinstance(klass, EnumDef):
             html = klass.html()
             html = get_html_prefix() + html + get_html_suffix()
             dst.joinpath(klass.name + ".html").write_text(html)
+    # Figure out inheritance.
+    for klass_name in klasses:
+        # Get my inheritance.
+        for parent_name in klasses[klass_name].inheritance:
+            # This can happen with classes outside the namespace e.g. MonoBehaviour.
+            if parent_name not in klasses:
+                continue
+            parent_klass = klasses[parent_name]
+            # Copy the fields.
+            for field in parent_klass.public_static_fields:
+                fi = copy(field)
+                fi.inherited_from = parent_klass.name
+                klasses[klass_name].public_static_fields.append(fi)
+            for field in parent_klass.public_fields:
+                fi = copy(field)
+                fi.inherited_from = parent_klass.name
+                klasses[klass_name].public_fields.append(fi)
+            # Copy the methods.
+            for method in parent_klass.public_static_methods:
+                me = copy(method)
+                me.inherited_from = parent_klass.name
+                klasses[klass_name].public_static_methods.append(me)
+            for method in parent_klass.public_methods:
+                me = copy(method)
+                me.inherited_from = parent_klass.name
+                klasses[klass_name].public_methods.append(me)
+            # Copy the properties.
+            for property in parent_klass.properties:
+                pr = copy(property)
+                pr.inherited_from = parent_klass.name
+                klasses[klass_name].properties.append(pr)
+        # Generate the doc.
+        html = klasses[klass_name].html()
+        html = get_html_prefix() + html + get_html_suffix()
+        dst.joinpath(klass_name + ".html").write_text(html)
+
+
 # Add the CLI and benchmark docs.
 dst.joinpath("cli_overview.html").write_text(get_overview("cli").replace("powershell", ""))
 dst.joinpath("benchmark.html").write_text(get_benchmark())

@@ -7,7 +7,7 @@ using Clatter.Core;
 namespace Clatter.Unity
 {
     /// <summary>
-    /// An AudioProducingObject is a MonoBehaviour class for `Clatter.Core.AudioObjectData`.
+    /// An AudioProducingObject is a MonoBehaviour class wrapper for `Clatter.Core.AudioObjectData` that automatically converts Unity PhysX collisions into Clatter audio.
     ///
     /// An AudioProducingObject must have either a Rigidbody or ArticulationBody component and at least one Collider.
     ///
