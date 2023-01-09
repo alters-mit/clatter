@@ -171,7 +171,7 @@ namespace Clatter.Core
                 length = aLength;
                 if (added.Length < length)
                 {
-                    Array.Resize(ref added, length * 2);
+                    Array.Resize(ref added, length);
                 }
                 Buffer.BlockCopy(a, 0, added, 0, length * 8);
                 for (int i = 0; i < bLength; i++)
