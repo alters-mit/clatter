@@ -1,4 +1,4 @@
-﻿using Clatter.Core;
+using Clatter.Core;
 
 
 namespace Clatter.Unity

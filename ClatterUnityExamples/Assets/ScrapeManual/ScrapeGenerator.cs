@@ -9,31 +9,68 @@ using Clatter.Unity;
 /// </summary>
 public class ScrapeGenerator : MonoBehaviour
 {
+    /// <summary>
+    /// The current speed.
+    /// </summary>
+    public double speed = 1;
+    /// <summary>
+    /// Decelerate by this value per physics frame.
+    /// </summary>
+    public double deceleration = 0.01;
+    /// <summary>
+    /// The duration of the scrape in seconds. The actually duration will be shorter due to deceleration.
+    /// </summary>
+    public double duration = 10;
+    /// <summary>
+    /// The number of scrapes we'll generate.
+    /// </summary>
+    private int totalNumScrapes;
+    /// <summary>
+    /// The current scrape count.
+    /// </summary>
+    private int scrapeCount;
+    /// <summary>
+    /// The start position.
+    /// </summary>
+    private Vector3d position;
+    /// <summary>
+    /// The primary (moving) object.
+    /// </summary>
+    private AudioObjectData primary;
+    /// <summary>
+    /// The secondary (non-moving scrape surface) object.
+    /// </summary>
+    private AudioObjectData secondary;
+    /// <summary>
+    /// The audio generator.
+    /// </summary>
+    private AudioGenerator generator;
+    /// <summary>
+    /// The scrape sound.
+    /// </summary>
     private ScrapeSound sound;
 
 
     private void Awake()
     {
-        AudioObjectData primary = new AudioObjectData(0, ImpactMaterial.glass_1, 0.2, 0.1, 0.5);
-        AudioObjectData secondary = new AudioObjectData(1, ImpactMaterial.stone_4, 0.2, 0.2, 100, ScrapeMaterial.ceramic);
-        StartCoroutine(Generate(primary, secondary, 1, 0.1, 10, 0));
-    }
-
-
-    private IEnumerator Generate(AudioObjectData primary, AudioObjectData secondary, double speed, double deceleration, double duration, int seed)
-    {
-        // Create a genearator.
-        AudioGenerator generator = new AudioGenerator(new AudioObjectData[] { primary, secondary }, seed);
-        // Listen to the start of the scrape.
+        // Instantiate the objects and the audio generator.
+        primary = new AudioObjectData(0, ImpactMaterial.glass_1, 0.2, 0.1, 0.5);
+        secondary = new AudioObjectData(1, ImpactMaterial.stone_4, 0.2, 0.2, 100, ScrapeMaterial.ceramic);
+        generator = new AudioGenerator(new AudioObjectData[] { primary, secondary });
+        // Listen to the scrape events.
         generator.onScrapeStart += OnScrapeStart;
-        // Listen to the ongoing scrape.
         generator.onScrapeOngoing += OnScrapeOngoing;
         generator.onScrapeEnd += OnScrapeEnd;
         // Get the number of scrape events.
-        int count = Scrape.GetNumScrapeEvents(duration);
-        Vector3d position = Vector3d.Zero;
-        // Generate the scrape sound.
-        for (int i = 0; i < count; i++)
+        totalNumScrapes = Scrape.GetNumScrapeEvents(duration);
+        position = Vector3d.Zero;
+    }
+
+
+    private void Update()
+    {
+        // Generate audio.
+        if (scrapeCount < totalNumScrapes)
         {
             // Add a collision to the AudioGenerator and update.
             generator.AddCollision(new CollisionEvent(primary, secondary, AudioEventType.scrape, speed, position));
@@ -42,15 +79,19 @@ public class ScrapeGenerator : MonoBehaviour
             speed -= deceleration;
             // Update the position.
             position.Z += speed;
-            yield return new WaitForEndOfFrame();
+            // Increment the scrape counter.
+            scrapeCount++;
+
         }
-        // Gracefully end.
-        generator.End();
-        sound.End();
+        // Quit.
+        else
+        {
+            generator.End();
+            sound.End();
 
 #if UNITY_EDITOR
 
-        UnityEditor.EditorApplication.isPlaying = false;
+            UnityEditor.EditorApplication.isPlaying = false;
 
 #else
 
@@ -58,6 +99,7 @@ public class ScrapeGenerator : MonoBehaviour
 
 #endif
 
+        }
     }
 
 
