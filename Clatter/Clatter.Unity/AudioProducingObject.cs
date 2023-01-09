@@ -15,7 +15,7 @@ namespace Clatter.Unity
     /// 
     /// - "Enter" events are always impacts.
     /// - "Exit" events are always "none" audio events that will end an ongoing audio event series.
-    /// - "Stay" events can be impacts, scrapes, rolls, or none-events. This is determined by a number of factors; see `impactAreaNewCollision`, `impactAreaRatio`, and `rollAngularSpeed`.
+    /// - "Stay" events can be impacts, scrapes, rolls, or none-events. This is determined by a number of factors; see `areaNewCollision`, `scrapeAngle`, `impactAreaRatio`, and `rollAngularSpeed`.
     /// 
     /// AudioProducingObjects are automatically initialized and updated by `ClatterManager`; you *can* use an AudioProducingObject without `ClatterManager` but it's very difficult to do so. Notice that there is no Update or FixedUpdate call because it's assumed that `ClatterManager` will call AudioProducingObject.OnFixedUpdate().
     /// </summary>
@@ -33,9 +33,13 @@ namespace Clatter.Unity
         
         
         /// <summary>
-        /// On a collision stay event, if the previous area is None and the current area is greater than this, the audio event is an impact. 
+        /// On a collision stay event, if the previous area is None and the current area is greater than this, the audio event is either an impact or a scrape; see scrapeAngle. 
         /// </summary>
-        public static double impactAreaNewCollision = 1e-5;
+        public static double areaNewCollision = 1e-5;
+        /// <summary>
+        /// On a collision stay event, there is a large new contact area (see areaNewCollision), if the angle between Vector3.up and the normalized relative velocity of the collision is greater than this value, then the audio event is a scrape. Otherwise, it's an impact. 
+        /// </summary>
+        public static float scrapeAngle = 80;
         /// <summary>
         /// On a collision stay event, if the area of the collision increases by at least this factor, the audio event is an impact.
         /// </summary>
@@ -402,9 +406,18 @@ namespace Clatter.Unity
                 if (!primaryMono.hasPreviousArea)
                 {
                     // The area is big enough to be an impact.
-                    if (area > impactAreaNewCollision)
+                    if (area > areaNewCollision)
                     {
-                        audioEventType = AudioEventType.impact;
+                        // The angle between the collision and the up angle is high enough that this is a scrape.
+                        if (Vector3.Angle(collision.relativeVelocity, Vector3.up) >= scrapeAngle)
+                        {
+                            audioEventType = AudioEventType.scrape;
+                        }
+                        // The angle is shallow enough that this is an impact.
+                        else
+                        {
+                            audioEventType = AudioEventType.impact;
+                        }
                     }
                     // This is a non-event.
                     else

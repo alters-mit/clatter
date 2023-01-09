@@ -95,7 +95,7 @@ public class ScrapeGenerator : MonoBehaviour
 
 #else
 
-        Application.Quit();
+            Application.Quit();
 
 #endif
 
