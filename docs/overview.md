@@ -6,17 +6,17 @@
 
 ## Features
 
-- Unique and powerful audio synthesis capabilities. Unlike most physics driven audio generators, Clatter generates audio out of pre-computed data, rather than relying on modifying or mixing pre-existing audio files.
+- Unique and powerful audio synthesis capabilities. Unlike most physics driven audio generators, Clatter generates audio out of scientifically accurate, pre-computed data, rather than relying on modifying or mixing pre-existing audio files.
 - Built-in support for Unity.
 - Highly performant. Clatter uses efficient memory management and multithreaded processes to generate audio.
 - An intuitive, flexible API.
 
-## Ways to use Clatter
+## You can use Clatter as:
 
-1. As a component within [ThreeDWorld (TDW)](https://github.com/threedworld-mit/tdw), a research simulation platform. This is the original purpose of Clatter, but it can easily be used outside of TDW. **If you are a TDW user, you only need to read the TDW/Clatter documentation here TODO ADD LINK.**
-2. As a C# library: [`Clatter.Core.dll`](clatter.core_overview.html). The Clatter library can output raw wav data of physics-driven audio sounds or save the data as a .wav file.
-3. As a Unity plugin: `Clatter.Core.dll` plus [`Clatter.Unity.dll`](clatter.unity_overview.html). The `Clatter.Unity.dll` library includes helpful scripts that automatically listen for collision events and automatically play generated audio.
-4. As a [command-line executable](cli_overview.html).
+1. A component within [ThreeDWorld (TDW)](https://github.com/threedworld-mit/tdw), a research simulation platform. This is the original purpose of Clatter, but it can easily be used outside of TDW. **If you are a TDW user, you only need to read the TDW/Clatter documentation here TODO ADD LINK.**
+2. A C# library: `Clatter.Core.dll`. The Clatter library can output raw wav data of physics-driven audio sounds or save the data as a .wav file.
+3. A Unity plugin: `Clatter.Core.dll` plus `Clatter.Unity.dll`. The `Clatter.Unity.dll` library includes helpful scripts that automatically listen for collision events and generate and play audio.
+4. A command-line executable.
 
 ## Installation
 
@@ -31,11 +31,9 @@ Clatter is currently in alpha. It is likely still buggy and unstable. The API wi
 - Impacts tend to sound best for small objects. We're working on adding better support for larger objects.
 - Some scrape materials may sound distorted or "scratchy". We'll fix these.
 
-## How to cite Clatter
+## Attribution
 
-Please read Clatter's [license](LICENSE.md) TODO ADD LINK.
-
-Clatter was developed by Esther Alter. If you are using Clatter in a game, please list it and myself in the credits.
+Clatter was developed by Esther Alter.
 
 Clatter was originally a C# port of [PyImpact](https://github.com/threedworld-mit/tdw/blob/master/Documentation/lessons/audio/py_impact.md), a component of [ThreeDWorld](https://github.com/threedworld-mit/tdw), a research simulation platform. Clatter has since expanded upon the PyImpact's functionality.
 
