@@ -139,12 +139,12 @@ namespace Clatter.Core
                 if (collisionEvents[i].speed < AudioEvent.minSpeed || collisionEvents[i].type == AudioEventType.none)
                 {
                     // End an impact.
-                    if (collisionEvents[i].type == AudioEventType.impact && impacts.ContainsKey(collisionEvents[i].ids))
+                    if (impacts.ContainsKey(collisionEvents[i].ids))
                     {
                         impacts.Remove(collisionEvents[i].ids);
                     }
                     // End a scrape.
-                    else if (collisionEvents[i].type == AudioEventType.scrape && scrapes.ContainsKey(collisionEvents[i].ids))
+                    else if (scrapes.ContainsKey(collisionEvents[i].ids))
                     {
                         EndScrape(i);
                     }
@@ -328,8 +328,12 @@ namespace Clatter.Core
                 }
             }
         }
-
-
+        
+        
+        /// <summary>
+        /// End an ongoing scrape.
+        /// </summary>
+        /// <param name="index">The index of the scrape.</param>
         private void EndScrape(int index)
         {
             // Announce that the scrape has ended.

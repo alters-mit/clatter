@@ -232,7 +232,10 @@ namespace Clatter.Unity
         /// <param name="audioSourceId">The ID of the audio source.</param>
         private void OnScrapeEnd(int audioSourceId)
         {
-            scrapeSounds[audioSourceId].End();
+            if (scrapeSounds.ContainsKey(audioSourceId))
+            {
+                scrapeSounds[audioSourceId].End();   
+            }
         }
 
 

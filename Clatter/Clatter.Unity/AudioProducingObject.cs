@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using Clatter.Core;
@@ -303,7 +303,6 @@ namespace Clatter.Unity
             // Compare the IDs for filter out duplicate events.
             if (filterDuplicates && data.id > otherData.id)
             {
-                NoneCollisionEvent(out collisionEvent, otherData);
                 return;
             }
             // Get the number of contacts.
@@ -338,8 +337,8 @@ namespace Clatter.Unity
             }
             // Get the average normal speed.
             double normalSpeed = normalSpeeds / numContacts;
-            // Ignore zero-velocity events.
-            if (normalSpeed <= 0)
+            // Ignore low-speed events.
+            if (normalSpeed < AudioEvent.minSpeed)
             {
                 NoneCollisionEvent(out collisionEvent, otherData);
                 return;

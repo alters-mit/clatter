@@ -17,7 +17,7 @@ namespace Clatter.Unity
         /// <summary>
         /// Timeout and destroy this sound if it hasn't received new samples data after this many seconds.
         /// </summary>
-        public static double timeout = 2;
+        public static double timeout = 0.1;
         /// <summary>
         /// Invoked when the audio ends.
         /// </summary>
@@ -50,10 +50,6 @@ namespace Clatter.Unity
         /// If true, the audio source has an audio clip.
         /// </summary>
         private bool hasClip;
-        /// <summary>
-        /// My stopwatch. This is used to listen for timeouts.
-        /// </summary>
-        private Stopwatch watch;
 
 
         /// <summary>
@@ -77,7 +73,6 @@ namespace Clatter.Unity
             sound.samples = samples;
             sound.source = go.AddComponent<AudioSource>();
             sound.source.spatialize = true;
-            sound.watch = new Stopwatch();
             // Set the audio clip.
             sound.SetAudioClip(sound.samples.ToFloats());
             // Listen for when the audio clip ends.
@@ -97,7 +92,6 @@ namespace Clatter.Unity
             {
                 return;
             }
-            watch.Stop();
             // Stop playing audio.
             if (playAudio != null)
             {
@@ -123,8 +117,6 @@ namespace Clatter.Unity
             source.clip = AudioClip.Create("audio", data.Length, 1, Globals.framerateInt, false);
             // Set the audio data.
             source.clip.SetData(data, 0);
-            // Start listening for timeouts.
-            watch.Restart();
             // Play the clip.
             source.Play();
         }
@@ -141,15 +133,11 @@ namespace Clatter.Unity
         /// </summary>
         private IEnumerator PlayAudio()
         {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
             // Play the audio.
             while (playing)
             {
-                // Timeout.
-                if (watch.Elapsed.TotalSeconds >= timeout)
-                {
-                    End();
-                    yield return null;
-                }
                 // Check if is an audio clip.
                 if (hasClip)
                 {
@@ -159,9 +147,15 @@ namespace Clatter.Unity
                     // Destroy the clip.
                     Destroy(clip);
                     hasClip = false;
+                    // Start listening for timeouts.
+                    watch.Restart();
+                    OnAudioClipEnd();
                 }
-                // Do something after the end of the audio clip or if there is none.
-                OnAudioClipEnd();
+                // Timeout. End now.
+                else if (watch.Elapsed.TotalSeconds >= timeout)
+                {
+                    End();
+                }
             }
         }
     }
