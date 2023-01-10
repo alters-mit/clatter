@@ -29,13 +29,15 @@ namespace Clatter.Unity
         /// </summary>
         public static ClatterManager instance;
         /// <summary>
-        /// If true, generate a new random seed.
-        /// </summary>
-        public bool generateRandomSeed = true;
-        /// <summary>
         /// If true, automatically update by calling Awake(), Update(), and FixedUpdate() (like an ordinary MonoBehaviour object). If this is false, you must manually update instead by calling instance.Awake(), instance.OnUpdate(), and instance.OnFixedUpdate().
         /// </summary>
+        [HideInInspector]
         public bool auto = true;
+        /// <summary>
+        /// If true, generate a new random seed.
+        /// </summary>
+        [HideInInspector]
+        public bool generateRandomSeed = true;
         /// <summary>
         /// The random seed. Ignored if generateRandomSeed == true.
         /// </summary>

@@ -9,15 +9,21 @@ namespace Clatter.Unity.Editor
     [CustomEditor(typeof(ClatterManager))]
     public class ClatterManagerEditor : UnityEditor.Editor
     {
+        /// <summary>
+        /// OnInspectorGUI().
+        /// </summary>
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            ClatterManager i = target as ClatterManager;
+            ClatterManager c = target as ClatterManager;
             // ReSharper disable once PossibleNullReferenceException
-            if (!i.generateRandomSeed)
+            c.generateRandomSeed = EditorGUILayout.Toggle("Generate Random Seed", c.generateRandomSeed);
+            // ReSharper disable once PossibleNullReferenceException
+            if (!c.generateRandomSeed)
             {
-                i.seed = EditorGUILayout.IntField("Random Seed", i.seed);
+                c.seed = EditorGUILayout.IntField("Random Seed", c.seed);
             }
+            c.auto = EditorGUILayout.Toggle("Auto-Simulate", c.auto);
         }
     }  
 }

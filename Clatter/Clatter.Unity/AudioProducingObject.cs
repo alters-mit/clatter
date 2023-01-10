@@ -62,8 +62,14 @@ namespace Clatter.Unity
         /// </summary>
         public static int maxNumContacts = 16;
         /// <summary>
+        /// The unsized impact material. This will be converted into an `ImpactMaterial` by applying the size field (see below).
+        /// </summary>
+        [HideInInspector]
+        public ImpactMaterialUnsized impactMaterial;
+        /// <summary>
         /// If true, the object's "size bucket" is automatically set based on its volume.
         /// </summary>
+        [HideInInspector]
         public bool autoSetSize = true;
         /// <summary>
         /// The size of the object (this affects the generated audio). Ignored if `autoSetSize == true`.
@@ -71,12 +77,9 @@ namespace Clatter.Unity
         [HideInInspector]
         public int size;
         /// <summary>
-        /// The impact material.
-        /// </summary>
-        public ImpactMaterialUnsized impactMaterial;
-        /// <summary>
         /// If true, this object has a scrape material.
         /// </summary>
+        [HideInInspector]
         public bool hasScrapeMaterial;
         /// <summary>
         /// The scrape material, if any. Ignored if `hasScrapeMaterial == false`.
@@ -86,16 +89,17 @@ namespace Clatter.Unity
         /// <summary>
         /// The audio amplitude.
         /// </summary>
-        [Range(0, 1)]
+        [HideInInspector]
         public double amp = 0.1;
         /// <summary>
         /// The resonance value.
         /// </summary>
-        [Range(0, 1)]
+        [HideInInspector]
         public double resonance = 0.1;
         /// <summary>
         /// If true, the friction values are automatically set based on the impact material.
         /// </summary>
+        [HideInInspector]
         public bool autoSetFriction = true;
         /// <summary>
         /// The physic material dynamic friction value.
@@ -110,11 +114,12 @@ namespace Clatter.Unity
         /// <summary>
         /// The physic material bounciness value. This always needs to be set on a per-object basis. 
         /// </summary>
-        [Range(0, 1)]
+        [HideInInspector]
         public float bounciness = 0.2f;
         /// <summary>
         /// If true, the mass of the object is automatically set based on its impact material and volume. If false, use the mass value in the Rigidbody.
         /// </summary>
+        [HideInInspector]
         public bool autoSetMass = true;
         /// <summary>
         /// The portion from 0 to 1 of the object that is hollow. This is used to convert volume and density to mass. Ignored if `autoSetMass == false`.
@@ -129,6 +134,8 @@ namespace Clatter.Unity
         /// <summary>
         /// Invoked when this object is destroyed. Parameters: The ID of this object, i.e. `this.data.id`.
         /// </summary>
+        // ReSharper disable once Unity.RedundantHideInInspectorAttribute
+        [HideInInspector]
         public UnityEvent<uint> onDestroy = new UnityEvent<uint>();
         /// <summary>
         /// This object's data.
