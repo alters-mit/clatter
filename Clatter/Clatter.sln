@@ -37,4 +37,9 @@ Global
 		{9BEF67DB-4680-4DB5-B400-F13D4D13F668}.Debug|Any CPU.ActiveCfg = Release|Any CPU
 		{9BEF67DB-4680-4DB5-B400-F13D4D13F668}.Debug|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
+		File = Clatter.CommandLine\osx64.run.xml
+		File = Clatter.CommandLine\win64.run.xml
+		File = Clatter.CommandLine\build_all.run.xml
+	EndGlobalSection
 EndGlobal
