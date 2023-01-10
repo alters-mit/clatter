@@ -98,6 +98,9 @@ namespace Clatter.Unity
         }
 
 
+        /// <summary>
+        /// Invoked whenever an audio clip ends.
+        /// </summary>
         protected override void OnAudioClipEnd()
         {
             // Get more samples.

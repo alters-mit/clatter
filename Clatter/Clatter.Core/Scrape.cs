@@ -151,8 +151,11 @@ namespace Clatter.Core
         {
             return (int)(duration * Globals.framerate / SAMPLES_LENGTH);
         }
+        
 
-
+        /// <summary>
+        /// Returns the default size of the samples.samples array.
+        /// </summary>
         protected override int GetSamplesSize()
         {
             return SAMPLES_LENGTH;

@@ -5,6 +5,9 @@
     /// </summary>
     public class ImpactSound : Sound
     {
+        /// <summary>
+        /// Invoked whenever an audio clip ends.
+        /// </summary>
         protected override void OnAudioClipEnd()
         {
             End();

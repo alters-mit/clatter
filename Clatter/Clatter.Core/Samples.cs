@@ -19,6 +19,10 @@
         public int length;
 
 
+        /// <summary>
+        /// (constructor)
+        /// </summary>
+        /// <param name="size">The initial size of the array. This doesn't set the length field.</param>
         public Samples(int size)
         {
             samples = new double[size];

@@ -12,6 +12,7 @@ from markdown import markdown
 def get_description(e: Element, is_paragraphs: bool, brief_description: bool = True, detailed_description: bool = True) -> str:
     """
     :param e: The XML element.
+    :param is_paragraphs: If True, include paragraph HTML tags and line breaks.
     :param brief_description: If True, try to include the brief description.
     :param detailed_description: If True, try to include the detailed description.
 
@@ -96,7 +97,17 @@ def get_type(e: Element) -> str:
 
 
 class EnumDef:
+    """
+    A definition for an enum type.
+    """
+
     def __init__(self, name: str, namespace: str, e: Element):
+        """
+        :param name: The name of the enum type.
+        :param namespace: The namespace this type belongs to.
+        :param e: The root XML element.
+        """
+
         self.name: str = name
         self.namespace: str = namespace
         member_def: Element = e.find("memberdef")
@@ -128,7 +139,7 @@ class Field:
 
     def __init__(self, e: Element):
         """
-        :param e: The XML element.
+        :param e: The root XML element.
         """
 
         self.name: str = e.find("name").text
@@ -158,7 +169,7 @@ class Property(Field):
 
     def __init__(self, e: Element):
         """
-        :param e: The XML element.
+        :param e: The root XML element.
         """
 
         super().__init__(e=e)
@@ -171,14 +182,14 @@ class Parameter:
     A function parameter.
     """
 
-    def __init__(self, type: str, name: str, description: str):
+    def __init__(self, parameter_type: str, name: str, description: str):
         """
-        :param type: The parameter type.
+        :param parameter_type: The parameter type.
         :param name: The parameter name.
         :param description: The parameter description.
         """
 
-        self.type: str = type
+        self.parameter_type: str = parameter_type
         self.name: str = name
         self.description: str = description
 
@@ -191,7 +202,7 @@ class Method:
     def __init__(self, class_name: str, e: Element):
         """
         :param class_name: The class name. This is used to find constructors.
-        :param e: The XML element.
+        :param e: The root XML element.
         """
 
         self.type: str = e.find("type").text
@@ -230,10 +241,14 @@ class Method:
         self.parameters: List[Parameter] = list()
         for pa in parameters:
             self.parameters.append(Parameter(name=pa,
-                                             type=parameters[pa],
+                                             parameter_type=parameters[pa],
                                              description=parameter_descriptions[pa] if pa in parameter_descriptions else ""))
 
     def html(self) -> str:
+        """
+        :return: The HTML string of the method's documentation.
+        """
+
         text = f'<h3>{self.name}</h3>\n\n'
         if self.constructor:
             text += f"<p><code>public {self.name}{self.args_string}</code></p>\n\n"
@@ -249,7 +264,7 @@ class Method:
         if len(self.parameters) > 0:
             table = "<table>\n\t<tr>\n\t\t<th><strong>Name</strong></th><th>\n\t\t<strong>Type</strong></th>\n\t\t<th><strong>Description</strong></th>\n\t</tr>\n"
             for parameter in self.parameters:
-                t = markdown(parameter.type).replace("<p>", "").replace("</p>", "")
+                t = markdown(parameter.parameter_type).replace("<p>", "").replace("</p>", "")
                 table += f"\t<tr>\n\t\t<th>{parameter.name}</th>\n\t\t<th>{t}</th>\n\t\t<th>{parameter.description}</th>\n\t</tr>"
             table += "\n</table>"
             text += table + "\n\n"
@@ -265,6 +280,12 @@ class Klass:
                                   "private-func", "private-static-func", "private-type"]
 
     def __init__(self, name: str, namespace: str, et: ElementTree):
+        """
+        :param name: The name of the class type.
+        :param namespace: The namespace this type belongs to.
+        :param et: The XML element tree.
+        """
+
         self.name: str = name
         self.namespace: str = namespace
         cd: Element = et.find("compounddef")
@@ -319,6 +340,10 @@ class Klass:
                         self.inheritance.append(inheritance_name)
 
     def html(self) -> str:
+        """
+        :return: The string of the class's HTML document.
+        """
+
         # Get the header.
         html = f"<h1>{self.name}</h1>\n\n"
         # Get the subtitle.
@@ -375,6 +400,12 @@ class Klass:
 
     @staticmethod
     def get_fields_table(fields: List[Field]) -> str:
+        """
+        :param fields: A list of field.
+
+        :return: An HTML string of a table of fields.
+        """
+
         table = "<table>\n\t<tr>\n\t\t<th><strong>Name</strong></th><th>\n\t\t<strong>Type</strong></th>\n\t\t<th><strong>Description</strong></th>\n\t\t<th><strong>Default Value</strong></th>\n\t</tr>\n"
         for field in fields:
             if field.readonly and not field.const:
@@ -481,6 +512,10 @@ def get_sidebar() -> str:
 
 
 def get_html_prefix() -> str:
+    """
+    :return: The prefix string for an HTML page.
+    """
+
     q = Path("html_prefix.txt").read_text(encoding="utf-8")
     q += sidebar + '\n\t\t<div class="right-col">\n\n'
     return q
@@ -498,7 +533,7 @@ def get_overview(namespace: str) -> str:
     """
     :param namespace: The namespace.
 
-    :return: The HTML overview page of the namespace.
+    :return: The HTML for the overview document of the namespace.
     """
 
     md: str = Path(f"{namespace.lower()}/overview.md").resolve().read_text(encoding="utf-8")
@@ -506,11 +541,19 @@ def get_overview(namespace: str) -> str:
 
 
 def get_readme() -> str:
+    """
+    :return: The HTML for the overall overview document.
+    """
+
     md: str = Path("overview.md").resolve().read_text(encoding="utf-8")
     return get_html_prefix() + markdown(md) + get_html_suffix()
 
 
 def get_benchmark() -> str:
+    """
+    :return: The HTML for the benchmark document.
+    """
+
     md = Path("benchmark.md").read_text()
     return get_html_prefix() + markdown(md, extensions=['markdown.extensions.tables']) + get_html_suffix()
 
@@ -554,6 +597,91 @@ def get_klass(name: str, namespace: str) -> Union[Klass, EnumDef]:
             raise Exception(ET.tostring(compound_def).decode())
 
 
+def inherit_fields(parent_class_name: str, child_fields: List[Field], parent_fields: List[Field]) -> List[Field]:
+    """
+    Copy inherited fields from a parent class into a child class.
+
+    :param parent_class_name: The name of the parent class.
+    :param child_fields: A list of the child class's fields. This will be added to.
+    :param parent_fields: A list of the parent class's fields.
+
+    :return: The list of the child class's fields, including inherited methods.
+    """
+
+    for field in parent_fields:
+        fi = copy(field)
+        fi.inherited_from = parent_class_name
+        child_fields.append(fi)
+    return child_fields
+
+
+def inherit_methods(parent_class_name: str, child_methods: List[Method], parent_methods: List[Method]) -> List[Method]:
+    """
+    Copy inherited methods from a parent class into a child class.
+
+    :param parent_class_name: The name of the parent class.
+    :param child_methods: A list of the child class's methods. This will be added to.
+    :param parent_methods: A list of the parent class's methods.
+
+    :return: The list of the child class's methods, including inherited methods.
+    """
+
+    # Get a list of existing method names.
+    method_names = [m.name for m in child_methods]
+    for method in parent_methods:
+        # If a method by the same name already exists, it means we've overridden a method.
+        if method.name in method_names:
+            # Mark the overridden method as inherited.
+            for q in range(len(child_methods)):
+                if child_methods[q].name == method.name:
+                    child_methods[q].inherited_from = parent_class_name
+                    break
+            continue
+        # Copy the inherited method.
+        me = copy(method)
+        me.inherited_from = parent_class_name
+        child_methods.append(me)
+    return child_methods
+
+
+def class_inheritance() -> None:
+    """
+    Copy inherited fields and methods into child classes and generate documentation.
+    """
+
+    # Figure out inheritance.
+    for klass_name in klasses:
+        # Get my inheritance.
+        for parent_name in klasses[klass_name].inheritance:
+            # This can happen with classes outside the namespace e.g. MonoBehaviour.
+            if parent_name not in klasses:
+                continue
+            parent_klass = klasses[parent_name]
+            # Copy the fields.
+            klasses[klass_name].public_static_fields = inherit_fields(parent_class_name=parent_klass.name,
+                                                                      child_fields=klasses[klass_name].public_static_fields,
+                                                                      parent_fields=parent_klass.public_static_fields)
+            klasses[klass_name].public_fields = inherit_fields(parent_class_name=parent_klass.name,
+                                                               child_fields=klasses[klass_name].public_fields,
+                                                               parent_fields=parent_klass.public_fields)
+            # Copy the methods.
+            klasses[klass_name].public_static_methods = inherit_methods(parent_class_name=parent_klass.name,
+                                                                        child_methods=klasses[klass_name].public_static_methods,
+                                                                        parent_methods=parent_klass.public_static_methods)
+            klasses[klass_name].public_methods = inherit_methods(parent_class_name=parent_klass.name,
+                                                                 child_methods=klasses[klass_name].public_methods,
+                                                                 parent_methods=parent_klass.public_methods)
+            # Copy the properties.
+            for parent_property in parent_klass.properties:
+                pr = copy(parent_property)
+                pr.inherited_from = parent_klass.name
+                klasses[klass_name].properties.append(pr)
+        # Generate the doc.
+        klass_html = klasses[klass_name].html()
+        klass_html = get_html_prefix() + klass_html + get_html_suffix()
+        dst.joinpath(klass_name + ".html").write_text(klass_html)
+
+
 # Generate XML with Doxygen.
 doxygen()
 # Get the namespaces.
@@ -587,40 +715,7 @@ for ns in namespaces:
             html = get_html_prefix() + html + get_html_suffix()
             dst.joinpath(klass.name + ".html").write_text(html)
     # Figure out inheritance.
-    for klass_name in klasses:
-        # Get my inheritance.
-        for parent_name in klasses[klass_name].inheritance:
-            # This can happen with classes outside the namespace e.g. MonoBehaviour.
-            if parent_name not in klasses:
-                continue
-            parent_klass = klasses[parent_name]
-            # Copy the fields.
-            for field in parent_klass.public_static_fields:
-                fi = copy(field)
-                fi.inherited_from = parent_klass.name
-                klasses[klass_name].public_static_fields.append(fi)
-            for field in parent_klass.public_fields:
-                fi = copy(field)
-                fi.inherited_from = parent_klass.name
-                klasses[klass_name].public_fields.append(fi)
-            # Copy the methods.
-            for method in parent_klass.public_static_methods:
-                me = copy(method)
-                me.inherited_from = parent_klass.name
-                klasses[klass_name].public_static_methods.append(me)
-            for method in parent_klass.public_methods:
-                me = copy(method)
-                me.inherited_from = parent_klass.name
-                klasses[klass_name].public_methods.append(me)
-            # Copy the properties.
-            for property in parent_klass.properties:
-                pr = copy(property)
-                pr.inherited_from = parent_klass.name
-                klasses[klass_name].properties.append(pr)
-        # Generate the doc.
-        html = klasses[klass_name].html()
-        html = get_html_prefix() + html + get_html_suffix()
-        dst.joinpath(klass_name + ".html").write_text(html)
+    class_inheritance()
 
 
 # Add the CLI and benchmark docs.

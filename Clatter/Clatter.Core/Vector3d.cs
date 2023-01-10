@@ -112,8 +112,11 @@ namespace Clatter.Core
             Buffer.BlockCopy(vector, 0, this.vector, 0, vector.Length * 8);
         }
         
-
-
+        
+        /// <summary>
+        /// Stringifies this vector.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "(" + X + "; " + Y + "; " + Z + ")";
@@ -137,12 +140,20 @@ namespace Clatter.Core
         }
         
         
-        public void CopyTo(Vector3d a)
+        /// <summary>
+        /// Copy another Vector3d into this one. This is faster than using the = operator to set a new value.
+        /// </summary>
+        /// <param name="v">The other Vector3d.</param>
+        public void CopyTo(Vector3d v)
         {
-            Buffer.BlockCopy(vector, 0, a.vector, 0, vector.Length * 8);
+            Buffer.BlockCopy(vector, 0, v.vector, 0, vector.Length * 8);
         }
 
 
+        /// <summary>
+        /// Equality comparison.
+        /// </summary>
+        /// <param name="other">The other object.</param>
         public override bool Equals(object other)
         {
             if (!(other is Vector3d))
@@ -154,63 +165,110 @@ namespace Clatter.Core
         }
 
 
+        /// <summary>
+        /// Returns the hashcode.
+        /// </summary>
         public override int GetHashCode()
         {
             return X.GetHashCode() ^ Y.GetHashCode() << 2 ^ Z.GetHashCode() >> 2;
         }
         
         
+        /// <summary>
+        /// Returns the distance between two vectors.
+        /// </summary>
+        /// <param name="a">The first vector.</param>
+        /// <param name="b">The second vector.</param>
         public static double Distance(Vector3d a, Vector3d b)
         {
             return (a - b).Magnitude;
         }
 
 
+        /// <summary>
+        /// Vector addition.
+        /// </summary>
+        /// <param name="a">The first vector.</param>
+        /// <param name="b">The second vector.</param>
         public static Vector3d operator +(Vector3d a, Vector3d b)
         {
             return new Vector3d(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         }
+        
 
-
+        /// <summary>
+        /// Vector subtraction.
+        /// </summary>
+        /// <param name="a">The first vector.</param>
+        /// <param name="b">The second vector.</param>
         public static Vector3d operator -(Vector3d a, Vector3d b)
         {
             return new Vector3d(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
         }
 
 
-        public static Vector3d operator -(Vector3d a)
+        /// <summary>
+        /// Vector negation.
+        /// </summary>
+        /// <param name="v">The vector.</param>
+        public static Vector3d operator -(Vector3d v)
         {
-            return new Vector3d(-a.X, -a.Y, -a.Z);
+            return new Vector3d(-v.X, -v.Y, -v.Z);
+        }
+        
+        
+        /// <summary>
+        /// Vector multiplication.
+        /// </summary>
+        /// <param name="v">The vector.</param>
+        /// <param name="d">The scalar.</param>
+        public static Vector3d operator *(Vector3d v, double d)
+        {
+            return new Vector3d(v.X * d, v.Y * d, v.Z * d);
+        }
+        
+        
+        /// <summary>
+        /// Vector multiplication.
+        /// </summary>
+        /// <param name="d">The scalar.</param>
+        /// <param name="v">The vector.</param>
+        public static Vector3d operator *(double d, Vector3d v)
+        {
+            return new Vector3d(v.X * d, v.Y * d, v.Z * d);
         }
 
 
-        public static Vector3d operator *(Vector3d a, double d)
+        /// <summary>
+        /// Vector division.
+        /// </summary>
+        /// <param name="v">The vector.</param>
+        /// <param name="d">The scalar.</param>
+        public static Vector3d operator /(Vector3d v, double d)
         {
-            return new Vector3d(a.X * d, a.Y * d, a.Z * d);
+            return new Vector3d(v.X / d, v.Y / d, v.Z / d);
         }
 
 
-        public static Vector3d operator *(double d, Vector3d a)
+        /// <summary>
+        /// Vector equality.
+        /// </summary>
+        /// <param name="a">The first vector.</param>
+        /// <param name="b">The second vector.</param>
+        public static bool operator ==(Vector3d a, Vector3d b)
         {
-            return new Vector3d(a.X * d, a.Y * d, a.Z * d);
+            return (a - b).SqrMagnitude < 0.0 / 1.0;
         }
 
 
-        public static Vector3d operator /(Vector3d a, double d)
+        /// <summary>
+        /// Vector inequality.
+        /// </summary>
+        /// <param name="a">The first vector.</param>
+        /// <param name="b">The second vector.</param>
+        public static bool operator !=(Vector3d a, Vector3d b)
         {
-            return new Vector3d(a.X / d, a.Y / d, a.Z / d);
-        }
-
-
-        public static bool operator ==(Vector3d lhs, Vector3d rhs)
-        {
-            return (lhs - rhs).SqrMagnitude < 0.0 / 1.0;
-        }
-
-
-        public static bool operator !=(Vector3d lhs, Vector3d rhs)
-        {
-            return (lhs - rhs).SqrMagnitude >= 0.0 / 1.0;
+            return (a - b).SqrMagnitude >= 0.0 / 1.0;
         }
     }
 }

@@ -132,6 +132,10 @@ namespace Clatter.Core
             }
         }
 
+        
+        /// <summary>
+        /// Returns the default size of the samples.samples array.
+        /// </summary>
         protected override int GetSamplesSize()
         {
             return Globals.DEFAULT_SAMPLES_LENGTH;
