@@ -48,8 +48,39 @@
             this.type = type;
             this.speed = speed;
             this.position = position;
-            // Get an object ID pair as a long. Source: https://stackoverflow.com/a/827267
-            ids = ((ulong)primary.id << 32) | secondary.id;
+            ids = 0;
+            ids = GetIds(primary, secondary);
+        }
+
+
+        /// <summary>
+        /// (constructor)
+        /// </summary>
+        /// <param name="ids">The object IDs pair.</param>
+        /// <param name="primary">The primary object.</param>
+        /// <param name="secondary">The secondary object.</param>
+        /// <param name="type">The type of the audio event (impact, scrape, roll, none).</param>
+        /// <param name="speed">The speed of the collision.</param>
+        /// <param name="position">The centroid of the collision.</param>
+        public CollisionEvent(ulong ids, AudioObjectData primary, AudioObjectData secondary, AudioEventType type, double speed, Vector3d position)
+        {
+            this.ids = ids;
+            this.primary = primary;
+            this.secondary = secondary;
+            this.type = type;
+            this.speed = speed;
+            this.position = position;
+        }
+        
+        
+        /// <summary>
+        /// Returns an object ID pair as a ulong. Source: https://stackoverflow.com/a/827267
+        /// </summary>
+        /// <param name="primary">The primary object.</param>
+        /// <param name="secondary">The secondary object.</param>
+        public static ulong GetIds(AudioObjectData primary, AudioObjectData secondary)
+        {
+            return ((ulong)primary.id << 32) | secondary.id;
         }
     }
 }

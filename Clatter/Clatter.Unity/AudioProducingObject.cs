@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Clatter.Core;
@@ -17,7 +18,7 @@ namespace Clatter.Unity
     /// - "Exit" events are always "none" audio events that will end an ongoing audio event series.
     /// - "Stay" events can be impacts, scrapes, rolls, or none-events. This is determined by a number of factors; see `areaNewCollision`, `scrapeAngle`, `impactAreaRatio`, and `rollAngularSpeed`.
     /// 
-    /// AudioProducingObjects are automatically initialized and updated by `ClatterManager`; you *can* use an AudioProducingObject without `ClatterManager` but it's very difficult to do so. Notice that there is no Update or FixedUpdate call because it's assumed that `ClatterManager` will call AudioProducingObject.OnFixedUpdate().
+    /// AudioProducingObjects are automatically initialized and updated by `ClatterManager`; you *can* use an AudioProducingObject without `ClatterManager` but it's very difficult to do so. Notice that there is no Update or FixedUpdate call because it's assumed that `ClatterManager` will call AudioProducingObject.OnUpdate() and AudioProducingObject.OnFixedUpdate().
     /// </summary>
     public class AudioProducingObject : MonoBehaviour
     {
@@ -53,7 +54,7 @@ namespace Clatter.Unity
         /// </summary>
         public static float maxContactSeparation = 1e-8f;
         /// <summary>
-        /// AudioProducingObject tries to filter duplicate events by only accepting objects whose IDs are in the order `lesser, greater`. For example, a collision between object 1 and object 0 won't generate audio but the reciprocal collision between object 0 and object 1 *will*. To allow duplicate events, set this field to `false`.
+        /// AudioProducingObject tries to filter duplicate collision events in two ways. First, it will remove any reciprocal pairs of objects, i.e. it will accept a collision between objects 0 and 1 but not objects 1 and 0. Second, it will register only the first collision between objects per main-thread update (multiple collisions can be registered because there are many physics fixed update calls in between). To allow duplicate events, set this field to `false`.
         /// </summary>
         public static bool filterDuplicates = true;
         /// <summary>
@@ -173,6 +174,10 @@ namespace Clatter.Unity
         /// The object's physic material.
         /// </summary>
         private PhysicMaterial physicMaterial;
+        /// <summary>
+        /// A set of IDs of collision events from this frame. This is used to filter duplicates.
+        /// </summary>
+        private HashSet<ulong> collisionIds = new HashSet<ulong>();
         /// <summary>
         /// The default audio data. This is used whenever an `AudioProducingObject` collides with a non-`AudioProducingObject` object.
         /// </summary>
@@ -299,9 +304,33 @@ namespace Clatter.Unity
                 // The other object is the floor.
                 otherData = defaultAudioObjectData;
             }
-            CollisionEvent collisionEvent;
             // Compare the IDs for filter out duplicate events.
             if (filterDuplicates && data.id > otherData.id)
+            {
+                return;
+            }
+            AudioObjectData primary;
+            AudioObjectData secondary;
+            AudioProducingObject primaryMono;
+            // Set the primary and secondary IDs depending on:
+            // 1. Whether this is a secondary object.
+            // 2. Which object is has a greater speed.
+            if (data.speed > otherData.speed)
+            {
+                primary = data;
+                secondary = otherData;
+                primaryMono = this;
+            }
+            else
+            {
+                primary = otherData;
+                secondary = data;
+                primaryMono = other;
+            }
+            // Get the IDs pair.
+            ulong ids = CollisionEvent.GetIds(primary, secondary);
+            // This object IDs pair already exists.
+            if (filterDuplicates && !collisionIds.Add(ids))
             {
                 return;
             }
@@ -309,7 +338,7 @@ namespace Clatter.Unity
             int numContacts = collision.contactCount;
             if (numContacts == 0)
             {
-                NoneCollisionEvent(out collisionEvent, otherData);
+                NoneCollisionEvent(primary, secondary);
                 return;
             }
             // Resize the array so we can copy the contacts directly into it.
@@ -340,7 +369,7 @@ namespace Clatter.Unity
             // Ignore low-speed events.
             if (normalSpeed < AudioEvent.minSpeed)
             {
-                NoneCollisionEvent(out collisionEvent, otherData);
+                NoneCollisionEvent(primary, secondary);
                 return;
             }
             // Get the centroid.
@@ -372,24 +401,6 @@ namespace Clatter.Unity
             double radius = Vector3d.Distance(centroid, maxPoint);
             // Get the approximate area.
             double area = Math.PI * radius * radius;
-            AudioObjectData primary;
-            AudioObjectData secondary;
-            AudioProducingObject primaryMono;
-            // Set the primary and secondary IDs depending on:
-            // 1. Whether this is a secondary object.
-            // 2. Which object is has a greater speed.
-            if (data.speed > otherData.speed)
-            {
-                primary = data;
-                secondary = otherData;
-                primaryMono = this;
-            }
-            else
-            {
-                primary = otherData;
-                secondary = data;
-                primaryMono = other;
-            }
             AudioEventType audioEventType;
             // Exits are always none.
             if (type == OnCollisionType.exit)
@@ -485,15 +496,22 @@ namespace Clatter.Unity
                 primaryMono.hasPreviousArea = true;
                 primaryMono.previousArea = area; 
             }
-            // Get the event.
-            collisionEvent = new CollisionEvent(primary, secondary, audioEventType, normalSpeed, centroid);
             // Add the collision.
-            ClatterManager.instance.generator.AddCollision(collisionEvent);
+            ClatterManager.instance.generator.AddCollision(new CollisionEvent(ids, primary, secondary, audioEventType, normalSpeed, centroid));
+        }
+        
+        
+        /// <summary>
+        /// Refresh the recorded set of collisions. This method is not equivalent to Update() and is called automatically by `ClatterManager`.
+        /// </summary>
+        public void OnUpdate()
+        {
+            collisionIds.Clear();
         }
 
 
         /// <summary>
-        /// Update the directional and angular speeds of the underlying `Clatter.Core.AudioObjectData`. This method is not equivalent to FixedUpdate(), but it is called automatically by `ClatterManager`.
+        /// Update the directional and angular speeds of the underlying `Clatter.Core.AudioObjectData`. This method is not equivalent to FixedUpdate() and is called automatically by `ClatterManager`.
         /// </summary>
         public void OnFixedUpdate()
         {
@@ -509,17 +527,16 @@ namespace Clatter.Unity
                 data.angularSpeed = articulationBody.angularVelocity.magnitude;
             }
         }
-        
-        
+
+
         /// <summary>
         /// Set the collision event as a none-type event.
         /// </summary>
-        /// <param name="collisionEvent">The collision event.</param>
-        /// <param name="otherData">The other object.</param>
-        private void NoneCollisionEvent(out CollisionEvent collisionEvent, AudioObjectData otherData)
+        /// <param name="primary">The primary object.</param>
+        /// <param name="secondary">The secondary object.</param>
+        private void NoneCollisionEvent(AudioObjectData primary, AudioObjectData secondary)
         {
-            collisionEvent = new CollisionEvent(data, otherData, AudioEventType.none, 0, Vector3d.Zero);
-            ClatterManager.instance.generator.AddCollision(collisionEvent);
+            ClatterManager.instance.generator.AddCollision(new CollisionEvent(primary, secondary, AudioEventType.none, 0, Vector3d.Zero));
         }
 
 

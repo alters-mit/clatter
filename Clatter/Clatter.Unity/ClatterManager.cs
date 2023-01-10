@@ -113,6 +113,11 @@ namespace Clatter.Unity
         /// </summary>
         public void OnUpdate()
         {
+            // Clear the collision data.
+            for (int i = 0; i < objectsArray.Length; i++)
+            {
+                objectsArray[i].OnUpdate();
+            }
             generator.Update();
             // Destroy sounds that have ended.
             int id;
