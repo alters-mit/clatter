@@ -31,6 +31,10 @@ namespace Clatter.Unity
 
 
         /// <summary>
+        /// A ScrapeSound will pre-allocate generated audio for immediate playback. If this field is true, it will also use that audio to fill in gaps of silence that occur while scrape audio is still being generated. The result isn't entirely "realistic" but sounds much better because it eliminates a lot of choppiness.
+        /// </summary>
+        public static bool fillSilence = true;
+        /// <summary>
         /// A cached array of pending audio data.
         /// </summary>
         private readonly ScrapeAudioData[] nextData = new ScrapeAudioData[NUM_NEXT_SAMPLES];
@@ -38,6 +42,22 @@ namespace Clatter.Unity
         /// The index of the next audio samples.
         /// </summary>
         private int nextDataIndex = -1;
+        /// <summary>
+        /// A cached start index of a range of zeros in the audio data.
+        /// </summary>
+        private int z0;
+        /// <summary>
+        /// A cached boolean flag indicating whether we've found a range of zeros in the audio data.
+        /// </summary>
+        private bool zeroing;
+        /// <summary>
+        /// A cached length of a range of zeros in the audio data.
+        /// </summary>
+        private int zerosLength;
+        /// <summary>
+        /// A cached index in the audio data when we're allocating scrape audio to each channel.
+        /// </summary>
+        private int dataIndex;
 
 
         /// <summary>
@@ -49,6 +69,7 @@ namespace Clatter.Unity
         {
             // Move the scrape sound.
             transform.position = position.ToVector3();
+            // Find the next pre-allocated audio chunk and play it.
             if (nextDataIndex < 0)
             {
                 for (int i = 0; i < nextData.Length; i++)
@@ -87,6 +108,71 @@ namespace Clatter.Unity
                 // Un-allocate the samples.
                 nextData[nextDataIndex].allocated = false;
                 nextDataIndex = -1;
+            }
+        }
+
+
+        /// <summary>
+        /// This is called automatically in Unity.
+        ///
+        /// Check for ranges of "zeros" i.e. moments of silence during the scrape and fill it with audio.
+        /// </summary>
+        /// <param name="data">The chunk of audio data.</param>
+        /// <param name="channels">The number of channels.</param>
+        private void OnAudioFilterRead(float[] data, int channels)
+        {
+            if (!fillSilence)
+            {
+                return;
+            }
+            // Start by resenting the cached index variables.
+            z0 = 0;
+            zeroing = false;
+            // Iterate through the data, incrementing by the number of channels.
+            for (int i = 0; i < data.Length; i += channels)
+            {
+                if (data[i] == 0)
+                {
+                    // This is the start of a chunk of zeros.
+                    if (!zeroing)
+                    {
+                        z0 = i;
+                        zeroing = true;                 
+                    }
+                }
+                else
+                {
+                    // We found a range of zeros. Now we need to fill it with audio.
+                    if (zeroing)
+                    {
+                        // Find valid ScrapeAudioData to use.
+                        for (int j = 0; j < nextData.Length; j++)
+                        {
+                            // We found valid data. We don't care if it's allocated or not.
+                            if (nextData[j] != null)
+                            {
+                                // Set the start index of the range of zeros.
+                                dataIndex = z0;
+                                // Set the length of the range of zeros.
+                                zerosLength = (i - z0) / channels;
+                                // Iterate through the range of zeros.
+                                for (int k = 0; k < zerosLength; k++)
+                                {
+                                    // Fill each channel with audio.
+                                    for (int m = 0; m < channels; m++)
+                                    {
+                                        data[dataIndex] = nextData[j].data[k];
+                                        dataIndex++;
+                                    }
+                                }
+                                // Break because we filled the audio.
+                                break;
+                            }
+                        }
+                        // Start looking for more ranges of zeros.
+                        zeroing = false;
+                    }
+                }
             }
         }
     }
