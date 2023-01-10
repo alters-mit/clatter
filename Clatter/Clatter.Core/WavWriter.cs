@@ -7,6 +7,8 @@ namespace Clatter.Core
     /// <summary>
     /// Write audio samples to a .wav file. Instantiate a WavWriter to begin writing audio. Call Write(data) to continuously write chunks of audio data to the file. Call End() to stop writing and append the wav header data to the file.
     ///
+    /// ## Code Examples
+    ///
     /// {code_example:ScrapeAudioExample}
     /// 
     /// </summary>

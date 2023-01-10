@@ -3,7 +3,9 @@
     /// <summary>
     /// Audio materials for scrape sounds. Scrape materials are always un-sized, unlike `ImpactMaterial` values.
     /// 
-    /// Due to separate recording processes, scrape materials don't have the same names as impact materials and don't map exactly to `ImpactMaterialUnsized` values. See: ScrapeMaterialData.ImpactMaterialUnsizedToScrapeMaterial:
+    /// Due to separate recording processes, scrape materials don't have the same names as impact materials and don't map exactly to `ImpactMaterialUnsized` values. See: ScrapeMaterialData.ImpactMaterialUnsizedToScrapeMaterial and code example below.
+    ///
+    /// ## Code Examples
     ///
     /// {code_example:ImpactMaterialToScrapeMaterial}
     /// 

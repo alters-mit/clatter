@@ -4,8 +4,7 @@
 namespace Clatter.Core
 {
     /// <summary>
-    /// A non-Unity Vector3 that uses doubles. Not everything is implemented.
-    /// Source: https://github.com/sldsmkd/vector3d/blob/master/Vector3d.cs
+    /// A partial implementation of a non-Unity Vector3 that uses doubles. Source: https://github.com/sldsmkd/vector3d/blob/master/Vector3d.cs
     /// </summary>
     public struct Vector3d
     {

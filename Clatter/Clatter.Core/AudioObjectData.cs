@@ -9,6 +9,8 @@ namespace Clatter.Core
     ///
     /// Audio generation in Clatter is always the result of a collision event between two AudioObjectData objects. Each object in your scene or simulation must have corresponding AudioObjectData.
     ///
+    /// ## Code Examples
+    /// 
     /// This is a minimal example of how to instantiate an AudioObjectData:
     ///
     /// {code_example:AudioObjectDataConstructor}
@@ -17,13 +19,13 @@ namespace Clatter.Core
     ///
     /// {code_example:AudioObjectDataConstructorScrapeMaterial}
     ///
-    /// In many cases, it is possible to derive the AudioObjectData constructor parameters from other physical values:
+    /// In many cases, it is possible to derive the AudioObjectData constructor parameters from other physical values.
     ///
-    /// In this example, we'll derive mass from an `ImpactMaterialUnsized` value and volume:
+    /// To derive mass from an `ImpactMaterialUnsized` value and volume:
     ///
     /// {code_example:MassFromVolume}
     ///
-    /// In this example, we'll derive the "size bucket" from an `ImpactMaterialUnsized` value and volume:
+    /// To derive the "size bucket" from an `ImpactMaterialUnsized` value and volume:
     ///
     /// {code_example:SizeBucket}
     /// 

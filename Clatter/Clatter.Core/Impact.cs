@@ -9,7 +9,9 @@ namespace Clatter.Core
     ///
     /// An Impact is actually a *series* of events. By reusing the same Impact object, data from previous impacts can affect the current impact. This is useful for situations such as an object repeatedly bouncing on a table.
     ///
-    /// Impact events automatically generate from collision data within `AudioGenerator`. You can also manually create an Impact and use it to generate audio without needing to use an `AudioGenerator`. This can be useful if you want to generate audio without needing to create a physics simulation:
+    /// Impact events automatically generate from collision data within `AudioGenerator`. You can also manually create an Impact and use it to generate audio without needing to use an `AudioGenerator`. This can be useful if you want to generate audio without needing to create a physics simulation.
+    ///
+    /// ## Code Examples
     ///
     /// {code_example:ImpactAudioExample}
     ///

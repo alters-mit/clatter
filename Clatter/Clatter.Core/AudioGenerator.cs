@@ -15,12 +15,14 @@ namespace Clatter.Core
     ///
     /// **Regarding randomness:** AudioGenerator has an rng parameter that is a System.Random object. In Clatter, audio is generated from both fixed values and random values; see the constructor for `Modes` and Modes.AdjustPowers(). In most cases, you'll want the audio to be truly random. If you want to replicate the exact same audio every time you run your program, set a random seed: `Random rng = new Random(0)`.
     ///
+    /// ## Code Examples
+    ///
     /// This is a minimal example of how to process multiple concurrent collisions with an AudioGenerator and, using `WavWriter`, write .wav files. Note that we're making a few implausible assumptions:
     ///
     /// - All of the objects are randomly generated. In a real simulation, you'll probably want more control over the objects' audio values.
     /// - All of the collisions have a centroid of (0, 0, 0). In a real simulation, the collisions should probably be spatialized.
     /// - All of the collision events are impacts. In a real simulation, we could add a `ScrapeMaterial` to a "floor" object to start generating scrape audio.
-    ///
+    /// 
     /// {code_example:AudioGeneratorImpact}
     /// 
     /// </summary>

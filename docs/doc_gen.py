@@ -1,6 +1,6 @@
 from copy import copy
 import re
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Tuple
 from subprocess import call
 from pathlib import Path
 from shutil import rmtree
@@ -59,11 +59,11 @@ def get_description(e: Element, is_paragraphs: bool, brief_description: bool = T
     return " ".join(descriptions)
 
 
-def get_description_with_code_examples(description: str) -> str:
+def get_description_and_code_examples(description: str) -> Tuple[str, str]:
     """
     Replace code_example tags in a description with actual code examples.
 
-    :return: The modified description.
+    :return: Tuple: The modified description and the code examples.
     """
 
     # Add code examples.
@@ -76,7 +76,14 @@ def get_description_with_code_examples(description: str) -> str:
         if len(desc_split[1].strip()) > 0:
             code_example = "</p>\n" + code_example + "<p>"
         description = description.replace(match.group(0), code_example)
-    return description
+    desc_split = description.split("<p>Code Examples</p>")
+    description = desc_split[0].strip()
+    # Get code examples.
+    if len(desc_split) > 1:
+        code_examples = "<h2>Code Examples</h2>\n\n" + desc_split[1]
+    else:
+        code_examples = ""
+    return description, code_examples
 
 
 def get_type(e: Element) -> str:
@@ -122,13 +129,15 @@ class EnumDef:
         html += f'<p class="subtitle">enum in {self.namespace}</p>\n\n'
         # Add the description.
         description = self.description.replace("\n\n", "%%").replace("\n", "\n\n").replace("%%", "\n\n")
-        description = get_description_with_code_examples(description)
+        description, code_examples = get_description_and_code_examples(description)
         html += markdown(f'{description.strip()}\n\n')
         table = "<table>\n\t<tr>\n\t\t<th><strong>Name</strong></th>\n\t\t<th><strong>Value</strong></th>\n\t</tr>\n"
         for value in self.values:
             table += f"\t<tr>\n\t\t<th>{value}</th>\n\t\t<th>{self.values[value]}</th>\n\t</tr>\n"
         table += "\n</table>"
         html += table
+        if len(code_examples) > 0:
+            html += "\n\n" + code_examples
         return html.strip()
 
 
@@ -362,7 +371,7 @@ class Klass:
             html += inheritance_p[:-2] + f'</p>\n\n'
         # Add the description.
         description = self.description.replace("\n\n", "%%").replace("\n", "\n\n").replace("%%", "\n\n")
-        description = get_description_with_code_examples(description)
+        description, code_examples = get_description_and_code_examples(description)
         html += markdown(f'{description.strip()}\n\n')
         constants = [f for f in self.public_static_fields if f.const]
         static_fields = [f for f in self.public_static_fields if not f.const]
@@ -396,6 +405,8 @@ class Klass:
             html += f'<h2>Methods</h2>\n\n'
             for method in self.public_methods:
                 html += method.html()
+        if len(code_examples) > 0:
+            html += "\n\n" + code_examples
         return html.strip()
 
     @staticmethod
