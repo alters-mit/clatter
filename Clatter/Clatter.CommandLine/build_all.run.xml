@@ -7,6 +7,7 @@
       <option name="Build" default="false" projectName="Clatter.CommandLine" projectPath="file://$PROJECT_DIR$/Clatter.CommandLine/Clatter.CommandLine.csproj" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="osx64" run_configuration_type="DotNetFolderPublish" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="win64" run_configuration_type="DotNetFolderPublish" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="build_py" run_configuration_type="ShConfigurationType" />
     </method>
   </configuration>
 </component>
