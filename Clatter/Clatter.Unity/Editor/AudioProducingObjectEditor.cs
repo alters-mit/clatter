@@ -34,7 +34,7 @@ namespace Clatter.Unity.Editor
             // Show the audio values.
             EditorGUILayout.LabelField("Audio Values", EditorStyles.boldLabel);
             s.amp = EditorGUILayout.Slider("Amp", (float)s.amp, 0f, 1f);
-            s.resonance = EditorGUILayout.Slider("Resonance", (float)s.amp, 0f, 1f);
+            s.resonance = EditorGUILayout.Slider("Resonance", (float)s.resonance, 0f, 1f);
             // Show the physics values.
             EditorGUILayout.LabelField("Physics Values", EditorStyles.boldLabel);
             s.autoSetFriction = EditorGUILayout.Toggle("Auto-Set Friction", s.autoSetFriction);
@@ -55,6 +55,8 @@ namespace Clatter.Unity.Editor
             }
             // Show the events.
             EditorGUILayout.LabelField("Events", EditorStyles.boldLabel);
+            SerializedProperty onCollision = serializedObject.FindProperty("onCollision");
+            EditorGUILayout.PropertyField(onCollision, true);
             SerializedProperty onDestroy = serializedObject.FindProperty("onDestroy");
             EditorGUILayout.PropertyField(onDestroy, true);
             serializedObject.ApplyModifiedProperties();

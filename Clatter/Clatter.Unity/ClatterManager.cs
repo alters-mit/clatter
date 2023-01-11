@@ -15,11 +15,17 @@ namespace Clatter.Unity
     ///
     /// In Clatter, audio is generated from both fixed values and random values; see the constructor for `Clatter.Core.Modes` and Modes.AdjustPowers(). In most cases, you'll want the audio to be truly random. If you want to replicate the exact same audio every time you run your program, uncheck "Generate Random Seed" and then enter a seed.
     ///
-    /// For a minimal example scene, see the "impact" scene in the ClatterUnityExamples project.
+    /// For a minimal example scene, see the "Impact" scene in the ClatterUnityExamples project.
     ///
-    /// The following example illustrates how to create a Clatter scene in Unity purely from code. If you're planning on adding `AudioProducingObject`s and a ClatterManager to the scene via the Unity Editor, most of this code isn't needed. Likewise, we've set `auto == false` in this code, which doesn't really do anything in this example other than showcase how to manually update a ClatterManager.
+    /// ## Code Examples
+    ///
+    /// Create a Clatter scene in Unity purely from code. See the "Marbles" scene in ClatterUnityExamples.
     ///
     /// {code_example:Marbles}
+    ///
+    /// Create a Clatter scene that listens for collision events. This example sets auto to False and manually updates ClatterManager from a separate script. This way, we can be certain that ClatterManager.OnAwake() will be invoked *after* the listener script awakens. See "CollisionListener" in ClatterUnityExamples.
+    ///
+    /// {code_example:CollisionListener}
     /// 
     /// </summary>
     public class ClatterManager : MonoBehaviour

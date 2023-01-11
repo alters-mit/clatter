@@ -79,21 +79,5 @@ public class Marbles : MonoBehaviour
         // Add the ClatterManager.
         GameObject go = new GameObject("ClatterManager");
         ClatterManager clatterManager = go.AddComponent<ClatterManager>();
-        // Disable auto-updates.
-        clatterManager.auto = false;
-        // Manually awaken the manager.
-        clatterManager.OnAwake();
-    }
-
-
-    private void Update()
-    {
-        ClatterManager.instance.OnUpdate();
-    }
-
-
-    private void FixedUpdate()
-    {
-        ClatterManager.instance.OnFixedUpdate();
     }
 }

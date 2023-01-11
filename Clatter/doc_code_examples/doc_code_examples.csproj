@@ -12,7 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="UnityEngine" Version="1.0.0" />
+      <PackageReference Include="Unity3D" Version="2.0.1" />
+      <PackageReference Include="Unity3D.UnityEngine.UI" Version="2018.3.5.1" />
     </ItemGroup>
 
 </Project>

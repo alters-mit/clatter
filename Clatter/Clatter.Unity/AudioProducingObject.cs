@@ -132,6 +132,12 @@ namespace Clatter.Unity
         [HideInInspector]
         public double mass;
         /// <summary>
+        /// Invoked when this object generates a `CollisionEvent`. Parameters: The `CollisionEvent`.
+        /// </summary>
+        // ReSharper disable once Unity.RedundantHideInInspectorAttribute
+        [HideInInspector]
+        public UnityEvent<CollisionEvent> onCollision = new UnityEvent<CollisionEvent>();
+        /// <summary>
         /// Invoked when this object is destroyed. Parameters: The ID of this object, i.e. `this.data.id`.
         /// </summary>
         // ReSharper disable once Unity.RedundantHideInInspectorAttribute
@@ -504,7 +510,9 @@ namespace Clatter.Unity
                 primaryMono.previousArea = area; 
             }
             // Add the collision.
-            ClatterManager.instance.generator.AddCollision(new CollisionEvent(ids, primary, secondary, audioEventType, normalSpeed, centroid));
+            CollisionEvent collisionEvent = new CollisionEvent(ids, primary, secondary, audioEventType, normalSpeed, centroid);
+            ClatterManager.instance.generator.AddCollision(collisionEvent);
+            onCollision?.Invoke(collisionEvent);
         }
         
         
@@ -543,7 +551,9 @@ namespace Clatter.Unity
         /// <param name="secondary">The secondary object.</param>
         private void NoneCollisionEvent(AudioObjectData primary, AudioObjectData secondary)
         {
-            ClatterManager.instance.generator.AddCollision(new CollisionEvent(primary, secondary, AudioEventType.none, 0, Vector3d.Zero));
+            CollisionEvent collisionEvent = new CollisionEvent(primary, secondary, AudioEventType.none, 0, Vector3d.Zero);
+            ClatterManager.instance.generator.AddCollision(collisionEvent);
+            onCollision?.Invoke(collisionEvent);
         }
 
 

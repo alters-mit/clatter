@@ -56,6 +56,7 @@
     <Compile Include="Assets\ScrapeManual\ScrapeGenerator.cs" />
     <Compile Include="Assets\Marbles\Marbles.cs" />
     <Compile Include="Assets\Scrape\ForceApplier.cs" />
+    <Compile Include="Assets\CollisionListener\CollisionListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
