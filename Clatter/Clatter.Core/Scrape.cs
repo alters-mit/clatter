@@ -38,11 +38,11 @@ namespace Clatter.Core
         /// <summary>
         /// A cached buffer for the horizontal force.
         /// </summary>
-        private readonly double[] horizontalForce = new double[ScrapeLinearSpace.Length];
+        private readonly double[] horizontalForce = new double[SAMPLES_LENGTH];
         /// <summary>
         /// A cached buffer for the vertical force.
         /// </summary>
-        private readonly double[] verticalForce = new double[ScrapeLinearSpace.Length];
+        private readonly double[] verticalForce = new double[SAMPLES_LENGTH];
         /// <summary>
         /// The scrape material data for this scrape.
         /// </summary>
@@ -88,7 +88,7 @@ namespace Clatter.Core
             // Get the speed of the primary object and clamp it.
             double primarySpeed = Math.Min(speed, maxSpeed);
             int numPts = (int)(Math.Floor((primarySpeed / 10) / ScrapeMaterialData.SCRAPE_M_PER_PIXEL) + 1);
-            if (numPts <= 1)
+            if (numPts <= 1 || numPts >= scrapeMaterialData.d2sdx2.Length)
             {
                 return false;
             }
@@ -112,7 +112,6 @@ namespace Clatter.Core
                 scrapeIndex = 0;
                 finalIndex = numPts;
             }
-            int length = finalIndex - scrapeIndex;
             // Get the horizontal force.
             double curveMass = 10 * primary.mass;
             MedianFilter medianFilter = new MedianFilter(5);
@@ -124,15 +123,14 @@ namespace Clatter.Core
             for (int i = 0; i < SAMPLES_LENGTH; i++)
             {
                 // Get the horizontal force.
-                horizontalForce[i] = horizontal * ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.dsdx, scrapeMaterialData.dsdx[scrapeIndex], scrapeMaterialData.dsdx[scrapeIndex + length], scrapeIndex, ref horizontalInterpolationIndex, numPts);
+                horizontalForce[i] = horizontal * ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.dsdx, scrapeMaterialData.dsdx[scrapeIndex], scrapeMaterialData.dsdx[finalIndex], scrapeIndex, ref horizontalInterpolationIndex, numPts);
                 // Get the curve value.
-                verticalForce[i] = vertical * medianFilter.ProcessSample(Math.Tanh(ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.d2sdx2, scrapeMaterialData.d2sdx2[scrapeIndex], scrapeMaterialData.d2sdx2[scrapeIndex + length], scrapeIndex, ref verticalInterpolationIndex, numPts) / curveMass));
+                verticalForce[i] = vertical * medianFilter.ProcessSample(Math.Tanh(ScrapeLinearSpace[i].Interpolate1D(vect1, scrapeMaterialData.d2sdx2, scrapeMaterialData.d2sdx2[scrapeIndex], scrapeMaterialData.d2sdx2[finalIndex], scrapeIndex, ref verticalInterpolationIndex, numPts) / curveMass));
             }
             for (int i = 0; i < SAMPLES_LENGTH; i++)
             {
                 verticalForce[i] += horizontalForce[i];
             }
-
             // Convolve and apply roughness.
             impulseResponse.Convolve(verticalForce, ScrapeLinearSpace.Length, ref samples.samples);
             for (int i = 0; i < SAMPLES_LENGTH; i++)
