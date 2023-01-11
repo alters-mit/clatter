@@ -8,6 +8,7 @@
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="osx64" run_configuration_type="DotNetFolderPublish" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="win64" run_configuration_type="DotNetFolderPublish" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="upload_py" run_configuration_type="ShConfigurationType" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="doc_gen" run_configuration_type="ShConfigurationType" />
     </method>
   </configuration>
 </component>
