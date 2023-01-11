@@ -10,10 +10,9 @@ namespace Clatter.Core
     public static class Loader
     {
         /// <summary>
-        /// This assembly. Source: https://stackoverflow.com/a/70627269
+        /// This assembly.
         /// </summary>
-        // ReSharper disable once AssignNullToNotNullAttribute
-        private static readonly Assembly ExecutingAssembly = Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Clatter.Core.dll"));
+        private static readonly Assembly ExecutingAssembly = Assembly.Load("Clatter.Core");
 
 
         /// <summary>

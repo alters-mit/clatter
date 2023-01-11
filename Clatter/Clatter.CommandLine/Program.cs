@@ -30,7 +30,7 @@ namespace Clatter.CommandLine
             {"--scrape_material [STRING]", "If --type is scrape, this sets the secondary object's scrape map. See ScrapeMaterial API documentation for a list of options."},
             {"--duration [FLOAT]", "If --type is scrape, this sets the duration of the scrape audio."},
             {"--simulation_amp [FLOAT]", "The overall amp (0-1)."},
-            {"--path [STRING]", "OPTIONAL. If included, this is a file path to a .wav file. If not included, audio will be sent to stdout."},
+            {"--path [STRING]", "The path to a .wav file. If not included, audio will be sent to stdout."},
             {"--allow_distortion", "OPTIONAL. If included, don't clamp amp values to 0.99."},
             {"--unclamp_contact_time", "OPTIONAL. If included, don't clamp impact contact times to plausible values."},
             {"--scrape_max_speed [FLOAT]", "OPTIONAL. Clamp scrape speeds to this maximum value."},
@@ -85,41 +85,16 @@ namespace Clatter.CommandLine
             // Get the speed.
             double speed = ArgumentParser.GetDoubleValue(args, "speed");
             // Get the path to the output file.
-            string path;
+            string path = ArgumentParser.GetStringValue(args, "path");
             // Write a file.
-            if (ArgumentParser.TryGetStringValue(args, "path", out path))
+            if (scrape)
             {
-                if (scrape)
-                {
-                    WriteScrape(primary, secondary, speed, scrapeDuration, path);
-                }
-                else
-                {
-                    WriteImpact(primary, secondary, speed, path);
-                }         
+                WriteScrape(primary, secondary, speed, scrapeDuration, path);
             }
-            // Write to stdout.
             else
             {
-                // Get the audio data.
-                byte[] buffer;
-                if (scrape)
-                {
-                    buffer = GetScrape(primary, secondary, speed, scrapeDuration);
-                }
-                else
-                {
-                    buffer = GetImpact(primary, secondary, speed);
-                }
-                // Write the audio data. Source: https://stackoverflow.com/a/27007411
-                using (Stream outStream = Console.OpenStandardOutput())
-                {
-                    if (scrape)
-                    {
-                        outStream.Write(buffer, 0, buffer.Length);
-                    }
-                }
-            }
+                WriteImpact(primary, secondary, speed, path);
+            }  
         }
         
 

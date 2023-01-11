@@ -59,8 +59,8 @@ namespace Clatter.Core
         /// <summary>
         /// Write audio samples to the .wav file.
         /// </summary>
-        /// <param name="data">The int16 byte array.</param>
-        public void Write(byte[] data)
+        /// <param name="audio">The audio data as an int16 byte array.</param>
+        public void Write(byte[] audio)
         {
             if (wavHeader == null)
             {
@@ -80,7 +80,7 @@ namespace Clatter.Core
             // Write the byte array.
             using (FileStream filestream = new FileStream(path, FileMode.Append))
             {
-                filestream.Write(data, 0, data.Length);
+                filestream.Write(audio, 0, audio.Length);
             }
         }
 

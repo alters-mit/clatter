@@ -23,32 +23,8 @@
             }
             return string.Empty;
         }
-        
-        
-        /// <summary>
-        /// Try to get a string value from an optional flag.
-        /// Example: If the argument is `--name Cube`, then `flag` should be `"name"`, `value` will be `"Cube"`, and this returns `true`.
-        /// If `--name` isn't present in the command-line arguments, this returns `false`.
-        /// </summary>
-        /// <param name="args">The command-line arguments.</param>
-        /// <param name="flag">The flag preceding the value without the `"--"` prefix.</param>
-        /// <param name="value">The value.</param>
-        public static bool TryGetStringValue(string[] args, string flag, out string value)
-        {
-            for (int i = 0; i < args.Length; i++)
-            {
-                // This is the flag.
-                if (args[i].StartsWith("--") && args[i].Substring(2) == flag)
-                {
-                    value = args[i + 1];
-                    return true;
-                }
-            }
-            value = string.Empty;
-            return false;
-        }
-        
-        
+
+
         /// <summary>
         /// Returns the double value of a flag argument.
         /// Example: If the argument is `--mass 0.1`, then `flag` should be `"mass"` and this should return `0.1`.
