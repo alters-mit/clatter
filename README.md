@@ -4,7 +4,7 @@
 
 **TODO add documentation link**
 
-**TODO add license link**
+[![Hippocratic License HL3-BDS-ECO-FFD-LAW-MEDIA-MIL-SV](https://img.shields.io/static/v1?label=Hippocratic%20License&message=HL3-BDS-ECO-FFD-LAW-MEDIA-MIL-SV&labelColor=5e2751&color=bc8c3d)](LICENSE.md)
 
 ## Features
 
@@ -23,7 +23,7 @@ Pre-alpha to-dos:
 - [x] Add command-line tools for OS X and Linux.
 - [ ] Add Clatter to TDW.
 - [ ] Add links to Clatter/TDW documentation
-- [ ] Add a license.
+- [x] Add a license.
 - [x] Add attribution.
 
 Clatter is currently in alpha. It is likely still buggy and unstable. The API will likely change often until the first stable release.
