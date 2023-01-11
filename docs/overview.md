@@ -2,8 +2,6 @@
 
 **Clatter is a C# library that can synthesize plausible sounds from physics-driven events.** Given a collision, the mass of the two objects, their "audio materials", the relative velocity, and so on, Clatter will generate a unique sound. Currently, Clatter is capable of generating impact and scrape sounds.
 
-[Github Repo](https://github.com/alters-mit/clatter)
-
 ## Features
 
 - Unique and powerful audio synthesis capabilities. Unlike most physics driven audio generators, Clatter generates audio out of scientifically accurate, pre-computed data, rather than relying on modifying or mixing pre-existing audio files.
@@ -17,10 +15,6 @@
 2. [A C# library.](clatter.core_overview.html) The `Clatter.Core.dll` library can accept object physics properties, collision speeds, etc. as inputs, and output raw wav data of generated audio or save the data as a .wav file.
 3. [A Unity plugin.](clatter.unity_overview.html) The `Clatter.Unity.dll` library includes helpful scripts that automatically listen for collision events and generate and play audio.
 4. [A command-line executable.](cli_overview.html)
-
-## Installation
-
-**TODO**
 
 ## Roadmap
 

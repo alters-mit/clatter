@@ -41,5 +41,6 @@ Global
 		File = Clatter.CommandLine\osx64.run.xml
 		File = Clatter.CommandLine\win64.run.xml
 		File = Clatter.CommandLine\build_all.run.xml
+		File = Clatter.CommandLine\upload_py.run.xml
 	EndGlobalSection
 EndGlobal

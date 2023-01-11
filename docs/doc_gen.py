@@ -1,12 +1,21 @@
 from copy import copy
 import re
 from typing import Dict, List, Union, Tuple
-from subprocess import call
+from subprocess import call, DEVNULL
 from pathlib import Path
 from shutil import rmtree
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import ElementTree, Element
 from markdown import markdown
+
+
+def get_version() -> str:
+    """
+    :return: The version number of Clatter.Core.
+    """
+
+    assembly_info: str = Path("../Clatter/Clatter.Core/Properties/AssemblyInfo.cs").read_text(encoding="utf-8")
+    return re.search(r'^\[assembly: AssemblyVersion\("(.*?)"\)\]', assembly_info, flags=re.MULTILINE).group(1)
 
 
 def get_description(e: Element, is_paragraphs: bool, brief_description: bool = True, detailed_description: bool = True) -> str:
@@ -540,15 +549,34 @@ def get_html_suffix() -> str:
     return "</div></div></div></body></html>"
 
 
-def get_overview(namespace: str) -> str:
+def get_clatter_core_overview() -> str:
     """
-    :param namespace: The namespace.
-
-    :return: The HTML for the overview document of the namespace.
+    :return: The HTML for the Clatter.Core overview doc.
     """
 
-    md: str = Path(f"{namespace.lower()}/overview.md").resolve().read_text(encoding="utf-8")
-    return get_html_prefix() + markdown(md).replace(".md", ".html") + get_html_suffix()
+    version = get_version()
+    text: str = markdown(Path(f"clatter.core/overview.md").resolve().read_text(encoding="utf-8"))
+    # Add the download links.
+    downloads = '\n\n<p><strong>Download:</strong></p>\n\n'
+    downloads += f'<p><a href="https://github.com/alters-mit/clatter/releases/download/{version}/Clatter.Core.dll">Clatter.Core.dll</a></p>'
+    text = text.replace("<p>[URLS]</p>", downloads)
+    return get_html_prefix() + text + get_html_suffix()
+
+
+def get_clatter_unity_overview() -> str:
+    """
+    :return: The HTML for the Clatter.Core overview doc.
+    """
+
+    version = get_version()
+    text: str = markdown(Path(f"clatter.unity/overview.md").resolve().read_text(encoding="utf-8"))
+    # Add the download links.
+    downloads = '\n\n<p><strong>Download:</strong></p>\n\n'
+    downloads += f'<p><a href="https://github.com/alters-mit/clatter/releases/download/{version}/Clatter.Core.dll">Clatter.Core.dll</a>&emsp;'
+    downloads += f'<a href="https://github.com/alters-mit/clatter/releases/download/{version}/Clatter.Unity.dll">Clatter.Unity.dll</a>'
+    downloads += "</p>"
+    text = text.replace("<p>[URLS]</p>", downloads)
+    return get_html_prefix() + text + get_html_suffix()
 
 
 def get_readme() -> str:
@@ -574,7 +602,7 @@ def doxygen() -> None:
     Call doxygen to generate XML document files.
     """
 
-    call("doxygen")
+    call("doxygen", stdout=DEVNULL)
 
 
 def snake_case(camel_case: str) -> str:
@@ -693,6 +721,22 @@ def class_inheritance() -> None:
         dst.joinpath(klass_name + ".html").write_text(klass_html)
 
 
+def get_cli() -> str:
+    """
+    :return: The HTML for the CLI documentation.
+    """
+
+    version = get_version()
+    text: str = markdown(Path("cli/overview.md").resolve().read_text(encoding="utf-8").replace("powershell", ""))
+    # Add the download links.
+    downloads = '\n\n<p><strong>Download:</strong></p>\n\n<p>'
+    for platform, exe in zip(["Linux", "OSX", "Windows"], ["clatter_linux", "clatter_osx", "clatter.exe"]):
+        downloads += f'<a href="https://github.com/alters-mit/clatter/releases/download/{version}/{exe}">{platform}</a>&emsp;'
+    downloads += "</p>"
+    text = text.replace("<p>[URLS]</p>", downloads)
+    return get_html_prefix() + text.strip() + get_html_suffix()
+
+
 # Generate XML with Doxygen.
 doxygen()
 # Get the namespaces.
@@ -704,9 +748,13 @@ if not dst.exists():
     dst.mkdir()
 # Write the overview doc.
 dst.joinpath("overview.html").write_text(get_readme())
+# Add the overview docs.
+dst.joinpath("cli_overview.html").write_text(get_cli())
+dst.joinpath("benchmark.html").write_text(get_benchmark())
+dst.joinpath("clatter.core_overview.html").write_text(get_clatter_core_overview())
+dst.joinpath("clatter.unity_overview.html").write_text(get_clatter_unity_overview())
+# Add the API docs.
 for ns in namespaces:
-    # Write the overview doc.
-    dst.joinpath(f"{ns.lower()}_overview.html").write_text(get_overview(ns))
     # Generate class, struct, and enum docs.
     klasses: Dict[str, Klass] = dict()
     for kl in namespaces[ns]:
@@ -727,10 +775,5 @@ for ns in namespaces:
             dst.joinpath(klass.name + ".html").write_text(html)
     # Figure out inheritance.
     class_inheritance()
-
-
-# Add the CLI and benchmark docs.
-dst.joinpath("cli_overview.html").write_text(get_overview("cli").replace("powershell", ""))
-dst.joinpath("benchmark.html").write_text(get_benchmark())
 # Remove the XML.
 rmtree(Path("xml").absolute())
