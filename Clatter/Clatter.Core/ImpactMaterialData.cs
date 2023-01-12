@@ -6,15 +6,13 @@ using System.Text.RegularExpressions;
 namespace Clatter.Core
 {
     /// <summary>
-    /// Audio synthesis data for an impact material.
+    /// Audio synthesis data for an impact material. Every ImpactMaterialData has a corresponding `ImpactMaterial` (see: ImpactMaterialData.impactMaterials).
+    ///
+    /// This class contains useful helper methods for converting `ImpactMaterialUnsized` values to `ImpactMaterial` values, as well as means of deriving density and "size bucket" values.
     ///
     /// ## Code Examples
     ///
-    /// To derive mass from an `ImpactMaterialUnsized` value and volume:
-    ///
-    /// {code_example:MassFromVolume}
-    ///
-    /// To derive the "size bucket" from an `ImpactMaterialUnsized` value and volume:
+    /// To derive the "size bucket" and mass from an `ImpactMaterialUnsized` value and volume:
     ///
     /// {code_example:SizeBucket}
     /// 
@@ -34,7 +32,7 @@ namespace Clatter.Core
         /// </summary>
         public double[] rt;
         /// <summary>
-        /// Impact data per material type.
+        /// A dictionary of impact data. Key = an ImpactMaterial value. Value = An ImpactMaterialData.
         /// </summary>
         public static Dictionary<ImpactMaterial, ImpactMaterialData> impactMaterials = new Dictionary<ImpactMaterial, ImpactMaterialData>();
         /// <summary>
