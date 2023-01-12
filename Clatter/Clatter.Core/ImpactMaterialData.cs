@@ -32,7 +32,7 @@ namespace Clatter.Core
         /// </summary>
         public double[] rt;
         /// <summary>
-        /// A dictionary of impact data. Key = an ImpactMaterial value. Value = An ImpactMaterialData.
+        /// A dictionary of impact data. Key = An ImpactMaterial value. Value = An ImpactMaterialData.
         /// </summary>
         public static Dictionary<ImpactMaterial, ImpactMaterialData> impactMaterials = new Dictionary<ImpactMaterial, ImpactMaterialData>();
         /// <summary>
