@@ -5,10 +5,10 @@ using System.Collections.Generic;
 namespace Clatter.Core
 {
     /// <summary>
-    /// Median-Filters are non-linear filters, returning
-    /// the median of a sample window as output. Median-Filters
-    /// perform well for de-noise applications where it's
-    /// important to not loose sharp steps/edges.
+    /// Median-Filters are non-linear filters, returning the median of a sample window as output.
+    ///
+    /// Median-Filters perform well for de-noise applications where it's important to not loose sharp steps/edges.
+    ///
     /// This is an optimized version of this class: https://github.com/mathnet/mathnet-filtering/blob/master/src/Filtering/Median/OnlineMedianFilter.cs
     /// </summary>
     public class MedianFilter

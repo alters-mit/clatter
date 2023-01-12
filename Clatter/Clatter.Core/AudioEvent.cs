@@ -13,18 +13,6 @@ namespace Clatter.Core
         /// </summary>
         public static double simulationAmp = 0.5;
         /// <summary>
-        /// If true, clamp the audio amplitude values to 0.99.
-        /// </summary>
-        public static bool preventDistortion = true;
-        /// <summary>
-        /// If true, clamp the impulse contact time.
-        /// </summary>
-        public static bool clampContactTime = true;
-        /// <summary>
-        /// The minimum collision speed.
-        /// </summary>
-        public static double minSpeed = 0.00001;
-        /// <summary>
         /// The audio samples generated from this event.
         /// </summary>
         public readonly Samples samples;
@@ -47,7 +35,7 @@ namespace Clatter.Core
         /// <summary>
         /// The random number generator. Each audio event has its own Random object for thread safety.
         /// </summary>
-        protected readonly Random rng;
+        private readonly Random rng;
         /// <summary>
         /// The amplitude of the first collision.
         /// </summary>
@@ -74,6 +62,7 @@ namespace Clatter.Core
         /// <param name="rng">The random number generator.</param>
         protected AudioEvent(AudioObjectData primary, AudioObjectData secondary, Random rng)
         {
+            // ReSharper disable once VirtualMemberCallInConstructor
             samples = new Samples(GetSamplesSize());
             this.primary = primary;
             this.secondary = secondary;

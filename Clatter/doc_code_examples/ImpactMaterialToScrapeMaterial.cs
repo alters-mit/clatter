@@ -10,7 +10,7 @@ public class ImpactMaterialToScrapeMaterial
 
     public static ScrapeMaterial GetScrapeMaterial(ImpactMaterial impactMaterial)
     {
-        ImpactMaterialUnsized impactMaterialUnsized = AudioObjectData.GetImpactMaterialUnsized(impactMaterial);
+        ImpactMaterialUnsized impactMaterialUnsized = ImpactMaterialData.GetImpactMaterialUnsized(impactMaterial);
         return GetScrapeMaterial(impactMaterialUnsized);
     }
 }

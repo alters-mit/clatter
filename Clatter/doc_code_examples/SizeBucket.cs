@@ -7,11 +7,11 @@ public class SizeBucket
     public AudioObjectData Get(ImpactMaterialUnsized impactMaterialUnsized, double amp, double resonance, double volume, ScrapeMaterial? scrapeMaterial)
     {
         // Get the "size bucket".
-        int size = AudioObjectData.GetSize(volume);
+        int size = ImpactMaterialData.GetSize(volume);
         // Get the impact material.
-        ImpactMaterial impactMaterial = AudioObjectData.GetImpactMaterial(impactMaterialUnsized, size);
+        ImpactMaterial impactMaterial = ImpactMaterialData.GetImpactMaterial(impactMaterialUnsized, size);
         // Get the density of the material.
-        double density = PhysicsValues.Density[impactMaterialUnsized];
+        double density = ImpactMaterialData.Density[impactMaterialUnsized];
         // Derive the mass.
         double mass = density * volume;
         // Create the object.

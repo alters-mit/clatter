@@ -7,9 +7,9 @@ public class MassFromVolume
     public AudioObjectData Get(ImpactMaterial impactMaterial, double amp, double resonance, double volume, ScrapeMaterial? scrapeMaterial)
     {
         // Get the "unsized" impact material.
-        ImpactMaterialUnsized impactMaterialUnsized = AudioObjectData.GetImpactMaterialUnsized(impactMaterial);
+        ImpactMaterialUnsized impactMaterialUnsized = ImpactMaterialData.GetImpactMaterialUnsized(impactMaterial);
         // Get the density of the material.
-        double density = PhysicsValues.Density[impactMaterialUnsized];
+        double density = ImpactMaterialData.Density[impactMaterialUnsized];
         // Derive the mass.
         double mass = density * volume;
         // Create the object.

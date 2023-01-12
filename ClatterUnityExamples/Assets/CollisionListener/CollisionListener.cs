@@ -4,6 +4,9 @@ using Clatter.Core;
 using Clatter.Unity;
 
 
+/// <summary>
+/// Listen for collisions and display their info in the UI. This example sets ClatterManager.auto to false in order to prevent script execution bugs.
+/// </summary>
 public class CollisionListener : MonoBehaviour
 {
     /// <summary>

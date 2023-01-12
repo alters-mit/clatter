@@ -230,7 +230,7 @@ namespace Clatter.Unity
                 // Get the approximate volume.
                 double volume = b.size.x * b.size.y * b.size.z;
                 // Multiply the volume by the density and then by a hollowness factor.
-                mass = volume * PhysicsValues.Density[impactMaterial] * (1 - hollowness);
+                mass = volume * ImpactMaterialData.Density[impactMaterial] * (1 - hollowness);
                 // Set the mass.
                 if (r != null)
                 {
@@ -277,10 +277,10 @@ namespace Clatter.Unity
             // Get the size from the volume.
             if (autoSetSize)
             {
-                size = AudioObjectData.GetSize(new Vector3d(b.size.x, b.size.y, b.size.z));
+                size = ImpactMaterialData.GetSize(new Vector3d(b.size.x, b.size.y, b.size.z));
             }
             // Convert the material + size to an impact material.
-            ImpactMaterial im = AudioObjectData.GetImpactMaterial(impactMaterial, size);
+            ImpactMaterial im = ImpactMaterialData.GetImpactMaterial(impactMaterial, size);
             // Set the data.
             if (hasScrapeMaterial)
             {
@@ -380,7 +380,7 @@ namespace Clatter.Unity
             // Get the average normal speed.
             double normalSpeed = normalSpeeds / numContacts;
             // Ignore low-speed events.
-            if (normalSpeed < AudioEvent.minSpeed)
+            if (normalSpeed < AudioGenerator.minSpeed)
             {
                 NoneCollisionEvent(primary, secondary);
                 return;

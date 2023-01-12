@@ -19,11 +19,29 @@ namespace Clatter.Core
     public class Impact : AudioEvent
     {
         /// <summary>
-        /// The minimum time in seconds between impacts. This can prevent strange "droning" sounds caused by too many impacts in rapid succession.
+        /// The maximum contact time in seconds, assuming clampContactTime == true.
+        /// </summary>
+        private const double MAX_CONTACT_TIME = 2e-3;
+        /// <summary>
+        /// Clamp amp values to this maximum value.
+        /// </summary>
+        private const double MAX_AMP = 0.99;
+        
+        
+        /// <summary>
+        /// If true, clamp the audio amplitude values to less than or equal to 0.99, preventing distortion.
+        /// </summary>
+        public static bool preventDistortion = true;
+        /// <summary>
+        /// If true, clamp the contact time to a plausible value. Set this to false if you want to generate impacts with unusually long contact times.
+        /// </summary>
+        public static bool clampContactTime = true;
+        /// <summary>
+        /// The minimum time in seconds between impacts. If an impact occurs an this much time hasn't yet elapsed, the impact will be ignored. This can prevent strange "droning" sounds caused by too many impacts in rapid succession.
         /// </summary>
         public static double minTimeBetweenImpacts = 0.25;
         /// <summary>
-        /// The maximum time in seconds between impacts, after which this impact series ends.
+        /// The maximum time in seconds between impacts. After this many seconds, this impact series will end and a subsequent impact collision will start a new Impact.
         /// </summary>
         public static double maxTimeBetweenImpacts = 3;
         /// <summary>
@@ -85,14 +103,14 @@ namespace Clatter.Core
                 double maxT = 0.001 * Math.Min(primary.mass, secondary.mass);
                 if (clampContactTime)
                 {
-                    maxT = Math.Min(maxT, 2e-3);
+                    maxT = Math.Min(maxT, MAX_CONTACT_TIME);
                 }
                 // Convolve with force, with contact time scaled by the object mass.
                 double[] frc = LinSpace.Get(0, Math.PI, (int)Math.Ceiling(maxT * Globals.framerate));
                 // Clamp the amp.
-                if (preventDistortion && amp > 0.99)
+                if (preventDistortion && amp > MAX_AMP)
                 {
-                    amp = 0.99;
+                    amp = MAX_AMP;
                 }
                 for (int i = 0; i < frc.Length; i++)
                 {

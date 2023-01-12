@@ -31,9 +31,10 @@ namespace Clatter.CommandLine
             {"--duration [FLOAT]", "If --type is scrape, this sets the duration of the scrape audio."},
             {"--simulation_amp [FLOAT]", "The overall amp (0-1)."},
             {"--path [STRING]", "The path to a .wav file. If not included, audio will be sent to stdout."},
-            {"--allow_distortion", "OPTIONAL. If included, don't clamp amp values to 0.99."},
-            {"--unclamp_contact_time", "OPTIONAL. If included, don't clamp impact contact times to plausible values."},
-            {"--scrape_max_speed [FLOAT]", "OPTIONAL. Clamp scrape speeds to this maximum value."},
+            {"--min_speed [FLOAT]", "OPTIONAL. If included, set the minimum speed. If the speed is slower than this, don't generate audio. See: AudioGenerator.minSpeed"},
+            {"--allow_distortion", "OPTIONAL. If included, don't clamp impact amp values to 0.99. See: Impact.preventDistortion"},
+            {"--unclamp_contact_time", "OPTIONAL. If included, don't clamp impact contact times to plausible values. See: Impact.clampContactTime"},
+            {"--scrape_max_speed [FLOAT]", "OPTIONAL. Clamp scrape speeds to this maximum value. See: Scrape.maxSpeed"},
             {"--help", "OPTIONAL. Print this message and exit."}
         };
         
@@ -56,8 +57,8 @@ namespace Clatter.CommandLine
             // Set static values.
             ArgumentParser.TryGetDoubleValue(args, "simulation_amp", ref AudioEvent.simulationAmp);
             AudioEvent.simulationAmp = AudioEvent.simulationAmp.Clamp(0, 1);
-            ArgumentParser.TryGetBooleanValue(args, "allow_distortion", ref AudioEvent.preventDistortion);
-            ArgumentParser.TryGetBooleanValue(args, "unclamp_contact_time", ref AudioEvent.clampContactTime);
+            ArgumentParser.TryGetBooleanValue(args, "allow_distortion", ref Impact.preventDistortion);
+            ArgumentParser.TryGetBooleanValue(args, "unclamp_contact_time", ref Impact.clampContactTime);
             ArgumentParser.TryGetDoubleValue(args, "scrape_max_speed", ref Scrape.maxSpeed);
             // Set the primary object.
             AudioObjectData primary = GetAudioObjectData(args, 0, "primary", false);

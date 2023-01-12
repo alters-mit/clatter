@@ -11,7 +11,7 @@ namespace Clatter.Core
         /// <summary>
         /// The vector data.
         /// </summary>
-        private double[] vector;
+        private readonly double[] vector;
         /// <summary>
         /// The x coordinate.
         /// </summary>

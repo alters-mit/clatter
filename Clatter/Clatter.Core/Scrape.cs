@@ -21,6 +21,10 @@ namespace Clatter.Core
         /// The length of the scrape samples.
         /// </summary>
         public const int SAMPLES_LENGTH = 4410;
+        /// <summary>
+        /// The default impulse response length.
+        /// </summary>
+        private const int DEFAULT_IMPULSE_RESPONSE_LENGTH = 9000;
 
         
         /// <summary>
@@ -50,7 +54,7 @@ namespace Clatter.Core
         /// <summary>
         /// The cached impulse response array. This never gets used.
         /// </summary>
-        private double[] impulseResponse = new double[9000];
+        private double[] impulseResponse = new double[DEFAULT_IMPULSE_RESPONSE_LENGTH];
         /// <summary>
         /// If true, we've generated the impulse response.
         /// </summary>
@@ -58,7 +62,7 @@ namespace Clatter.Core
         /// <summary>
         /// The cached vect1 array.
         /// </summary>
-        private double[] vect1 = new double[9000];
+        private double[] vect1 = new double[DEFAULT_IMPULSE_RESPONSE_LENGTH];
         /// <summary>
         /// A linear space vector used for scrape synthesis.
         /// </summary>
