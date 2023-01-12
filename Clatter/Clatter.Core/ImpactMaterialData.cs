@@ -28,7 +28,7 @@ namespace Clatter.Core
         /// </summary>
         public double[] op;
         /// <summary>
-        /// RT60 values. The time it takes a mode power to decay 60dB (i.e. 10**(-6)) from its onset power in seconds.
+        /// RT60 values. The time it takes a mode power to decay 60dB (i.e. 10^-6) from its onset power in seconds.
         /// </summary>
         public double[] rt;
         /// <summary>
@@ -36,7 +36,7 @@ namespace Clatter.Core
         /// </summary>
         public static Dictionary<ImpactMaterial, ImpactMaterialData> impactMaterials = new Dictionary<ImpactMaterial, ImpactMaterialData>();
         /// <summary>
-        /// Density in kg/m^3 per ImpactMaterialUnsized.
+        /// A dictionary of density values per impact material. Key = An ImpactMaterialUnsized. Value = Density in kg/m^3.
         /// </summary>
         public static readonly Dictionary<ImpactMaterialUnsized, int> Density = new Dictionary<ImpactMaterialUnsized, int>()
         {
