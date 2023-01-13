@@ -555,7 +555,7 @@ def get_clatter_core_overview() -> str:
     """
 
     version = get_version()
-    text: str = markdown(Path(f"clatter.core/overview.md").resolve().read_text(encoding="utf-8"))
+    text: str = markdown(Path(f"clatter.core.md").resolve().read_text(encoding="utf-8"))
     # Add the download links.
     downloads = '\n\n<p><strong>Download:</strong></p>\n\n'
     downloads += f'<p><a href="https://github.com/alters-mit/clatter/releases/download/{version}/Clatter.Core.dll">Clatter.Core.dll</a></p>'
@@ -569,7 +569,7 @@ def get_clatter_unity_overview() -> str:
     """
 
     version = get_version()
-    text: str = markdown(Path(f"clatter.unity/overview.md").resolve().read_text(encoding="utf-8"))
+    text: str = markdown(Path(f"clatter.unity.md").resolve().read_text(encoding="utf-8"))
     # Add the download links.
     downloads = '\n\n<p><strong>Download:</strong></p>\n\n'
     downloads += f'<p><a href="https://github.com/alters-mit/clatter/releases/download/{version}/Clatter.Core.dll">Clatter.Core.dll</a>&emsp;'
@@ -727,7 +727,7 @@ def get_cli() -> str:
     """
 
     version = get_version()
-    text: str = markdown(Path("cli/overview.md").resolve().read_text(encoding="utf-8").replace("powershell", ""))
+    text: str = markdown(Path("cli.md").resolve().read_text(encoding="utf-8").replace("powershell", ""))
     # Add the download links.
     downloads = '\n\n<p><strong>Download:</strong></p>\n\n<p>'
     for platform, exe in zip(["Linux", "OSX", "Windows"], ["clatter_linux", "clatter_osx", "clatter.exe"]):
@@ -744,8 +744,10 @@ namespaces = get_namespaces()
 # Get the sidebar html.
 sidebar = get_sidebar()
 dst = Path("html/html").resolve()
-if not dst.exists():
-    dst.mkdir()
+# Remove the existing docs.
+if dst.exists():
+    rmtree(str(dst))
+dst.mkdir(parents=True)
 # Write the overview doc.
 dst.joinpath("overview.html").write_text(get_readme())
 # Add the overview docs.
