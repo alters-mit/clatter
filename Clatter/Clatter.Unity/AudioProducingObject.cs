@@ -62,6 +62,46 @@ namespace Clatter.Unity
         /// </summary>
         public static int maxNumContacts = 16;
         /// <summary>
+        /// Unity physic material dynamic friction values. Key: An `ImpactMaterialUnsized` value. Value: A dynamic friction float value.
+        /// </summary>
+        public static readonly Dictionary<ImpactMaterialUnsized, float> DynamicFriction = new Dictionary<ImpactMaterialUnsized, float>()
+        {
+            { ImpactMaterialUnsized.ceramic, 0.47f },
+            { ImpactMaterialUnsized.wood_hard, 0.35f },
+            { ImpactMaterialUnsized.wood_medium, 0.35f },
+            { ImpactMaterialUnsized.wood_soft, 0.35f },
+            { ImpactMaterialUnsized.cardboard, 0.45f },
+            { ImpactMaterialUnsized.paper, 0.47f },
+            { ImpactMaterialUnsized.glass, 0.65f },
+            { ImpactMaterialUnsized.fabric, 0.65f },
+            { ImpactMaterialUnsized.leather, 0.4f },
+            { ImpactMaterialUnsized.stone, 0.7f },
+            { ImpactMaterialUnsized.rubber, 0.75f },
+            { ImpactMaterialUnsized.plastic_hard, 0.3f },
+            { ImpactMaterialUnsized.plastic_soft_foam, 0.45f },
+            { ImpactMaterialUnsized.metal, 0.43f }
+        };
+        /// <summary>
+        /// Unity physic material static friction values. Key: An `ImpactMaterialUnsized` value. Value: A static friction float value.
+        /// </summary>
+        public static readonly Dictionary<ImpactMaterialUnsized, float> StaticFriction = new Dictionary<ImpactMaterialUnsized, float>
+        {
+            { ImpactMaterialUnsized.ceramic, 0.47f },
+            { ImpactMaterialUnsized.wood_hard, 0.37f },
+            { ImpactMaterialUnsized.wood_medium, 0.37f },
+            { ImpactMaterialUnsized.wood_soft, 0.37f },
+            { ImpactMaterialUnsized.cardboard, 0.48f },
+            { ImpactMaterialUnsized.paper, 0.5f },
+            { ImpactMaterialUnsized.glass, 0.68f },
+            { ImpactMaterialUnsized.fabric, 0.67f },
+            { ImpactMaterialUnsized.leather, 0.43f },
+            { ImpactMaterialUnsized.stone, 0.72f },
+            { ImpactMaterialUnsized.rubber, 0.8f },
+            { ImpactMaterialUnsized.plastic_hard, 0.35f },
+            { ImpactMaterialUnsized.plastic_soft_foam, 0.47f },
+            { ImpactMaterialUnsized.metal, 0.47f }
+        };
+        /// <summary>
         /// The unsized impact material. This will be converted into an `ImpactMaterial` by applying the size field (see below).
         /// </summary>
         [HideInInspector]
@@ -102,27 +142,27 @@ namespace Clatter.Unity
         [HideInInspector]
         public bool autoSetFriction = true;
         /// <summary>
-        /// The physic material dynamic friction value.
+        /// The physic material dynamic friction value (0-1). To derive friction values from `Clatter.Core.ImpactMaterialUnsized` values, see: AudioProducingObject.DynamicFriction.
         /// </summary>
         [HideInInspector]
         public float dynamicFriction = 0.1f;
         /// <summary>
-        /// The physic material static friction value.
+        /// The physic material static friction value (0-1). To derive friction values from `Clatter.Core.ImpactMaterialUnsized` values, see: AudioProducingObject.StaticFriction.
         /// </summary>
         [HideInInspector]
         public float staticFriction = 0.1f;
         /// <summary>
-        /// The physic material bounciness value. This always needs to be set on a per-object basis. 
+        /// The physic material bounciness value (0-1). This always needs to be set on a per-object basis, as opposed to being derived from a `Clatter.Core.ImpactMaterialUnsized` value.
         /// </summary>
         [HideInInspector]
         public float bounciness = 0.2f;
         /// <summary>
-        /// If true, the mass of the object is automatically set based on its impact material and volume. If false, use the mass value in the Rigidbody.
+        /// If true, the mass of the object is automatically set based on its impact material and volume. If false, use the mass value in the Rigidbody or ArticulationBody.
         /// </summary>
         [HideInInspector]
         public bool autoSetMass = true;
         /// <summary>
-        /// The portion from 0 to 1 of the object that is hollow. This is used to convert volume and density to mass. Ignored if `autoSetMass == false`.
+        /// The portion of the object that is hollow (0-1). This is used to convert volume and density to mass. Ignored if `autoSetMass == false`.
         /// </summary>
         [HideInInspector]
         public float hollowness;
@@ -132,7 +172,7 @@ namespace Clatter.Unity
         [HideInInspector]
         public double mass;
         /// <summary>
-        /// Invoked when this object generates a `CollisionEvent`. Parameters: The `CollisionEvent`.
+        /// Invoked when this object generates a `Clatter.Core.CollisionEvent`. Parameters: The `Clatter.Core.CollisionEvent`.
         /// </summary>
         // ReSharper disable once Unity.RedundantHideInInspectorAttribute
         [HideInInspector]
@@ -260,8 +300,8 @@ namespace Clatter.Unity
             // Set the physic material.
             if (autoSetFriction)
             {
-                dynamicFriction = PhysicMaterialValues.DynamicFriction[impactMaterial];
-                staticFriction = PhysicMaterialValues.StaticFriction[impactMaterial];
+                dynamicFriction = DynamicFriction[impactMaterial];
+                staticFriction = StaticFriction[impactMaterial];
             }
             physicMaterial = new PhysicMaterial()
             {
@@ -289,6 +329,34 @@ namespace Clatter.Unity
             else
             {
                 data = new AudioObjectData(id, im, amp, resonance, mass);
+            }
+        }
+        
+        
+        /// <summary>
+        /// Refresh the recorded set of collisions. This method is not equivalent to Update() and is called automatically by `ClatterManager`.
+        /// </summary>
+        public void OnUpdate()
+        {
+            collisionIds.Clear();
+        }
+
+
+        /// <summary>
+        /// Update the directional and angular speeds of the underlying `Clatter.Core.AudioObjectData`. This method is not equivalent to FixedUpdate() and is called automatically by `ClatterManager`.
+        /// </summary>
+        public void OnFixedUpdate()
+        {
+            // Update the velocity.
+            if (hasRigidbody)
+            {
+                data.speed = r.velocity.magnitude;
+                data.angularSpeed = r.angularVelocity.magnitude;
+            }
+            else if (hasArticulationBody)
+            {
+                data.speed = articulationBody.velocity.magnitude;
+                data.angularSpeed = articulationBody.angularVelocity.magnitude;
             }
         }
 
@@ -513,34 +581,6 @@ namespace Clatter.Unity
             CollisionEvent collisionEvent = new CollisionEvent(ids, primary, secondary, audioEventType, normalSpeed, centroid);
             ClatterManager.instance.generator.AddCollision(collisionEvent);
             onCollision?.Invoke(collisionEvent);
-        }
-        
-        
-        /// <summary>
-        /// Refresh the recorded set of collisions. This method is not equivalent to Update() and is called automatically by `ClatterManager`.
-        /// </summary>
-        public void OnUpdate()
-        {
-            collisionIds.Clear();
-        }
-
-
-        /// <summary>
-        /// Update the directional and angular speeds of the underlying `Clatter.Core.AudioObjectData`. This method is not equivalent to FixedUpdate() and is called automatically by `ClatterManager`.
-        /// </summary>
-        public void OnFixedUpdate()
-        {
-            // Update the velocity.
-            if (hasRigidbody)
-            {
-                data.speed = r.velocity.magnitude;
-                data.angularSpeed = r.angularVelocity.magnitude;
-            }
-            else if (hasArticulationBody)
-            {
-                data.speed = articulationBody.velocity.magnitude;
-                data.angularSpeed = articulationBody.angularVelocity.magnitude;
-            }
         }
 
 

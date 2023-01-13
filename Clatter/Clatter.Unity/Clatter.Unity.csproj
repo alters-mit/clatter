@@ -52,7 +52,6 @@ copy /Y Clatter.Unity.dll  "../../../../ClatterUnityExamples/Assets/Plugins"</Po
         <Compile Include="Editor\AudioProducingObjectEditor.cs" />
         <Compile Include="Editor\ClatterManagerEditor.cs" />
         <Compile Include="ImpactSound.cs" />
-        <Compile Include="PhysicMaterialValues.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="ScrapeSound.cs" />
         <Compile Include="Sound.cs" />

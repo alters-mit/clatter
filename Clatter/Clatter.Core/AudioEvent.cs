@@ -77,7 +77,7 @@ namespace Clatter.Core
         /// <summary>
         /// Generate audio. Returns true if audio was generated. This will set the `samples` field.
         /// </summary>
-        /// <param name="speed">The collision speed.</param>
+        /// <param name="speed">The collision speed in meters per second.</param>
         public abstract bool GetAudio(double speed);
         
         
@@ -116,11 +116,10 @@ namespace Clatter.Core
         
         
         /// <summary>
-        /// Returns an impulse response array.
+        /// Generate an impulse response. Returns the length of the data within the impulseResponse array.
         /// </summary>
         /// <param name="amp">The amplitude multiplier of the sound.</param>
-        /// <param name="impulseResponse">The generated impulse response.</param>
-        /// <returns></returns>
+        /// <param name="impulseResponse">The generated impulse response. The returned integer is the length of the data.</param>
         protected int GetImpulseResponse(double amp, ref double[] impulseResponse)
         {
             if (amp <= 0)

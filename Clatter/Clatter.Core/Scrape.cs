@@ -86,7 +86,7 @@ namespace Clatter.Core
         /// <summary>
         /// Generate audio. Returns true if audio was generated. This will set the `samples` field.
         /// </summary>
-        /// <param name="speed">The collision speed.</param>
+        /// <param name="speed">The collision speed in meters per second.</param>
         public override bool GetAudio(double speed)
         {
             // Get the speed of the primary object and clamp it.
