@@ -103,7 +103,7 @@ public class ScrapeGenerator : MonoBehaviour
     }
 
 
-    private void OnScrapeStart(Samples samples, Vector3d position, int audioSourceId)
+    private void OnScrapeStart(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceId)
     {
         // Create the scrape sound.
         sound = Sound.Create<ScrapeSound>(samples, position, audioSourceId);
@@ -111,7 +111,7 @@ public class ScrapeGenerator : MonoBehaviour
 
 
 
-    private void OnScrapeOngoing(Samples samples, Vector3d position, int audioSourceId)
+    private void OnScrapeOngoing(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceId)
     {
         sound.UpdateAudio(samples, position);
     }

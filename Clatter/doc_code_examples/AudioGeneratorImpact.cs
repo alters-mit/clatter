@@ -65,7 +65,7 @@ public static class AudioGeneratorImpact
     }
 
 
-    private static void OnImpact(Samples samples, Vector3d centroid, int audioSourceId)
+    private static void OnImpact(CollisionEvent collisionEvent, Samples samples, Vector3d centroid, int audioSourceId)
     {
         audioData.Enqueue(samples.ToInt16Bytes());
     }

@@ -9,23 +9,20 @@ public class CollisionListener : MonoBehaviour
 {
     // The UI text.
     public Text text;
-    // The sphere.
-    public AudioProducingObject sphere;
-    // The surface.
-    public AudioProducingObject surface;
     // The ClatterManager.
     public ClatterManager clatterManager;
 
 
     private void Awake()
     {
-        sphere.onCollision.AddListener(OnCollision);
-        surface.onCollision.AddListener(OnCollision);
+        clatterManager.generator.onImpact += OnCollision;
+        clatterManager.generator.onScrapeStart += OnCollision;
+        clatterManager.generator.onScrapeOngoing += OnCollision;
         clatterManager.OnAwake();
     }
 
 
-    private void OnCollision(CollisionEvent collisionEvent)
+    private void OnCollision(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceId)
     {
         if (collisionEvent.type != AudioEventType.none)
         {

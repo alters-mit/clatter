@@ -184,10 +184,11 @@ namespace Clatter.Unity
         /// <summary>
         /// Generate impact audio.
         /// </summary>
+        /// <param name="collisionEvent">The collision event that generated the audio.</param>
         /// <param name="samples">The audio samples.</param>
         /// <param name="position">The position of the audio source.</param>
         /// <param name="audioSourceID">The ID of the audio source.</param>
-        private void OnImpact(Samples samples, Vector3d position, int audioSourceID)
+        private void OnImpact(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceID)
         {
             // Do the impact.
             OnAudioStart<ImpactSound>(samples, position, audioSourceID);
@@ -197,15 +198,42 @@ namespace Clatter.Unity
         /// <summary>
         /// Start to generate scrape audio.
         /// </summary>
+        /// <param name="collisionEvent">The collision event that generated the audio.</param>
         /// <param name="samples">The audio samples.</param>
         /// <param name="position">The position of the audio source.</param>
         /// <param name="audioSourceID">The ID of the audio source.</param>
-        private void OnScrapeStart(Samples samples, Vector3d position, int audioSourceID)
+        private void OnScrapeStart(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceID)
         {
             // Start a scrape sound.
             ScrapeSound sound = OnAudioStart<ScrapeSound>(samples, position, audioSourceID);
             // Remember the scrape sound.
             scrapeSounds.Add(audioSourceID, sound);
+        }
+        
+        
+        /// <summary>
+        /// Update scrape audio.
+        /// </summary>
+        /// <param name="collisionEvent">The collision event that generated the audio.</param>
+        /// <param name="samples">The audio samples.</param>
+        /// <param name="position">The position of the audio source.</param>
+        /// <param name="audioSourceId">The ID of the audio source.</param>
+        private void OnScrapeOngoing(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceId)
+        {
+            scrapeSounds[audioSourceId].UpdateAudio(samples, position);
+        }
+
+
+        /// <summary>
+        /// End scrape audio.
+        /// </summary>
+        /// <param name="audioSourceId">The ID of the audio source.</param>
+        private void OnScrapeEnd(int audioSourceId)
+        {
+            if (scrapeSounds.ContainsKey(audioSourceId))
+            {
+                scrapeSounds[audioSourceId].End();   
+            }
         }
 
 
@@ -224,31 +252,6 @@ namespace Clatter.Unity
             // Remember to destroy the audio source.
             sound.onEnd += OnSoundEnd;
             return sound;
-        }
-
-
-        /// <summary>
-        /// Update scrape audio.
-        /// </summary>
-        /// <param name="samples">The audio samples.</param>
-        /// <param name="position">The position of the audio source.</param>
-        /// <param name="audioSourceId">The ID of the audio source.</param>
-        private void OnScrapeOngoing(Samples samples, Vector3d position, int audioSourceId)
-        {
-            scrapeSounds[audioSourceId].UpdateAudio(samples, position);
-        }
-
-
-        /// <summary>
-        /// End scrape audio.
-        /// </summary>
-        /// <param name="audioSourceId">The ID of the audio source.</param>
-        private void OnScrapeEnd(int audioSourceId)
-        {
-            if (scrapeSounds.ContainsKey(audioSourceId))
-            {
-                scrapeSounds[audioSourceId].End();   
-            }
         }
 
 

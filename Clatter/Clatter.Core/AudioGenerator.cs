@@ -31,10 +31,11 @@ namespace Clatter.Core
         /// <summary>
         /// Delegate for actions that are invoked during audio generation.
         /// </summary>
+        /// <param name="collisionEvent">The collision event that generated the audio.</param>
         /// <param name="samples">The audio samples.</param>
         /// <param name="position">The position of the audio source.</param>
         /// <param name="audioSourceId">The audio source ID.</param>
-        public delegate void AudioGenerationAction(Samples samples, Vector3d position, int audioSourceId);
+        public delegate void AudioGenerationAction(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceId);
 
 
         /// <summary>
@@ -212,7 +213,7 @@ namespace Clatter.Core
                         if (collisionEvents[i].type == AudioEventType.impact && impacts[collisionEvents[i].ids].state != EventState.end)
                         {
                             // Play impact samples at the centroid using a new random audio source ID.
-                            onImpact?.Invoke(impacts[collisionEvents[i].ids].samples, collisionEvents[i].position, rng.Next());
+                            onImpact?.Invoke(collisionEvents[i], impacts[collisionEvents[i].ids].samples, collisionEvents[i].position, rng.Next());
                         }
                         // Announce scrape audio.
                         else if (collisionEvents[i].type == AudioEventType.scrape)
@@ -220,14 +221,14 @@ namespace Clatter.Core
                             // Start a new scrape.
                             if (scrapes[collisionEvents[i].ids].state == EventState.start)
                             {
-                                onScrapeStart?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].position, scrapes[collisionEvents[i].ids].scrapeId);
+                                onScrapeStart?.Invoke(collisionEvents[i], scrapes[collisionEvents[i].ids].samples, collisionEvents[i].position, scrapes[collisionEvents[i].ids].scrapeId);
                                 // Mark the scrape as ongoing.
                                 scrapes[collisionEvents[i].ids].state = EventState.ongoing;
                             }
                             // Continue an ongoing scrape.
                             else if (scrapes[collisionEvents[i].ids].state == EventState.ongoing)
                             {
-                                onScrapeOngoing?.Invoke(scrapes[collisionEvents[i].ids].samples, collisionEvents[i].position, scrapes[collisionEvents[i].ids].scrapeId);
+                                onScrapeOngoing?.Invoke(collisionEvents[i], scrapes[collisionEvents[i].ids].samples, collisionEvents[i].position, scrapes[collisionEvents[i].ids].scrapeId);
                             }
                             else
                             {

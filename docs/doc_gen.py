@@ -128,9 +128,15 @@ class EnumDef:
         self.namespace: str = namespace
         member_def: Element = e.find("memberdef")
         self.description: str = get_description(e=member_def, is_paragraphs=True)
-        self.values: Dict[str, str] = dict()
+        self.values: List[str] = list()
+        self.value_descriptions: Dict[str, str] = dict()
         for enum_value in member_def.findall("enumvalue"):
-            self.values[enum_value.find("name").text] = enum_value.find("initializer").text.split("=")[1].strip()
+            value_name: str = enum_value.find("name").text
+            self.values.append(value_name)
+            value_description_element: Element = enum_value.find("briefdescription")
+            value_description = ET.tostring(value_description_element, encoding="utf-8", method="text").decode().strip()
+            if len(value_description) > 0:
+                self.value_descriptions[value_name] = value_description
 
     def html(self) -> str:
         # Get the header.
@@ -140,9 +146,19 @@ class EnumDef:
         description = self.description.replace("\n\n", "%%").replace("\n", "\n\n").replace("%%", "\n\n")
         description, code_examples = get_description_and_code_examples(description)
         html += markdown(f'{description.strip()}\n\n')
-        table = "<table>\n\t<tr>\n\t\t<th><strong>Name</strong></th>\n\t\t<th><strong>Value</strong></th>\n\t</tr>\n"
-        for value in self.values:
-            table += f"\t<tr>\n\t\t<th>{value}</th>\n\t\t<th>{self.values[value]}</th>\n\t</tr>\n"
+        # There are no value descriptions.
+        if len(self.value_descriptions) == 0:
+            table = "<table>\n\t<tr>\n\t\t<th><strong>Value</strong></th>\n\t</tr>\n"
+            for value in self.values:
+                table += f"\t<tr>\n\t\t<th>{value}</th>\n\t</tr>\n"
+        else:
+            table = "<table>\n\t<tr>\n\t\t<th><strong>Value</strong></th>\n\t\t<th><strong>Description</strong></th>\n\t</tr>\n"
+            for value in self.values:
+                if value in self.value_descriptions:
+                    value_description = self.value_descriptions[value]
+                else:
+                    value_description = ""
+                table += f"\t<tr>\n\t\t<th>{value}</th>\n\t\t<th>{value_description}</th>\n\t</tr>\n"
         table += "\n</table>"
         html += table
         if len(code_examples) > 0:

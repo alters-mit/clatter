@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -159,23 +159,18 @@ namespace Clatter.Unity
         /// <summary>
         /// The mode for how the mass is set.
         /// </summary>
+        [HideInInspector]
         public MassMode massMode = MassMode.body;
         /// <summary>
-        /// If massMode == SetMassMode.mass, this is the mass of the object in kilograms.
+        /// If massMode == MassMode.fake_mass, the underlying `Clatter.Core.AudioObjectData` will use this value when generating audio rather than the true mass of the Rigibody/ArticulationBody.
         /// </summary>
         [HideInInspector]
-        public double mass;
+        public double fakeMass;
         /// <summary>
-        /// If massMode == SetMassMode.volume, hollowness is the portion of the object that is hollow (0-1). This is multiplied by the volume and density to derive the object's mass.
+        /// If massMode == MassMode.volume, hollowness is the portion of the object that is hollow (0-1) as follows: mass = volume * density * (1 - hollowness) where volume is the sum of the bounding box sizes of each Renderer object and density is derived from the impact material (see: `Clatter.Core.ImpactMaterialData`).
         /// </summary>
         [HideInInspector]
         public float hollowness;
-        /// <summary>
-        /// Invoked when this object generates a `Clatter.Core.CollisionEvent`. Parameters: The `Clatter.Core.CollisionEvent`.
-        /// </summary>
-        // ReSharper disable once Unity.RedundantHideInInspectorAttribute
-        [HideInInspector]
-        public UnityEvent<CollisionEvent> onCollision = new UnityEvent<CollisionEvent>();
         /// <summary>
         /// Invoked when this object is destroyed. Parameters: The ID of this object, i.e. `this.data.id`.
         /// </summary>
@@ -244,11 +239,14 @@ namespace Clatter.Unity
         {
             contactPoints = new Vector3[maxNumContacts];
             contactNormals = new Vector3[maxNumContacts];
-            // Get the bounds of the object.
+            double volume = 0;
+            Vector3 boundsSize;
             Bounds b = new Bounds(gameObject.transform.position, Vector3.zero);
             foreach (Renderer re in gameObject.GetComponentsInChildren<Renderer>())
             {
                 b.Encapsulate(re.bounds);
+                boundsSize = re.bounds.size;
+                volume += boundsSize.x * boundsSize.y * boundsSize.z;
             }
             // Set the bodies.
             r = GetComponent<Rigidbody>();
@@ -262,6 +260,7 @@ namespace Clatter.Unity
             }
             hasRigidbody = r != null;
             hasArticulationBody = articulationBody != null;
+            double mass;
             // Get the mass.
             if (massMode == MassMode.body)
             {
@@ -280,8 +279,6 @@ namespace Clatter.Unity
             }
             else if (massMode == MassMode.volume)
             {
-                // Get the approximate volume.
-                double volume = b.size.x * b.size.y * b.size.z;
                 // Multiply the volume by the density and then by a hollowness factor.
                 mass = volume * ImpactMaterialData.Density[impactMaterial] * (1 - hollowness);
                 // Set the mass.
@@ -293,6 +290,10 @@ namespace Clatter.Unity
                 {
                     articulationBody.mass = (float)mass;
                 }
+            }
+            else
+            {
+                mass = fakeMass;
             }
             // Set the physic material.
             if (autoSetFriction)
@@ -436,16 +437,8 @@ namespace Clatter.Unity
             // Get the normalized relative velocity of the collision.
             Vector3 normalizedVelocity = collision.relativeVelocity.normalized;
             double speed = normalizedVelocity.magnitude;
-            // Get the normal speeds.
-            double normalSpeeds = 0;
-            for (int i = 0; i < numContacts; i++)
-            {
-                normalSpeeds += speed * Mathf.Acos(Mathf.Clamp(Vector3.Dot(contactNormals[i], normalizedVelocity), -1, 1));
-            }
-            // Get the average normal speed.
-            double normalSpeed = normalSpeeds / numContacts;
             // Ignore low-speed events.
-            if (normalSpeed < AudioGenerator.minSpeed)
+            if (speed < AudioGenerator.minSpeed)
             {
                 NoneCollisionEvent(primary, secondary);
                 return;
@@ -574,10 +567,26 @@ namespace Clatter.Unity
                 primaryMono.hasPreviousArea = true;
                 primaryMono.previousArea = area; 
             }
+            // For scrapes, use the averaged speed.
+            if (audioEventType == AudioEventType.scrape)
+            {
+                // Get the normal speeds.
+                double normalSpeeds = 0;
+                for (int i = 0; i < numContacts; i++)
+                {
+                    normalSpeeds += speed * Mathf.Acos(Mathf.Clamp(Vector3.Dot(contactNormals[i], normalizedVelocity), -1, 1));
+                }
+                // Get the average normal speed.
+                speed = normalSpeeds / numContacts;
+                // Ignore low-speed events.
+                if (speed < AudioGenerator.minSpeed)
+                {
+                    NoneCollisionEvent(primary, secondary);
+                    return;
+                }
+            }
             // Add the collision.
-            CollisionEvent collisionEvent = new CollisionEvent(ids, primary, secondary, audioEventType, normalSpeed, centroid);
-            ClatterManager.instance.generator.AddCollision(collisionEvent);
-            onCollision?.Invoke(collisionEvent);
+            ClatterManager.instance.generator.AddCollision(new CollisionEvent(ids, primary, secondary, audioEventType, speed, centroid));
         }
 
 
@@ -588,9 +597,7 @@ namespace Clatter.Unity
         /// <param name="secondary">The secondary object.</param>
         private void NoneCollisionEvent(AudioObjectData primary, AudioObjectData secondary)
         {
-            CollisionEvent collisionEvent = new CollisionEvent(primary, secondary, AudioEventType.none, 0, Vector3d.Zero);
-            ClatterManager.instance.generator.AddCollision(collisionEvent);
-            onCollision?.Invoke(collisionEvent);
+            ClatterManager.instance.generator.AddCollision(new CollisionEvent(primary, secondary, AudioEventType.none, 0, Vector3d.Zero));
         }
 
 

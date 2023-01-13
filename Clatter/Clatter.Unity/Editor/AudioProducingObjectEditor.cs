@@ -47,7 +47,7 @@ namespace Clatter.Unity.Editor
             s.massMode = (MassMode)EditorGUILayout.EnumPopup("Mass Mode", s.massMode);
             if (s.massMode == MassMode.fake_mass)
             {
-                s.mass = EditorGUILayout.DoubleField("Mass", s.mass);
+                s.fakeMass = EditorGUILayout.DoubleField("Fake Mass", s.fakeMass);
             }
             else if (s.massMode == MassMode.volume)
             {
@@ -55,8 +55,6 @@ namespace Clatter.Unity.Editor
             }
             // Show the events.
             EditorGUILayout.LabelField("Events", EditorStyles.boldLabel);
-            SerializedProperty onCollision = serializedObject.FindProperty("onCollision");
-            EditorGUILayout.PropertyField(onCollision, true);
             SerializedProperty onDestroy = serializedObject.FindProperty("onDestroy");
             EditorGUILayout.PropertyField(onDestroy, true);
             serializedObject.ApplyModifiedProperties();

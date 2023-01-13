@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: -1547724978, guid: 6ef44198d7c572d4691abd3e0f5c2588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generateRandomSeed: 1
   auto: 1
+  generateRandomSeed: 1
   seed: 0
 --- !u!4 &8579178
 Transform:
@@ -305,9 +305,9 @@ MonoBehaviour:
   dynamicFriction: 0
   staticFriction: 0
   bounciness: 0.2
-  autoSetMass: 0
+  massMode: 1
+  fakeMass: 0
   hollowness: 0
-  mass: 100
   onDestroy:
     m_PersistentCalls:
       m_Calls: []
@@ -356,9 +356,9 @@ MonoBehaviour:
   dynamicFriction: 0
   staticFriction: 0
   bounciness: 0.1
-  autoSetMass: 1
+  massMode: 1
+  fakeMass: 0
   hollowness: 0
-  mass: 0
   onDestroy:
     m_PersistentCalls:
       m_Calls: []
@@ -370,7 +370,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1788447130}
   serializedVersion: 2
-  m_Mass: 0.1
+  m_Mass: 3
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -466,7 +466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82a8ac869636c7840a40b34a96a28b6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  force: 3
+  force: 2
 --- !u!1 &1806211767
 GameObject:
   m_ObjectHideFlags: 0

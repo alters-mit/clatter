@@ -14,14 +14,6 @@ public class CollisionListener : MonoBehaviour
     /// </summary>
     public Text text;
     /// <summary>
-    /// The sphere.
-    /// </summary>
-    public AudioProducingObject sphere;
-    /// <summary>
-    /// The surface.
-    /// </summary>
-    public AudioProducingObject surface;
-    /// <summary>
     /// The ClatterManager.
     /// </summary>
     public ClatterManager clatterManager;
@@ -29,13 +21,14 @@ public class CollisionListener : MonoBehaviour
 
     private void Awake()
     {
-        sphere.onCollision.AddListener(OnCollision);
-        surface.onCollision.AddListener(OnCollision);
         clatterManager.OnAwake();
+        clatterManager.generator.onImpact += OnCollision;
+        clatterManager.generator.onScrapeStart += OnCollision;
+        clatterManager.generator.onScrapeOngoing += OnCollision;
     }
 
 
-    private void OnCollision(CollisionEvent collisionEvent)
+    private void OnCollision(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceId)
     {
         if (collisionEvent.type != AudioEventType.none)
         {

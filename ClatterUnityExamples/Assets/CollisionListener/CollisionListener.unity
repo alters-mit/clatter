@@ -260,12 +260,9 @@ MonoBehaviour:
   dynamicFriction: 0.1
   staticFriction: 0.1
   bounciness: 0.45
-  autoSetMass: 1
+  massMode: 1
+  fakeMass: 0
   hollowness: 0
-  mass: 0
-  onCollision:
-    m_PersistentCalls:
-      m_Calls: []
   onDestroy:
     m_PersistentCalls:
       m_Calls: []
@@ -339,7 +336,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 107277333}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.224, z: 0}
+  m_LocalPosition: {x: 0, y: 2.72, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -550,8 +547,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   impactMaterial: 3
-  autoSetSize: 1
-  size: 0
+  autoSetSize: 0
+  size: 4
   hasScrapeMaterial: 1
   scrapeMaterial: 3
   amp: 0.10000000149011612
@@ -560,12 +557,9 @@ MonoBehaviour:
   dynamicFriction: 0.1
   staticFriction: 0.1
   bounciness: 0.2
-  autoSetMass: 1
+  massMode: 1
+  fakeMass: 0
   hollowness: 0
-  mass: 100
-  onCollision:
-    m_PersistentCalls:
-      m_Calls: []
   onDestroy:
     m_PersistentCalls:
       m_Calls: []
@@ -910,8 +904,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 176916885}
-  sphere: {fileID: 107277334}
-  surface: {fileID: 463497084}
   clatterManager: {fileID: 1619111566}
 --- !u!4 &1751058293
 Transform:

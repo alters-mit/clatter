@@ -39,7 +39,7 @@ namespace Clatter.Core
         /// <summary>
         /// The minimum time in seconds between impacts. If an impact occurs an this much time hasn't yet elapsed, the impact will be ignored. This can prevent strange "droning" sounds caused by too many impacts in rapid succession.
         /// </summary>
-        public static double minTimeBetweenImpacts = 0.25;
+        public static double minTimeBetweenImpacts = 0.05;
         /// <summary>
         /// The maximum time in seconds between impacts. After this many seconds, this impact series will end and a subsequent impact collision will start a new Impact.
         /// </summary>
