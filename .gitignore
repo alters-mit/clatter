@@ -13,3 +13,6 @@ docs/xml/
 docs/html/clatter*/
 docs/scratch.py
 github_auth.txt
+ClatterUnityExamples/Assets/Plugins/Clatter.Core.dll
+ClatterUnityExamples/Assets/Plugins/Clatter.Unity.dll
+ClatterUnityExamples/UserSettings/EditorUserSettings.asset

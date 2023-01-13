@@ -157,20 +157,19 @@ namespace Clatter.Unity
         [HideInInspector]
         public float bounciness = 0.2f;
         /// <summary>
-        /// If true, the mass of the object is automatically set based on its impact material and volume. If false, use the mass value in the Rigidbody or ArticulationBody.
+        /// The mode for how the mass is set.
         /// </summary>
-        [HideInInspector]
-        public bool autoSetMass = true;
+        public MassMode massMode = MassMode.body;
         /// <summary>
-        /// The portion of the object that is hollow (0-1). This is used to convert volume and density to mass. Ignored if `autoSetMass == false`.
-        /// </summary>
-        [HideInInspector]
-        public float hollowness;
-        /// <summary>
-        /// The mass of the object. Ignored if `autoSetMass == true`.
+        /// If massMode == SetMassMode.mass, this is the mass of the object in kilograms.
         /// </summary>
         [HideInInspector]
         public double mass;
+        /// <summary>
+        /// If massMode == SetMassMode.volume, hollowness is the portion of the object that is hollow (0-1). This is multiplied by the volume and density to derive the object's mass.
+        /// </summary>
+        [HideInInspector]
+        public float hollowness;
         /// <summary>
         /// Invoked when this object generates a `Clatter.Core.CollisionEvent`. Parameters: The `Clatter.Core.CollisionEvent`.
         /// </summary>
@@ -264,8 +263,22 @@ namespace Clatter.Unity
             hasRigidbody = r != null;
             hasArticulationBody = articulationBody != null;
             // Get the mass.
-            // Auto-set the mass.
-            if (autoSetMass)
+            if (massMode == MassMode.body)
+            {
+                if (r != null)
+                {
+                    mass = r.mass;
+                }
+                else if (articulationBody != null)
+                {
+                    mass = articulationBody.mass;
+                }
+                else
+                {
+                    mass = defaultAudioObjectData.mass;
+                }  
+            }
+            else if (massMode == MassMode.volume)
             {
                 // Get the approximate volume.
                 double volume = b.size.x * b.size.y * b.size.z;
@@ -280,22 +293,6 @@ namespace Clatter.Unity
                 {
                     articulationBody.mass = (float)mass;
                 }
-            }
-            // Use the mass value in the Rigidbody or ArticulationBody.
-            else
-            {
-                if (r != null)
-                {
-                    mass = r.mass;
-                }
-                else if (articulationBody != null)
-                {
-                    mass = articulationBody.mass;
-                }
-                else
-                {
-                    mass = 0;
-                }          
             }
             // Set the physic material.
             if (autoSetFriction)

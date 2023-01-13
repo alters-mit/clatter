@@ -11,7 +11,7 @@ New users should start by reading:
 - [`AudioProducingObject`](AudioProducingObject.html) An AudioProducingObject is a MonoBehaviour class for `Clatter.Core.AudioObjectData`.
 - [`ClatterManager`](ClatterManager.html) Singleton manager class for Clatter in Unity.
 
-For example implementation, see the ClatterUnityExample Unity project:
+For example implementation, see the ClatterUnityExample Unity project. **NOTE:** You need to manually add Clatter.Core.dll and Clatter.Unity.dll to ClatterUnityExample/Assets/
 
 - Impact is a minimal example of how to generate impact audio.
 - Scrape is a minimal example of how to generate scrape audio.

@@ -44,14 +44,14 @@ namespace Clatter.Unity.Editor
                 s.staticFriction = EditorGUILayout.Slider("Static Friction", s.staticFriction, 0, 1);
             }
             s.bounciness = EditorGUILayout.Slider("Bounciness", s.bounciness, 0, 1);
-            s.autoSetMass = EditorGUILayout.Toggle("Auto-set mass", s.autoSetMass);
-            if (s.autoSetMass)
-            {
-                s.hollowness = EditorGUILayout.Slider("Hollowness", s.hollowness, 0, 1);
-            }
-            else
+            s.massMode = (MassMode)EditorGUILayout.EnumPopup("Mass Mode", s.massMode);
+            if (s.massMode == MassMode.fake_mass)
             {
                 s.mass = EditorGUILayout.DoubleField("Mass", s.mass);
+            }
+            else if (s.massMode == MassMode.volume)
+            {
+                s.hollowness = EditorGUILayout.Slider("Hollowness", s.hollowness, 0, 1);
             }
             // Show the events.
             EditorGUILayout.LabelField("Events", EditorStyles.boldLabel);
