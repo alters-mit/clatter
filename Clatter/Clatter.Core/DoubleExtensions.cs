@@ -252,7 +252,7 @@ namespace Clatter.Core
         /// Source: https://github.com/mathnet/mathnet-numerics/blob/70d45612af89d3b70661a566c9b82a8982a23f1d/src/Numerics/Statistics/ArrayStatistics.cs#L51
         /// </summary>
         /// <param name="data">Sample array, no sorting is assumed.</param>
-        public static double Minimum(this double[] data)
+        private static double Minimum(this double[] data)
         {
             double min = double.PositiveInfinity;
             for (int i = 0; i < data.Length; i++)
