@@ -16,7 +16,7 @@
         /// </summary>
         public readonly AudioObjectData secondary;
         /// <summary>
-        /// The combined object IDs pair as a long. This is used by `AudioGenerator` as a dictionary key.
+        /// The combined object IDs pair as a ulong. This is used by `AudioGenerator` as a dictionary key.
         /// </summary>
         public readonly ulong ids;
         /// <summary>
@@ -28,7 +28,7 @@
         /// </summary>
         public readonly Vector3d position;
         /// <summary>
-        /// The speed of the collision.
+        /// The speed of the collision in meters per second.
         /// </summary>
         public readonly double speed;
 
@@ -39,8 +39,8 @@
         /// <param name="primary">The primary object.</param>
         /// <param name="secondary">The secondary object.</param>
         /// <param name="type">The type of the audio event (impact, scrape, roll, none).</param>
-        /// <param name="speed">The speed of the collision.</param>
-        /// <param name="position">The centroid of the collision.</param>
+        /// <param name="speed">The speed of the collision in meters per second.</param>
+        /// <param name="position">The position of the collision.</param>
         public CollisionEvent(AudioObjectData primary, AudioObjectData secondary, AudioEventType type, double speed, Vector3d position)
         {
             this.primary = primary;
@@ -58,10 +58,10 @@
         /// </summary>
         /// <param name="ids">The object IDs pair.</param>
         /// <param name="primary">The primary object.</param>
-        /// <param name="secondary">The secondary object.</param>
+        /// <param name="secondary">The secondary object in meters per second.</param>
         /// <param name="type">The type of the audio event (impact, scrape, roll, none).</param>
-        /// <param name="speed">The speed of the collision.</param>
-        /// <param name="position">The centroid of the collision.</param>
+        /// <param name="speed">The speed of the collision in meters per second.</param>
+        /// <param name="position">The position of the collision.</param>
         public CollisionEvent(ulong ids, AudioObjectData primary, AudioObjectData secondary, AudioEventType type, double speed, Vector3d position)
         {
             this.ids = ids;

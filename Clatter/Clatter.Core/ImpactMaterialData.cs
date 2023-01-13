@@ -93,10 +93,10 @@ namespace Clatter.Core
         
         
         /// <summary>
-        /// Parse a size and an ImpactMaterialUnsized value to get an ImpactMaterial value.
+        /// Parse a size bucket value and an ImpactMaterialUnsized value to get an ImpactMaterial value.
         /// </summary>
         /// <param name="impactMaterialUnsized">The unsized impact material.</param>
-        /// <param name="size">The size.</param>
+        /// <param name="size">The size bucket value (0-5).</param>
         public static ImpactMaterial GetImpactMaterial(ImpactMaterialUnsized impactMaterialUnsized, int size)
         {
             string m = impactMaterialUnsized + "_" + size;

@@ -9,7 +9,8 @@ namespace Clatter.Core
     public static class LinSpace
     {
         /// <summary>
-        /// Equivalent to np.linspace. 
+        /// Equivalent to numpy.linspace.
+        /// 
         /// This is an optimized version of this: https://github.com/accord-net/framework/blob/development/Sources/Accord.Math/Vector/Vector.Interval.Generated.cs
         /// </summary>
         /// <param name="a">The start value.</param>
@@ -24,8 +25,10 @@ namespace Clatter.Core
         
         
         /// <summary>
-        /// Equivalent to np.linspace.
+        /// Equivalent to numpy.linspace.
+        ///
         /// The array is generated in-place to avoid memory allocation.
+        /// 
         /// This is an optimized version of this: https://github.com/accord-net/framework/blob/development/Sources/Accord.Math/Vector/Vector.Interval.Generated.cs
         /// </summary>
         /// <param name="a">The start value.</param>
