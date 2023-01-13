@@ -1,7 +1,7 @@
 ﻿namespace Clatter.Core
 {
     /// <summary>
-    /// Audio materials for impact sounds. The integer suffix e.g. _2 is the "size bucket". Smaller objects should use lower size bucket values. See `AudioObjectData` for various means of deriving the size bucket value.
+    /// Audio materials for impact sounds. The integer suffix e.g. _2 is the "size bucket". To generate realistic audio, smaller objects should have smaller size bucket values. See `ImpactMaterialData` for various means of deriving the size bucket value.
     /// </summary>
     public enum ImpactMaterial : byte
     {

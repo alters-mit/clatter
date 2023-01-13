@@ -67,12 +67,12 @@ namespace Clatter.Unity
         [HideInInspector]
         public ImpactMaterialUnsized impactMaterial;
         /// <summary>
-        /// If true, the object's "size bucket" is automatically set based on its volume.
+        /// If true, the "size bucket" is automatically set based on its volume.
         /// </summary>
         [HideInInspector]
         public bool autoSetSize = true;
         /// <summary>
-        /// The size of the object (this affects the generated audio). Ignored if `autoSetSize == true`.
+        /// The "size bucket", on a scale of 0-5. To generate realistic audio, smaller objects should have smaller size bucket values. Ignored if `autoSetSize == true`. For more information, including how to derive size bucket values, see: `Clatter.ImpactMaterial` and `Clatter.ImpactMaterialData`.
         /// </summary>
         [HideInInspector]
         public int size;
