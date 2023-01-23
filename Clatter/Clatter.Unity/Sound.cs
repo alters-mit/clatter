@@ -3,7 +3,6 @@ using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
 using Clatter.Core;
-using Debug = UnityEngine.Debug;
 
 
 namespace Clatter.Unity
@@ -85,7 +84,7 @@ namespace Clatter.Unity
         /// </summary>
         public void End()
         {
-            if (gameObject == null)
+            if (this == null || gameObject == null)
             {
                 return;
             }
