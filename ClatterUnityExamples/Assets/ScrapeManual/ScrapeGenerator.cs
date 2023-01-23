@@ -22,6 +22,14 @@ public class ScrapeGenerator : MonoBehaviour
     /// </summary>
     public double duration = 10;
     /// <summary>
+    /// The scrape material.
+    /// </summary>
+    public ScrapeMaterial scrapeMaterial = ScrapeMaterial.plywood;
+    /// <summary>
+    /// The impact material for the scrape surface. For best results, this should be size bucket 4 or 5.
+    /// </summary>
+    public ImpactMaterial impactMaterialSurface = ImpactMaterial.wood_hard_4;
+    /// <summary>
     /// The number of scrapes we'll generate.
     /// </summary>
     private int totalNumScrapes;
@@ -55,7 +63,7 @@ public class ScrapeGenerator : MonoBehaviour
     {
         // Instantiate the objects and the audio generator.
         primary = new AudioObjectData(0, ImpactMaterial.glass_1, 0.2, 0.1, 0.5);
-        secondary = new AudioObjectData(1, ImpactMaterial.stone_4, 0.2, 0.2, 100, ScrapeMaterial.ceramic);
+        secondary = new AudioObjectData(1, impactMaterialSurface, 0.2, 0.2, 100, scrapeMaterial);
         generator = new AudioGenerator(new AudioObjectData[] { primary, secondary });
         // Listen to the scrape events.
         generator.onScrapeStart += OnScrapeStart;

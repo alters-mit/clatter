@@ -1,4 +1,6 @@
+using System;
 using Clatter.Core;
+using UnityEngine;
 
 
 namespace Clatter.Unity
@@ -58,6 +60,12 @@ namespace Clatter.Unity
         /// A cached index in the audio data when we're allocating scrape audio to each channel.
         /// </summary>
         private int dataIndex;
+        /// <summary>
+        /// The last valid audio chunk.
+        /// </summary>
+        private float[] lastValidAudioChunk = new float[0];
+
+        private bool gotLastValidAudioChunk;
 
 
         /// <summary>
@@ -124,9 +132,15 @@ namespace Clatter.Unity
         /// <param name="channels">The number of channels.</param>
         private void OnAudioFilterRead(float[] data, int channels)
         {
+            // We're not trying to fill silence.
             if (!fillSilence)
             {
                 return;
+            }
+            // Resize the last valid audio chunk.
+            if (lastValidAudioChunk.Length != data.Length)
+            {
+                lastValidAudioChunk = new float[data.Length];
             }
             // Start by resenting the cached index variables.
             z0 = 0;
@@ -140,7 +154,7 @@ namespace Clatter.Unity
                     if (!zeroing)
                     {
                         z0 = i;
-                        zeroing = true;                 
+                        zeroing = true; 
                     }
                 }
                 else
@@ -148,34 +162,36 @@ namespace Clatter.Unity
                     // We found a range of zeros. Now we need to fill it with audio.
                     if (zeroing)
                     {
-                        // Find valid ScrapeAudioData to use.
-                        for (int j = 0; j < nextData.Length; j++)
-                        {
-                            // We found valid data. We don't care if it's allocated or not.
-                            if (nextData[j] != null)
-                            {
-                                // Set the start index of the range of zeros.
-                                dataIndex = z0;
-                                // Set the length of the range of zeros.
-                                zerosLength = (i - z0) / channels;
-                                // Iterate through the range of zeros.
-                                for (int k = 0; k < zerosLength; k++)
-                                {
-                                    // Fill each channel with audio.
-                                    for (int m = 0; m < channels; m++)
-                                    {
-                                        data[dataIndex] = nextData[j].data[k];
-                                        dataIndex++;
-                                    }
-                                }
-                                // Break because we filled the audio.
-                                break;
-                            }
-                        }
-                        // Start looking for more ranges of zeros.
-                        zeroing = false;
+                        FillZeros(i, data);
                     }
                 }
+            }
+            // We didn't find an end to the range of zeros. Fill everything starting at z0.
+            if (zeroing)
+            {
+                FillZeros(data.Length, data);
+            }
+            // Remember the last valid audio chunk.
+            else
+            {
+                Buffer.BlockCopy(data, 0, lastValidAudioChunk, 0, data.Length * 4);
+                gotLastValidAudioChunk = true;
+            }
+        }
+        
+        
+        /// <summary>
+        /// Fill a portion the audio data array that contains only zeros to ensure that the scrape sound is always continuous.
+        /// </summary>
+        /// <param name="z1">The end index of the range of zeros.</param>
+        /// <param name="data">The chunk of audio data.</param>
+        private void FillZeros(int z1, float[] data)
+        {
+            zeroing = false;
+            // Try to use the last valid audio chunk because this is a much faster operation.
+            if (gotLastValidAudioChunk)
+            {
+                Buffer.BlockCopy(lastValidAudioChunk, 0, data, z0 * 4, (z1 - z0) * 4);
             }
         }
     }
