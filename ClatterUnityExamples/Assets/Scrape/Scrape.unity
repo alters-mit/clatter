@@ -155,6 +155,7 @@ MonoBehaviour:
   auto: 1
   generateRandomSeed: 1
   seed: 0
+  adjustAudioSettings: 1
 --- !u!4 &8579178
 Transform:
   m_ObjectHideFlags: 0
@@ -274,7 +275,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 653114851}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 100
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -294,13 +295,13 @@ MonoBehaviour:
   m_Script: {fileID: 1348113302, guid: 6ef44198d7c572d4691abd3e0f5c2588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  impactMaterial: 0
+  impactMaterial: 13
   autoSetSize: 0
   size: 4
   hasScrapeMaterial: 1
   scrapeMaterial: 1
   amp: 0.10000000149011612
-  resonance: 0.10000000149011612
+  resonance: 0.2879999876022339
   autoSetFriction: 0
   dynamicFriction: 0
   staticFriction: 0
