@@ -24,6 +24,7 @@ namespace Clatter.Unity.Editor
                 c.seed = EditorGUILayout.IntField("Random Seed", c.seed);
             }
             c.auto = EditorGUILayout.Toggle("Auto-Simulate", c.auto);
+            c.adjustAudioSettings = EditorGUILayout.Toggle("Auto-adjust audio settings", c.adjustAudioSettings);
         }
     }  
 }

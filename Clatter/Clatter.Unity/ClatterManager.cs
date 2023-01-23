@@ -31,6 +31,12 @@ namespace Clatter.Unity
     public class ClatterManager : MonoBehaviour
     {
         /// <summary>
+        /// The optimal DSP buffer size.
+        /// </summary>
+        private const int DSP_BUFFER_SIZE = 256;
+        
+        
+        /// <summary>
         /// Singleton instance.
         /// </summary>
         public static ClatterManager instance;
@@ -49,6 +55,11 @@ namespace Clatter.Unity
         /// </summary>
         [HideInInspector]
         public int seed;
+        /// <summary>
+        /// If true, adjust the global audio settings for better-quality audio.
+        /// </summary>
+        [HideInInspector]
+        public bool adjustAudioSettings = true;
         /// <summary>
         /// The audio generator.
         /// </summary>
@@ -84,6 +95,14 @@ namespace Clatter.Unity
         /// </summary>
         public void OnAwake()
         {
+            // Set the audio for best quality.
+            if (adjustAudioSettings)
+            {
+                AudioConfiguration audioConfiguration = AudioSettings.GetConfiguration();
+                audioConfiguration.sampleRate = Globals.framerateInt;
+                audioConfiguration.dspBufferSize = DSP_BUFFER_SIZE;
+                AudioSettings.Reset(audioConfiguration);
+            }
             // Set the singleton instance.
             instance = this;
             // Find all of the audio-producing objects.

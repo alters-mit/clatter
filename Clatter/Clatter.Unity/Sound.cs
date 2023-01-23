@@ -3,6 +3,7 @@ using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
 using Clatter.Core;
+using Debug = UnityEngine.Debug;
 
 
 namespace Clatter.Unity
@@ -113,6 +114,7 @@ namespace Clatter.Unity
             source.clip = AudioClip.Create("audio", data.Length, 1, Globals.framerateInt, false);
             // Set the audio data.
             source.clip.SetData(data, 0);
+            source.loop = Loop();
             // Play the clip.
             source.Play();
             // Listen for when the audio clip ends.
@@ -126,6 +128,12 @@ namespace Clatter.Unity
         /// Invoked whenever an audio clip ends.
         /// </summary>
         protected abstract void OnAudioClipEnd();
+        
+        
+        /// <summary>
+        /// If true, loop the audio clip.
+        /// </summary>
+        protected abstract bool Loop();
 
 
         /// <summary>

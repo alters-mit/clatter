@@ -12,5 +12,14 @@
         {
             End();
         }
+        
+        
+        /// <summary>
+        /// If true, loop the audio clip.
+        /// </summary>
+        protected override bool Loop()
+        {
+            return false;
+        }
     }
 }
