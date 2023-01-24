@@ -109,9 +109,9 @@ namespace Clatter.Core
         /// <summary>
         /// (constructor)
         /// </summary>
-        /// <param name="audioObjects">The objects that will generate audio.</param>
+        /// <param name="clatterObjects">The objects that will generate audio.</param>
         /// <param name="seed">The random seed. If null, the seed is random.</param>
-        public AudioGenerator(IEnumerable<AudioObjectData> audioObjects, int? seed = null)
+        public AudioGenerator(IEnumerable<ClatterObjectData> clatterObjects, int? seed = null)
         {
             if (seed == null)
             {
@@ -122,14 +122,14 @@ namespace Clatter.Core
                 rng = new Random((int)seed);
             }
             // Load the audio materials.
-            foreach (AudioObjectData a in audioObjects)
+            foreach (ClatterObjectData c in clatterObjects)
             {
                 // Load the impact material.
-                ImpactMaterialData.Load(a.impactMaterial);
+                ImpactMaterialData.Load(c.impactMaterial);
                 // Load the scrape material.
-                if (a.hasScrapeMaterial)
+                if (c.hasScrapeMaterial)
                 {
-                    ScrapeMaterialData.Load(a.scrapeMaterial);
+                    ScrapeMaterialData.Load(c.scrapeMaterial);
                 }
             }
         }

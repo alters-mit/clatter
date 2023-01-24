@@ -47,9 +47,9 @@ copy /Y Clatter.Unity.dll  "../../../../ClatterUnityExamples/Assets/Plugins"</Po
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="AudioProducingObject.cs" />
+        <Compile Include="ClatterObject.cs" />
         <Compile Include="ClatterManager.cs" />
-        <Compile Include="Editor\AudioProducingObjectEditor.cs" />
+        <Compile Include="Editor\ClatterObjectEditor.cs" />
         <Compile Include="Editor\ClatterManagerEditor.cs" />
         <Compile Include="ImpactSound.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

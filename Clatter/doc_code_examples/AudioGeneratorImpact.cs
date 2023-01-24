@@ -11,12 +11,12 @@ public static class AudioGeneratorImpact
     {
         Random rng = new Random();
         // Add some objects.
-        AudioObjectData[] objects = new AudioObjectData[64];
+        ClatterObjectData[] objects = new ClatterObjectData[64];
         uint[] objectIDs = new uint[64];
         for (uint i = 0; i < objects.Length; i++)
         {
             // Generate a random object.
-            objects[i] = new AudioObjectData(i, ImpactMaterial.glass_1, rng.NextDouble(), rng.NextDouble(), rng.NextDouble() * 5);
+            objects[i] = new ClatterObjectData(i, ImpactMaterial.glass_1, rng.NextDouble(), rng.NextDouble(), rng.NextDouble() * 5);
             objectIDs[i] = i;
         }
         // Create the audio generator.
@@ -37,8 +37,8 @@ public static class AudioGeneratorImpact
             for (int j = 0; j < numCollisions; j++)
             {
                 // Get random primary and secondary objects.
-                AudioObjectData primary = objects[objectIDs[objectIndex]];
-                AudioObjectData secondary = objects[objectIDs[objectIndex + 1]];
+                ClatterObjectData primary = objects[objectIDs[objectIndex]];
+                ClatterObjectData secondary = objects[objectIDs[objectIndex + 1]];
                 // Generate a collision.
                 CollisionEvent collisionEvent = new CollisionEvent(primary, secondary, AudioEventType.impact, rng.NextDouble() * 1.75, Vector3d.Zero);
                 // Add the collision.

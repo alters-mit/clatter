@@ -61,7 +61,7 @@ namespace Clatter.CommandLine
             ArgumentParser.TryGetBooleanValue(args, "unclamp_contact_time", ref Impact.clampContactTime);
             ArgumentParser.TryGetDoubleValue(args, "scrape_max_speed", ref Scrape.maxSpeed);
             // Set the primary object.
-            AudioObjectData primary = GetAudioObjectData(args, 0, "primary", false);
+            ClatterObjectData primary = GetClatterObjectData(args, 0, "primary", false);
             // Get the audio type.
             string audioType = ArgumentParser.GetStringValue(args, "type");
             // Check if this is a scrape.
@@ -82,7 +82,7 @@ namespace Clatter.CommandLine
                 throw new Exception("Invalid audio type: " + audioType);
             }
             // Set the secondary object.
-            AudioObjectData secondary = GetAudioObjectData(args, 1, "secondary", scrape);
+            ClatterObjectData secondary = GetClatterObjectData(args, 1, "secondary", scrape);
             // Get the speed.
             double speed = ArgumentParser.GetDoubleValue(args, "speed");
             // Get the path to the output file.
@@ -100,13 +100,13 @@ namespace Clatter.CommandLine
         
 
         /// <summary>
-        /// Returns object audio data.
+        /// Return a Clatter object.
         /// </summary>
         /// <param name="args">The args.</param>
         /// <param name="id">The object ID.</param>
         /// <param name="target">Either primary or secondary.</param>
         /// <param name="scrape">If true, look for a scrape material.</param>
-        private static AudioObjectData GetAudioObjectData(string[] args, uint id, string target, bool scrape)
+        private static ClatterObjectData GetClatterObjectData(string[] args, uint id, string target, bool scrape)
         {
             string m = ArgumentParser.GetStringValue(args, target + "_material");
             ImpactMaterial impactMaterial;
@@ -127,11 +127,11 @@ namespace Clatter.CommandLine
                     throw new Exception("Invalid scrape material: " + s);
                 }
                 ScrapeMaterialData.Load(scrapeMaterial);
-                return new AudioObjectData(id, impactMaterial, amp, resonance, mass, scrapeMaterial);
+                return new ClatterObjectData(id, impactMaterial, amp, resonance, mass, scrapeMaterial);
             }
             else
             {
-                return new AudioObjectData(id, impactMaterial, amp, resonance, mass);
+                return new ClatterObjectData(id, impactMaterial, amp, resonance, mass);
             }
         }
 
@@ -143,7 +143,7 @@ namespace Clatter.CommandLine
         /// <param name="primary">The primary object.</param>
         /// <param name="secondary">The secondary object.</param>
         /// <param name="speed">The speed of the impact.</param>
-        private static byte[] GetImpact(AudioObjectData primary, AudioObjectData secondary, double speed)
+        private static byte[] GetImpact(ClatterObjectData primary, ClatterObjectData secondary, double speed)
         {
             Impact impact = new Impact(primary, secondary, new Random());
             // Generate audio.
@@ -167,7 +167,7 @@ namespace Clatter.CommandLine
         /// <param name="secondary">The secondary object.</param>
         /// <param name="speed">The speed of the scrape.</param>
         /// <param name="duration">The duration of the scrape in seconds. This will be rounded to the nearest tenth of a second.</param>
-        private static byte[] GetScrape(AudioObjectData primary, AudioObjectData secondary, double speed, double duration)
+        private static byte[] GetScrape(ClatterObjectData primary, ClatterObjectData secondary, double speed, double duration)
         {
             // Get the number of scrape events.
             int count = Scrape.GetNumScrapeEvents(duration);
@@ -195,7 +195,7 @@ namespace Clatter.CommandLine
         /// <param name="secondary">The secondary object.</param>
         /// <param name="speed">The speed of the impact.</param>
         /// <param name="path">The path to the output file.</param>
-        private static void WriteImpact(AudioObjectData primary, AudioObjectData secondary, double speed, string path)
+        private static void WriteImpact(ClatterObjectData primary, ClatterObjectData secondary, double speed, string path)
         {
             WavWriter writer = new WavWriter(path);
             writer.Write(GetImpact(primary, secondary, speed));
@@ -212,7 +212,7 @@ namespace Clatter.CommandLine
         /// <param name="speed">The speed of the scrape.</param>
         /// <param name="duration">The duration of the scrape in seconds. This will be rounded to the nearest tenth of a second.</param>
         /// <param name="path">The path to the output file.</param>
-        private static void WriteScrape(AudioObjectData primary, AudioObjectData secondary, double speed, double duration, string path)
+        private static void WriteScrape(ClatterObjectData primary, ClatterObjectData secondary, double speed, double duration, string path)
         {
             WavWriter writer = new WavWriter(path);
             writer.Write(GetScrape(primary, secondary, speed, duration));

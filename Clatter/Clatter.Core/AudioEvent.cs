@@ -27,11 +27,11 @@ namespace Clatter.Core
         /// <summary>
         /// The primary object.
         /// </summary>
-        protected readonly AudioObjectData primary;
+        protected readonly ClatterObjectData primary;
         /// <summary>
         /// The secondary object.
         /// </summary>
-        protected readonly AudioObjectData secondary;
+        protected readonly ClatterObjectData secondary;
         /// <summary>
         /// The random number generator. Each audio event has its own Random object for thread safety.
         /// </summary>
@@ -60,7 +60,7 @@ namespace Clatter.Core
         /// <param name="primary">The primary object.</param>
         /// <param name="secondary">The secondary object.</param>
         /// <param name="rng">The random number generator.</param>
-        protected AudioEvent(AudioObjectData primary, AudioObjectData secondary, Random rng)
+        protected AudioEvent(ClatterObjectData primary, ClatterObjectData secondary, Random rng)
         {
             // ReSharper disable once VirtualMemberCallInConstructor
             samples = new Samples(GetSamplesSize());

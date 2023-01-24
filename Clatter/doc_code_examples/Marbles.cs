@@ -23,13 +23,13 @@ public class Marbles : MonoBehaviour
         floor.transform.localScale = new Vector3(1, 0.015f, 1);
         floor.name = "floor";
         // Generate audio from the floor.
-        AudioProducingObject f = floor.AddComponent<AudioProducingObject>();
+        ClatterObject f = floor.AddComponent<ClatterObject>();
         f.impactMaterial = ImpactMaterialUnsized.metal;
         f.autoSetSize = false;
         f.size = 4;
         f.amp = 0.5f;
         f.resonance = 0.4f;
-        f.data = AudioProducingObject.defaultAudioObjectData;
+        f.data = ClatterObject.defaultClatterObjectData;
         // Add the floor's Rigidbody and set the mass.
         Rigidbody fr = floor.AddComponent<Rigidbody>();
         fr.isKinematic = true;
@@ -56,13 +56,13 @@ public class Marbles : MonoBehaviour
                 Rigidbody mr = marble.AddComponent<Rigidbody>();
                 mr.mass = 0.03f;
                 // Add the audio data.
-                AudioProducingObject ma = marble.AddComponent<AudioProducingObject>();
-                ma.impactMaterial = ImpactMaterialUnsized.glass;
-                ma.autoSetSize = false;
-                ma.size = 0;
-                ma.bounciness = 0.6f;
-                ma.resonance = 0.05f;
-                ma.amp = 0.2f;
+                ClatterObject clatterObject = marble.AddComponent<ClatterObject>();
+                clatterObject.impactMaterial = ImpactMaterialUnsized.glass;
+                clatterObject.autoSetSize = false;
+                clatterObject.size = 0;
+                clatterObject.bounciness = 0.6f;
+                clatterObject.resonance = 0.05f;
+                clatterObject.amp = 0.2f;
                 x += SPACING;
             }
             z += SPACING;

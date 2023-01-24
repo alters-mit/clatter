@@ -76,7 +76,7 @@ namespace Clatter.Core
         /// <param name="primary">The primary object (the smaller, moving object).</param>
         /// <param name="secondary">The secondary object (the scrape surface).</param>
         /// <param name="rng">The random number generator.</param>
-        public Scrape(ScrapeMaterial scrapeMaterial, AudioObjectData primary, AudioObjectData secondary, Random rng) : base(primary, secondary, rng)
+        public Scrape(ScrapeMaterial scrapeMaterial, ClatterObjectData primary, ClatterObjectData secondary, Random rng) : base(primary, secondary, rng)
         {
             scrapeMaterialData = ScrapeMaterialData.Get(scrapeMaterial);
             scrapeId = rng.Next();

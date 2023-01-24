@@ -228,8 +228,8 @@ GameObject:
   - component: {fileID: 107277337}
   - component: {fileID: 107277336}
   - component: {fileID: 107277335}
-  - component: {fileID: 107277334}
   - component: {fileID: 107277339}
+  - component: {fileID: 107277334}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -246,20 +246,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 107277333}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1348113302, guid: 6ef44198d7c572d4691abd3e0f5c2588, type: 3}
+  m_Script: {fileID: 1443281168, guid: 6ef44198d7c572d4691abd3e0f5c2588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  impactMaterial: 1
-  autoSetSize: 1
-  size: 0
+  impactMaterial: 0
+  autoSetSize: 0
+  size: 1
   hasScrapeMaterial: 0
   scrapeMaterial: 0
-  amp: 0.25999999046325684
-  resonance: 0.15000000596046448
+  amp: 0.10000000149011612
+  resonance: 0.10000000149011612
   autoSetFriction: 1
   dynamicFriction: 0.1
   staticFriction: 0.1
-  bounciness: 0.45
+  bounciness: 0.2
   massMode: 1
   fakeMass: 0
   hollowness: 0
@@ -449,8 +449,8 @@ GameObject:
   - component: {fileID: 463497082}
   - component: {fileID: 463497081}
   - component: {fileID: 463497080}
-  - component: {fileID: 463497084}
   - component: {fileID: 463497085}
+  - component: {fileID: 463497084}
   m_Layer: 0
   m_Name: Surface
   m_TagString: Untagged
@@ -543,16 +543,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 463497079}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1348113302, guid: 6ef44198d7c572d4691abd3e0f5c2588, type: 3}
+  m_Script: {fileID: 1443281168, guid: 6ef44198d7c572d4691abd3e0f5c2588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   impactMaterial: 3
   autoSetSize: 0
   size: 4
   hasScrapeMaterial: 1
-  scrapeMaterial: 3
+  scrapeMaterial: 0
   amp: 0.10000000149011612
-  resonance: 0.10000000149011612
+  resonance: 0.1889999955892563
   autoSetFriction: 1
   dynamicFriction: 0.1
   staticFriction: 0.1
@@ -860,6 +860,7 @@ MonoBehaviour:
   auto: 0
   generateRandomSeed: 1
   seed: 0
+  adjustAudioSettings: 1
 --- !u!4 &1619111567
 Transform:
   m_ObjectHideFlags: 0

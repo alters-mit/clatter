@@ -44,11 +44,11 @@ public class ScrapeGenerator : MonoBehaviour
     /// <summary>
     /// The primary (moving) object.
     /// </summary>
-    private AudioObjectData primary;
+    private ClatterObjectData primary;
     /// <summary>
     /// The secondary (non-moving scrape surface) object.
     /// </summary>
-    private AudioObjectData secondary;
+    private ClatterObjectData secondary;
     /// <summary>
     /// The audio generator.
     /// </summary>
@@ -62,9 +62,9 @@ public class ScrapeGenerator : MonoBehaviour
     private void Awake()
     {
         // Instantiate the objects and the audio generator.
-        primary = new AudioObjectData(0, ImpactMaterial.glass_1, 0.2, 0.1, 0.5);
-        secondary = new AudioObjectData(1, impactMaterialSurface, 0.2, 0.2, 100, scrapeMaterial);
-        generator = new AudioGenerator(new AudioObjectData[] { primary, secondary });
+        primary = new ClatterObjectData(0, ImpactMaterial.glass_1, 0.2, 0.1, 0.5);
+        secondary = new ClatterObjectData(1, impactMaterialSurface, 0.2, 0.2, 100, scrapeMaterial);
+        generator = new AudioGenerator(new ClatterObjectData[] { primary, secondary });
         // Listen to the scrape events.
         generator.onScrapeStart += OnScrapeStart;
         generator.onScrapeOngoing += OnScrapeOngoing;

@@ -10,11 +10,11 @@
         /// <summary>
         /// The primary object. This should always be the faster-moving object.
         /// </summary>
-        public readonly AudioObjectData primary;
+        public readonly ClatterObjectData primary;
         /// <summary>
         /// The secondary object. This should always be the slower-moving (or non-moving) object.
         /// </summary>
-        public readonly AudioObjectData secondary;
+        public readonly ClatterObjectData secondary;
         /// <summary>
         /// The combined object IDs pair as a ulong. This is used by `AudioGenerator` as a dictionary key.
         /// </summary>
@@ -41,7 +41,7 @@
         /// <param name="type">The type of the audio event (impact, scrape, roll, none).</param>
         /// <param name="speed">The speed of the collision in meters per second.</param>
         /// <param name="position">The position of the collision.</param>
-        public CollisionEvent(AudioObjectData primary, AudioObjectData secondary, AudioEventType type, double speed, Vector3d position)
+        public CollisionEvent(ClatterObjectData primary, ClatterObjectData secondary, AudioEventType type, double speed, Vector3d position)
         {
             this.primary = primary;
             this.secondary = secondary;
@@ -62,7 +62,7 @@
         /// <param name="type">The type of the audio event (impact, scrape, roll, none).</param>
         /// <param name="speed">The speed of the collision in meters per second.</param>
         /// <param name="position">The position of the collision.</param>
-        public CollisionEvent(ulong ids, AudioObjectData primary, AudioObjectData secondary, AudioEventType type, double speed, Vector3d position)
+        public CollisionEvent(ulong ids, ClatterObjectData primary, ClatterObjectData secondary, AudioEventType type, double speed, Vector3d position)
         {
             this.ids = ids;
             this.primary = primary;
@@ -78,7 +78,7 @@
         /// </summary>
         /// <param name="primary">The primary object.</param>
         /// <param name="secondary">The secondary object.</param>
-        public static ulong GetIds(AudioObjectData primary, AudioObjectData secondary)
+        public static ulong GetIds(ClatterObjectData primary, ClatterObjectData secondary)
         {
             return ((ulong)primary.id << 32) | secondary.id;
         }

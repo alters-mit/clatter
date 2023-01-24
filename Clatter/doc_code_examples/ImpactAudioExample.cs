@@ -10,8 +10,8 @@ public class ImpactAudioExample
         ImpactMaterialData.Load(primaryMaterial);
         ImpactMaterialData.Load(secondaryMaterial);
         // Set the objects.
-        AudioObjectData primary = new AudioObjectData(0, primaryMaterial, 0.2, 0.2, 1);
-        AudioObjectData secondary = new AudioObjectData(1, secondaryMaterial, 0.5, 0.1, 100);
+        ClatterObjectData primary = new ClatterObjectData(0, primaryMaterial, 0.2, 0.2, 1);
+        ClatterObjectData secondary = new ClatterObjectData(1, secondaryMaterial, 0.5, 0.1, 100);
         // Create the impact event.
         Impact impact = new Impact(primary, secondary, new Random());
         // Generate audio.

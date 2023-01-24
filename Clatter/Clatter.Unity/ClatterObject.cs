@@ -8,19 +8,19 @@ using Clatter.Core;
 namespace Clatter.Unity
 {
     /// <summary>
-    /// An AudioProducingObject is a MonoBehaviour class wrapper for `Clatter.Core.AudioObjectData` that automatically converts Unity PhysX collisions into Clatter audio.
+    /// A ClatterObject is a MonoBehaviour class wrapper for `Clatter.Core.ClatterObjectData` that automatically converts Unity PhysX collisions into Clatter audio.
     ///
-    /// An AudioProducingObject must have either a Rigidbody or ArticulationBody component and at least one Collider.
+    /// A ClatterObject must have either a Rigidbody or ArticulationBody component and at least one Collider.
     ///
-    /// AudioProducingObject listens for Unity collision events (enter, stay, exit) and converts them into `Clatter.Core.CollisionEvent` data objects:
+    /// ClatterObject listens for Unity collision events (enter, stay, exit) and converts them into `Clatter.Core.CollisionEvent` data objects:
     /// 
     /// - "Enter" events are always impacts.
     /// - "Exit" events are always "none" audio events that will end an ongoing audio event series.
     /// - "Stay" events can be impacts, scrapes, rolls, or none-events. This is determined by a number of factors; see `areaNewCollision`, `scrapeAngle`, `impactAreaRatio`, and `rollAngularSpeed`.
     /// 
-    /// AudioProducingObjects are automatically initialized and updated by `ClatterManager`; you *can* use an AudioProducingObject without `ClatterManager` but it's very difficult to do so. Notice that there is no Update or FixedUpdate call because it's assumed that `ClatterManager` will call AudioProducingObject.OnUpdate() and AudioProducingObject.OnFixedUpdate().
+    /// ClatterObjects are automatically initialized and updated by `ClatterManager`; you *can* use a ClatterObject without `ClatterManager` but it's very difficult to do so. Notice that there is no Update or FixedUpdate call because it's assumed that `ClatterManager` will call ClatterObject.OnUpdate() and ClatterObject.OnFixedUpdate().
     /// </summary>
-    public class AudioProducingObject : MonoBehaviour
+    public class ClatterObject : MonoBehaviour
     {
         /// <summary>
         /// Types of OnCollision callbacks, e.g. OnCollisionEnter.
@@ -54,7 +54,7 @@ namespace Clatter.Unity
         /// </summary>
         public static float maxContactSeparation = 1e-8f;
         /// <summary>
-        /// AudioProducingObject tries to filter duplicate collision events in two ways. First, it will remove any reciprocal pairs of objects, i.e. it will accept a collision between objects 0 and 1 but not objects 1 and 0. Second, it will register only the first collision between objects per main-thread update (multiple collisions can be registered because there are many physics fixed update calls in between). To allow duplicate events, set this field to `false`.
+        /// ClatterObject tries to filter duplicate collision events in two ways. First, it will remove any reciprocal pairs of objects, i.e. it will accept a collision between objects 0 and 1 but not objects 1 and 0. Second, it will register only the first collision between objects per main-thread update (multiple collisions can be registered because there are many physics fixed update calls in between). To allow duplicate events, set this field to `false`.
         /// </summary>
         public static bool filterDuplicates = true;
         /// <summary>
@@ -142,12 +142,12 @@ namespace Clatter.Unity
         [HideInInspector]
         public bool autoSetFriction = true;
         /// <summary>
-        /// The physic material dynamic friction value (0-1). To derive friction values from `Clatter.Core.ImpactMaterialUnsized` values, see: AudioProducingObject.DynamicFriction.
+        /// The physic material dynamic friction value (0-1). To derive friction values from `Clatter.Core.ImpactMaterialUnsized` values, see: ClatterObject.DynamicFriction.
         /// </summary>
         [HideInInspector]
         public float dynamicFriction = 0.1f;
         /// <summary>
-        /// The physic material static friction value (0-1). To derive friction values from `Clatter.Core.ImpactMaterialUnsized` values, see: AudioProducingObject.StaticFriction.
+        /// The physic material static friction value (0-1). To derive friction values from `Clatter.Core.ImpactMaterialUnsized` values, see: ClatterObject.StaticFriction.
         /// </summary>
         [HideInInspector]
         public float staticFriction = 0.1f;
@@ -162,7 +162,7 @@ namespace Clatter.Unity
         [HideInInspector]
         public MassMode massMode = MassMode.body;
         /// <summary>
-        /// If massMode == MassMode.fake_mass, the underlying `Clatter.Core.AudioObjectData` will use this value when generating audio rather than the true mass of the Rigibody/ArticulationBody.
+        /// If massMode == MassMode.fake_mass, the underlying `Clatter.Core.ClatterObjectData` will use this value when generating audio rather than the true mass of the Rigibody/ArticulationBody.
         /// </summary>
         [HideInInspector]
         public double fakeMass;
@@ -180,7 +180,7 @@ namespace Clatter.Unity
         /// <summary>
         /// This object's data.
         /// </summary>
-        public AudioObjectData data;
+        public ClatterObjectData data;
         /// <summary>
         /// The collision contacts area of a previous collision.
         /// </summary>
@@ -226,13 +226,13 @@ namespace Clatter.Unity
         /// </summary>
         private HashSet<ulong> collisionIds = new HashSet<ulong>();
         /// <summary>
-        /// The default audio data. This is used whenever an `AudioProducingObject` collides with a non-`AudioProducingObject` object.
+        /// The default audio data. This is used whenever an `ClatterObject` collides with a non-`ClatterObject` object.
         /// </summary>
-        public static AudioObjectData defaultAudioObjectData = new AudioObjectData(0, ImpactMaterial.wood_medium_4, 0.5f, 0.1f, 100, ScrapeMaterial.plywood);
+        public static ClatterObjectData defaultClatterObjectData = new ClatterObjectData(0, ImpactMaterial.wood_medium_4, 0.5f, 0.1f, 100, ScrapeMaterial.plywood);
 
 
         /// <summary>
-        /// Set the underlying AudioObjectData. This must be called once in order for this object to generate audio.
+        /// Set the underlying ClatterObjectData. This must be called once in order for this object to generate audio.
         /// </summary>
         /// <param name="id">This object's ID.</param>
         public void Initialize(uint id)
@@ -274,7 +274,7 @@ namespace Clatter.Unity
                 }
                 else
                 {
-                    mass = defaultAudioObjectData.mass;
+                    mass = defaultClatterObjectData.mass;
                 }  
             }
             else if (massMode == MassMode.volume)
@@ -322,11 +322,11 @@ namespace Clatter.Unity
             // Set the data.
             if (hasScrapeMaterial)
             {
-                data = new AudioObjectData(id, im, amp, resonance, mass, scrapeMaterial);
+                data = new ClatterObjectData(id, im, amp, resonance, mass, scrapeMaterial);
             }
             else
             {
-                data = new AudioObjectData(id, im, amp, resonance, mass);
+                data = new ClatterObjectData(id, im, amp, resonance, mass);
             }
         }
         
@@ -341,7 +341,7 @@ namespace Clatter.Unity
 
 
         /// <summary>
-        /// Update the directional and angular speeds of the underlying `Clatter.Core.AudioObjectData`. This method is not equivalent to FixedUpdate() and is called automatically by `ClatterManager`.
+        /// Update the directional and angular speeds of the underlying `Clatter.Core.ClatterObjectData`. This method is not equivalent to FixedUpdate() and is called automatically by `ClatterManager`.
         /// </summary>
         public void OnFixedUpdate()
         {
@@ -367,10 +367,10 @@ namespace Clatter.Unity
         private void RegisterCollision(Collision collision, OnCollisionType type)
         {
             // Try to get the other object.
-            AudioProducingObject other = collision.body.GetComponentInChildren<AudioProducingObject>();
+            ClatterObject other = collision.body.GetComponentInChildren<ClatterObject>();
             // Get the greater angular velocity.
             double angularSpeed;
-            AudioObjectData otherData;
+            ClatterObjectData otherData;
             if (other != null)
             {
                 angularSpeed = data.angularSpeed > other.data.angularSpeed ?
@@ -381,16 +381,16 @@ namespace Clatter.Unity
             {
                 angularSpeed = data.angularSpeed;
                 // The other object is the floor.
-                otherData = defaultAudioObjectData;
+                otherData = defaultClatterObjectData;
             }
             // Compare the IDs for filter out duplicate events.
             if (filterDuplicates && data.id > otherData.id)
             {
                 return;
             }
-            AudioObjectData primary;
-            AudioObjectData secondary;
-            AudioProducingObject primaryMono;
+            ClatterObjectData primary;
+            ClatterObjectData secondary;
+            ClatterObject primaryMono;
             // Set the primary and secondary IDs depending on:
             // 1. Whether this is a secondary object.
             // 2. Which object is has a greater speed.
@@ -595,7 +595,7 @@ namespace Clatter.Unity
         /// </summary>
         /// <param name="primary">The primary object.</param>
         /// <param name="secondary">The secondary object.</param>
-        private void NoneCollisionEvent(AudioObjectData primary, AudioObjectData secondary)
+        private void NoneCollisionEvent(ClatterObjectData primary, ClatterObjectData secondary)
         {
             ClatterManager.instance.generator.AddCollision(new CollisionEvent(primary, secondary, AudioEventType.none, 0, Vector3d.Zero));
         }

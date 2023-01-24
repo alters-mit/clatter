@@ -43,8 +43,8 @@ namespace Clatter.Benchmark
             ImpactMaterialData.Load(primaryMaterial);
             ImpactMaterialData.Load(secondaryMaterial);
             // Set the objects.
-            AudioObjectData primary = new AudioObjectData(0, primaryMaterial, 0.2, 0.2, 1);
-            AudioObjectData secondary = new AudioObjectData(1, secondaryMaterial, 0.5, 0.1, 100);
+            ClatterObjectData primary = new ClatterObjectData(0, primaryMaterial, 0.2, 0.2, 1);
+            ClatterObjectData secondary = new ClatterObjectData(1, secondaryMaterial, 0.5, 0.1, 100);
             // Set some useful globals.
             Random rng = new Random(0);
             Impact.maxTimeBetweenImpacts = 1000;
@@ -73,8 +73,8 @@ namespace Clatter.Benchmark
             ImpactMaterialData.Load(secondaryMaterial);
             ScrapeMaterialData.Load(scrapeMaterial);
             // Set the objects.
-            AudioObjectData primary = new AudioObjectData(0, primaryMaterial, 0.2, 0.2, 1);
-            AudioObjectData secondary = new AudioObjectData(1, secondaryMaterial, 0.5, 0.1, 100, scrapeMaterial);
+            ClatterObjectData primary = new ClatterObjectData(0, primaryMaterial, 0.2, 0.2, 1);
+            ClatterObjectData secondary = new ClatterObjectData(1, secondaryMaterial, 0.5, 0.1, 100, scrapeMaterial);
             // Initialize the scrape.
             Random rng = new Random(0);
             Scrape scrape = new Scrape(scrapeMaterial, primary, secondary, rng);
@@ -107,14 +107,14 @@ namespace Clatter.Benchmark
             for (int i = 0; i < 100; i++)
             {
                 // Set the objects.
-                AudioObjectData[,] objects = new AudioObjectData[100, 2];
-                List<AudioObjectData> objectsFlat = new List<AudioObjectData>();
+                ClatterObjectData[,] objects = new ClatterObjectData[100, 2];
+                List<ClatterObjectData> objectsFlat = new List<ClatterObjectData>();
                 uint id = 0;
                 for (int j = 0; j < 100; j++)
                 {
-                    AudioObjectData primary = new AudioObjectData(id, primaryMaterial, 0.2, 0.2, 1);
+                    ClatterObjectData primary = new ClatterObjectData(id, primaryMaterial, 0.2, 0.2, 1);
                     id++;
-                    AudioObjectData secondary = new AudioObjectData(id, secondaryMaterial, 0.5, 0.1, 100);
+                    ClatterObjectData secondary = new ClatterObjectData(id, secondaryMaterial, 0.5, 0.1, 100);
                     id++;
                     objects[j, 0] = primary;
                     objects[j, 1] = secondary;

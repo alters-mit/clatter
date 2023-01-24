@@ -1,7 +1,7 @@
 ﻿namespace Clatter.Unity
 {
     /// <summary>
-    /// The mode for setting the mass of an `AudioProducingObject`.
+    /// The mode for setting the mass of an `ClatterObject`.
     /// </summary>
     public enum MassMode : byte
     {
@@ -10,11 +10,11 @@
         /// </summary>
         body = 1,
         /// <summary>
-        /// The mass is set explicitly in `AudioProducingObject` and may vary from the mass of the object's Rigidbody/ArticulationBody. This is useful if you want to create unrealistic sounds.
+        /// The mass is set explicitly in `ClatterObject` and may vary from the mass of the object's Rigidbody/ArticulationBody. This is useful if you want to create unrealistic sounds.
         /// </summary>
         fake_mass = 2,
         /// <summary>
-        /// The mass is derived from the object's impact material, volume, and AudioProducingObject.hollowness.
+        /// The mass is derived from the object's impact material, volume, and ClatterObject.hollowness.
         /// </summary>
         volume = 4
     }

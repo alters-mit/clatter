@@ -5,10 +5,10 @@ using Clatter.Core;
 namespace Clatter.Unity.Editor
 {
     /// <summary>
-    /// Custom Inspector script for AudioProducingObject.
+    /// Custom Inspector script for ClatterObject.
     /// </summary>
-    [CustomEditor(typeof(AudioProducingObject))]
-    public class AudioProducingObjectEditor : UnityEditor.Editor
+    [CustomEditor(typeof(ClatterObject))]
+    public class ClatterObjectEditor : UnityEditor.Editor
     {
         /// <summary>
         /// OnInspectorGUI().
@@ -16,7 +16,7 @@ namespace Clatter.Unity.Editor
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            AudioProducingObject s = target as AudioProducingObject;
+            ClatterObject s = target as ClatterObject;
             // Show the audio materials.
             EditorGUILayout.LabelField("Audio Materials", EditorStyles.boldLabel);
             // ReSharper disable once PossibleNullReferenceException

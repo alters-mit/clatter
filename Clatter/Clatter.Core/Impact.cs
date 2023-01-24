@@ -65,7 +65,7 @@ namespace Clatter.Core
         /// <param name="primary">The primary object.</param>
         /// <param name="secondary">The secondary object.</param>
         /// <param name="rng">The random number generator.</param>
-        public Impact(AudioObjectData primary, AudioObjectData secondary, Random rng) : base(primary, secondary, rng)
+        public Impact(ClatterObjectData primary, ClatterObjectData secondary, Random rng) : base(primary, secondary, rng)
         {
             watch.Start();
         }

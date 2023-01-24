@@ -3,22 +3,22 @@
     /// <summary>
     /// Audio data for a Clatter object.
     ///
-    /// Audio generation in Clatter is always the result of a collision event between two AudioObjectData objects. Each object in your scene or simulation must have corresponding AudioObjectData.
+    /// Audio generation in Clatter is always the result of a collision event between two ClatterObjectData objects. Each object in your scene or simulation must have corresponding ClatterObjectData.
     ///
-    /// In many cases, it is possible to derive the AudioObjectData constructor parameters from other physical values. See: `ImpactMaterialData`.
+    /// In many cases, it is possible to derive the ClatterObjectData constructor parameters from other physical values. See: `ImpactMaterialData`.
     ///
     /// ## Code Examples
     /// 
-    /// This is a minimal example of how to instantiate an AudioObjectData:
+    /// This is a minimal example of how to instantiate a ClatterObjectData:
     ///
-    /// {code_example:AudioObjectDataConstructor}
+    /// {code_example:ClatterObjectDataConstructor}
     ///
     /// To generate scrape audio, the object acting as the "scrape surface" must have a `ScrapeMaterial`. For example, if you want to scrape a block along a table, the table needs a `ScrapeMaterial` (and the block doesn't). This is a minimal example of how to set an object's `ScrapeMaterial`:
     ///
-    /// {code_example:AudioObjectDataConstructorScrapeMaterial}
+    /// {code_example:ClatterObjectDataConstructorScrapeMaterial}
     ///
     /// </summary>
-    public class AudioObjectData
+    public class ClatterObjectData
     {
         /// <summary>
         /// The ID of the object. This must always be unique.
@@ -67,7 +67,7 @@
         /// <param name="resonance">The resonance value (0 to 1).</param>
         /// <param name="mass">The mass of the object.</param>
         /// <param name="scrapeMaterial">The scrape material. Can be null.</param>
-        public AudioObjectData(uint id, ImpactMaterial impactMaterial, double amp, double resonance, double mass, ScrapeMaterial? scrapeMaterial = null)
+        public ClatterObjectData(uint id, ImpactMaterial impactMaterial, double amp, double resonance, double mass, ScrapeMaterial? scrapeMaterial = null)
         {
             this.id = id;
             this.impactMaterial = impactMaterial;

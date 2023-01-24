@@ -13,8 +13,8 @@ public class ScrapeAudioExample
         ImpactMaterialData.Load(secondaryMaterial);
         ScrapeMaterialData.Load(scrapeMaterial);
         // Set the objects.
-        AudioObjectData primary = new AudioObjectData(0, primaryMaterial, 0.2, 0.2, 1);
-        AudioObjectData secondary = new AudioObjectData(1, secondaryMaterial, 0.5, 0.1, 100, scrapeMaterial);
+        ClatterObjectData primary = new ClatterObjectData(0, primaryMaterial, 0.2, 0.2, 1);
+        ClatterObjectData secondary = new ClatterObjectData(1, secondaryMaterial, 0.5, 0.1, 100, scrapeMaterial);
         // Initialize the scrape.
         Scrape scrape = new Scrape(scrapeMaterial, primary, secondary, new Random());
         // Start writing audio.
