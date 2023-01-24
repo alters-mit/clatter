@@ -14,7 +14,7 @@
         /// </summary>
         public double[] samples;
         /// <summary>
-        /// The length of the samples.
+        /// The true length of the samples data; this is usually less than samples.Length.
         /// </summary>
         public int length;
 

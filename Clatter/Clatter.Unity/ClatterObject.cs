@@ -127,32 +127,32 @@ namespace Clatter.Unity
         [HideInInspector]
         public ScrapeMaterial scrapeMaterial;
         /// <summary>
-        /// The audio amplitude.
+        /// The audio amplitude (0-1).
         /// </summary>
         [HideInInspector]
         public double amp = 0.1;
         /// <summary>
-        /// The resonance value.
+        /// The resonance value (0-1).
         /// </summary>
         [HideInInspector]
         public double resonance = 0.1;
         /// <summary>
-        /// If true, the friction values are automatically set based on the impact material.
+        /// The mode for how the object's physic material is set.
         /// </summary>
         [HideInInspector]
-        public bool autoSetFriction = true;
+        public PhysicMaterialMode physicMaterialMode = PhysicMaterialMode.auto;
         /// <summary>
-        /// The physic material dynamic friction value (0-1). To derive friction values from `Clatter.Core.ImpactMaterialUnsized` values, see: ClatterObject.DynamicFriction.
+        /// If physicMaterialMode == PhysicMaterialMode.manual, this is the physic material dynamic friction value (0-1). To derive friction values from `Clatter.Core.ImpactMaterialUnsized` values, see: ClatterObject.DynamicFriction.
         /// </summary>
         [HideInInspector]
         public float dynamicFriction = 0.1f;
         /// <summary>
-        /// The physic material static friction value (0-1). To derive friction values from `Clatter.Core.ImpactMaterialUnsized` values, see: ClatterObject.StaticFriction.
+        /// If physicMaterialMode == PhysicMaterialMode.manual, this is the physic material static friction value (0-1). To derive friction values from `Clatter.Core.ImpactMaterialUnsized` values, see: ClatterObject.StaticFriction.
         /// </summary>
         [HideInInspector]
         public float staticFriction = 0.1f;
         /// <summary>
-        /// The physic material bounciness value (0-1). This always needs to be set on a per-object basis, as opposed to being derived from a `Clatter.Core.ImpactMaterialUnsized` value.
+        /// If physicMaterialMode == PhysicMaterialMode.manual or physicMaterialMode == PhysicMaterialMode.auto, this is the physic material bounciness value (0-1). This always needs to be set on a per-object basis, as opposed to being derived from a `Clatter.Core.ImpactMaterialUnsized` value.
         /// </summary>
         [HideInInspector]
         public float bounciness = 0.2f;
@@ -294,23 +294,27 @@ namespace Clatter.Unity
             else
             {
                 mass = fakeMass;
-            }
+            } 
             // Set the physic material.
-            if (autoSetFriction)
+            if (physicMaterialMode != PhysicMaterialMode.none)
             {
-                dynamicFriction = DynamicFriction[impactMaterial];
-                staticFriction = StaticFriction[impactMaterial];
-            }
-            physicMaterial = new PhysicMaterial()
-            {
-                dynamicFriction = dynamicFriction,
-                staticFriction = staticFriction,
-                bounciness = bounciness
-            };
-            Collider[] colliders = gameObject.GetComponentsInChildren<Collider>();
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                colliders[i].sharedMaterial = physicMaterial;
+                // Derive the dynamic and static friction.
+                if (physicMaterialMode == PhysicMaterialMode.auto)
+                {
+                    dynamicFriction = DynamicFriction[impactMaterial];
+                    staticFriction = StaticFriction[impactMaterial];
+                }
+                physicMaterial = new PhysicMaterial()
+                {
+                    dynamicFriction = dynamicFriction,
+                    staticFriction = staticFriction,
+                    bounciness = bounciness
+                };
+                Collider[] colliders = gameObject.GetComponentsInChildren<Collider>();
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    colliders[i].sharedMaterial = physicMaterial;
+                }
             }
             // Get the size from the volume.
             if (autoSetSize)
@@ -621,7 +625,10 @@ namespace Clatter.Unity
 
         private void OnDestroy()
         {
-            Destroy(physicMaterial);
+            if (physicMaterialMode != PhysicMaterialMode.none)
+            {
+                Destroy(physicMaterial);
+            }
             onDestroy?.Invoke(data.id);
         }
     }

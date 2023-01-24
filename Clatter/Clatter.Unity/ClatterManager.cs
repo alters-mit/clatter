@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Clatter.Core;
@@ -64,6 +65,10 @@ namespace Clatter.Unity
         /// The audio generator.
         /// </summary>
         public AudioGenerator generator;
+        /// <summary>
+        /// Invoked when this is destroyed.
+        /// </summary>
+        public Action onDestroy;
         /// <summary>
         /// The objects as an array.
         /// </summary>
@@ -318,6 +323,7 @@ namespace Clatter.Unity
                     Destroy(objects[id].gameObject);
                 }
             }
+            onDestroy?.Invoke();
         }
     }
 }

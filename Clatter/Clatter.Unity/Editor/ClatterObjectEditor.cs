@@ -37,13 +37,16 @@ namespace Clatter.Unity.Editor
             s.resonance = EditorGUILayout.Slider("Resonance", (float)s.resonance, 0f, 1f);
             // Show the physics values.
             EditorGUILayout.LabelField("Physics Values", EditorStyles.boldLabel);
-            s.autoSetFriction = EditorGUILayout.Toggle("Auto-Set Friction", s.autoSetFriction);
-            if (!s.autoSetFriction)
+            s.physicMaterialMode = (PhysicMaterialMode)EditorGUILayout.EnumPopup("Physic Material Mode", s.physicMaterialMode);
+            if (s.physicMaterialMode == PhysicMaterialMode.manual)
             {
                 s.dynamicFriction = EditorGUILayout.Slider("Dynamic Friction", s.dynamicFriction, 0, 1);
                 s.staticFriction = EditorGUILayout.Slider("Static Friction", s.staticFriction, 0, 1);
             }
-            s.bounciness = EditorGUILayout.Slider("Bounciness", s.bounciness, 0, 1);
+            if (s.physicMaterialMode != PhysicMaterialMode.none)
+            {
+                s.bounciness = EditorGUILayout.Slider("Bounciness", s.bounciness, 0, 1); 
+            }
             s.massMode = (MassMode)EditorGUILayout.EnumPopup("Mass Mode", s.massMode);
             if (s.massMode == MassMode.fake_mass)
             {

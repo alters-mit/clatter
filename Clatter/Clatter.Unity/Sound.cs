@@ -15,9 +15,13 @@ namespace Clatter.Unity
     public abstract class Sound : MonoBehaviour
     {
         /// <summary>
-        /// Timeout and destroy this sound if it hasn't received new samples data after this many seconds.
+        /// Timeout and destroy a Sound if it hasn't received new samples data after this many seconds.
         /// </summary>
         public static double timeout = 0.1;
+        /// <summary>
+        /// Invoked when the Sound is created.
+        /// </summary>
+        public static Action<Sound, AudioSource> onCreate;
         /// <summary>
         /// Invoked when the audio ends.
         /// </summary>
@@ -75,6 +79,8 @@ namespace Clatter.Unity
             sound.source.spatialize = true;
             // Set the audio clip.
             sound.Play(sound.samples.ToFloats());
+            // Announce creation.
+            onCreate?.Invoke(sound, sound.source);
             return sound;
         }
 

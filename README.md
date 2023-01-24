@@ -19,10 +19,10 @@ Pre-alpha to-dos:
 
 - [ ] Add documentation.
 - [x] Add releases and build tools.
-- [ ] Add Python bindings for `Clatter.Core.dll`.
 - [x] Add command-line tools for OS X and Linux.
 - [ ] Add Clatter to TDW.
 - [ ] Add links to Clatter/TDW documentation
+- [ ] Videos
 - [x] Add a license.
 - [x] Add attribution.
 

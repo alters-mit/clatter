@@ -444,7 +444,7 @@ class Klass:
 
         table = "<table>\n\t<tr>\n\t\t<th><strong>Name</strong></th><th>\n\t\t<strong>Type</strong></th>\n\t\t<th><strong>Description</strong></th>\n\t\t<th><strong>Default Value</strong></th>\n\t</tr>\n"
         for field in fields:
-            if field.readonly and not field.const:
+            if field.readonly and not field.const and "Readonly." not in field.description:
                 field.description += " Readonly."
             # Add a mention re: inheritance.
             if field.inherited_from != "":
