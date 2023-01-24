@@ -92,7 +92,7 @@ namespace Clatter.Unity
         /// <summary>
         /// The next object ID.
         /// </summary>
-        private uint nextID;
+        private uint nextID = 1;
 
 
         /// <summary>
@@ -107,6 +107,12 @@ namespace Clatter.Unity
                 audioConfiguration.sampleRate = Globals.framerateInt;
                 audioConfiguration.dspBufferSize = DSP_BUFFER_SIZE;
                 AudioSettings.Reset(audioConfiguration);
+            }
+            // Load the default materials.
+            ImpactMaterialData.Load(ClatterObject.defaultObjectData.impactMaterial);
+            if (ClatterObject.defaultObjectData.hasScrapeMaterial)
+            {
+                ScrapeMaterialData.Load(ClatterObject.defaultObjectData.scrapeMaterial);
             }
             // Set the singleton instance.
             instance = this;

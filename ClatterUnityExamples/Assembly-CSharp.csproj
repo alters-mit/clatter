@@ -53,6 +53,7 @@
     <UnityVersion>2020.3.24f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Assets\DefaultObjectData\DefaultObjectData.cs" />
     <Compile Include="Assets\ScrapeManual\ScrapeGenerator.cs" />
     <Compile Include="Assets\Marbles\Marbles.cs" />
     <Compile Include="Assets\Scrape\ForceApplier.cs" />

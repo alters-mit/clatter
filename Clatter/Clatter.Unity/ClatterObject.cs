@@ -62,6 +62,10 @@ namespace Clatter.Unity
         /// </summary>
         public static int maxNumContacts = 16;
         /// <summary>
+        /// The default audio data. This is used whenever an `ClatterObject` collides with a non-`ClatterObject` object.
+        /// </summary>
+        public static ClatterObjectData defaultObjectData = new ClatterObjectData(0, ImpactMaterial.wood_medium_4, 0.5f, 0.1f, 100, ScrapeMaterial.plywood);
+        /// <summary>
         /// Unity physic material dynamic friction values. Key: An `ImpactMaterialUnsized` value. Value: A dynamic friction float value.
         /// </summary>
         public static readonly Dictionary<ImpactMaterialUnsized, float> DynamicFriction = new Dictionary<ImpactMaterialUnsized, float>()
@@ -225,10 +229,6 @@ namespace Clatter.Unity
         /// A set of IDs of collision events from this frame. This is used to filter duplicates.
         /// </summary>
         private HashSet<ulong> collisionIds = new HashSet<ulong>();
-        /// <summary>
-        /// The default audio data. This is used whenever an `ClatterObject` collides with a non-`ClatterObject` object.
-        /// </summary>
-        public static ClatterObjectData defaultClatterObjectData = new ClatterObjectData(0, ImpactMaterial.wood_medium_4, 0.5f, 0.1f, 100, ScrapeMaterial.plywood);
 
 
         /// <summary>
@@ -274,7 +274,7 @@ namespace Clatter.Unity
                 }
                 else
                 {
-                    mass = defaultClatterObjectData.mass;
+                    mass = defaultObjectData.mass;
                 }  
             }
             else if (massMode == MassMode.volume)
@@ -370,35 +370,49 @@ namespace Clatter.Unity
         /// <param name="type">The collision type.</param>
         private void RegisterCollision(Collision collision, OnCollisionType type)
         {
-            // Try to get the other object.
-            ClatterObject other = collision.body.GetComponentInChildren<ClatterObject>();
-            // Get the greater angular velocity.
             double angularSpeed;
             ClatterObjectData otherData;
-            if (other != null)
+            ClatterObject other;
+            bool otherObjectExists;
+            // Try to get the other object and the angular speed.
+            if (collision.body != null)
             {
-                angularSpeed = data.angularSpeed > other.data.angularSpeed ?
-                    data.angularSpeed : other.data.angularSpeed;
-                otherData = other.data;
+                other = collision.body.GetComponentInChildren<ClatterObject>();
+                // The other object is a ClatterObject. Use the greater angular speed.
+                if (other != null)
+                {
+                    angularSpeed = data.angularSpeed > other.data.angularSpeed ? data.angularSpeed : other.data.angularSpeed;
+                    otherData = other.data;
+                    otherObjectExists = true;
+                }
+                // The other object isn't a ClatterObject. Use this object's angular speed. Use default values for the other object.
+                else
+                {
+                    angularSpeed = data.angularSpeed;
+                    otherData = defaultObjectData;
+                    otherObjectExists = false;
+                }
             }
+            // The other object doesn't have a Rigidbody or ArticulationBody. Use default values.
             else
             {
+                other = null;
                 angularSpeed = data.angularSpeed;
-                // The other object is the floor.
-                otherData = defaultClatterObjectData;
+                otherData = defaultObjectData;
+                otherObjectExists = false;
             }
             // Compare the IDs for filter out duplicate events.
-            if (filterDuplicates && data.id > otherData.id)
+            if (otherObjectExists && filterDuplicates && data.id > otherData.id)
             {
                 return;
             }
-            ClatterObjectData primary;
-            ClatterObjectData secondary;
-            ClatterObject primaryMono;
             // Set the primary and secondary IDs depending on:
             // 1. Whether this is a secondary object.
             // 2. Which object is has a greater speed.
-            if (data.speed > otherData.speed)
+            ClatterObjectData primary;
+            ClatterObjectData secondary;
+            ClatterObject primaryMono;
+            if (data.speed > otherData.speed || !otherObjectExists)
             {
                 primary = data;
                 secondary = otherData;

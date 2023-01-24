@@ -27,9 +27,8 @@ public class Marbles : MonoBehaviour
         f.impactMaterial = ImpactMaterialUnsized.metal;
         f.autoSetSize = false;
         f.size = 4;
-        f.amp = 0.5f;
-        f.resonance = 0.4f;
-        f.data = ClatterObject.defaultClatterObjectData;
+        f.amp = 0.5;
+        f.resonance = 0.4;
         // Add the floor's Rigidbody and set the mass.
         Rigidbody fr = floor.AddComponent<Rigidbody>();
         fr.isKinematic = true;
@@ -61,8 +60,8 @@ public class Marbles : MonoBehaviour
                 clatterObject.autoSetSize = false;
                 clatterObject.size = 0;
                 clatterObject.bounciness = 0.6f;
-                clatterObject.resonance = 0.05f;
-                clatterObject.amp = 0.2f;
+                clatterObject.resonance = 0.05;
+                clatterObject.amp = 0.2;
                 x += SPACING;
             }
             z += SPACING;

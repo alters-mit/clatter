@@ -17,3 +17,4 @@ For example implementation, see the ClatterUnityExample Unity project. **NOTE:**
 - Scrape is a minimal example of how to generate scrape audio.
 - Marbles is an example of how to instantiate Clatter purely from code.
 - ScrapeManual is an example of how to generate audio in Unity without a [`ClatterManager`](ClatterManager.html).
+- DefaultObjectData is an example of how to use the default Clatter object data (see: [`ClatterObject.defaultObjectData`](ClatterObject.html)).
