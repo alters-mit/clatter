@@ -77,6 +77,10 @@ namespace Clatter.Core
         /// </summary>
         private Thread[] audioThreads = new Thread[DEFAULT_MAX_NUM_EVENTS];
         /// <summary>
+        /// Booleans indicating whether audio was generated on this thread.
+        /// </summary>
+        private bool[] generatedAudio = new bool[DEFAULT_MAX_NUM_EVENTS];
+        /// <summary>
         /// Booleans indicating whether the threads are alive.
         /// </summary>
         private bool[] threadDeaths = new bool[DEFAULT_MAX_NUM_EVENTS];
@@ -210,7 +214,7 @@ namespace Clatter.Core
                         audioThreads[i].Join();
                         audioThreads[i] = null;
                         // Announce impact audio.
-                        if (collisionEvents[i].type == AudioEventType.impact && impacts[collisionEvents[i].ids].state != EventState.end)
+                        if (collisionEvents[i].type == AudioEventType.impact && generatedAudio[i])
                         {
                             // Play impact samples at the centroid using a new random audio source ID.
                             onImpact?.Invoke(collisionEvents[i], impacts[collisionEvents[i].ids].samples, collisionEvents[i].position, rng.Next());
@@ -271,6 +275,7 @@ namespace Clatter.Core
             // Reset the thread life states.
             Buffer.BlockCopy(falses, 0, threadDeaths, 0, falses.Length);
             Buffer.BlockCopy(falses, 0, eventDeaths, 0, falses.Length);
+            Buffer.BlockCopy(falses, 0, generatedAudio, 0, falses.Length);
         }
 
 
@@ -287,6 +292,7 @@ namespace Clatter.Core
                 Array.Resize(ref audioThreads, numEvents);
                 Array.Resize(ref threadDeaths, numEvents);
                 Array.Resize(ref eventDeaths, numEvents);
+                Array.Resize(ref generatedAudio, numEvents);
                 Array.Resize(ref falses, numEvents);
             }
             // Add the event.
@@ -316,9 +322,19 @@ namespace Clatter.Core
             // Try to generate audio.
             try
             {
-                if (!audioEvents[collisionEvents[collisionIndex].ids].GetAudio(collisionEvents[collisionIndex].speed))
+                if (audioEvents[collisionEvents[collisionIndex].ids].GetAudio(collisionEvents[collisionIndex].speed))
                 {
-                    audioEvents[collisionEvents[collisionIndex].ids].state = EventState.end;
+                    generatedAudio[collisionIndex] = true;
+
+                }
+                else
+                {
+                    generatedAudio[collisionIndex] = false;
+                    // End a scrape.
+                    if (collisionEvents[collisionIndex].type == AudioEventType.scrape)
+                    {
+                        audioEvents[collisionEvents[collisionIndex].ids].state = EventState.end; 
+                    }
                 }
             }
             // Mark this thread as done.

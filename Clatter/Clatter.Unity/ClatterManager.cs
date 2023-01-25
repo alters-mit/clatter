@@ -92,7 +92,7 @@ namespace Clatter.Unity
         /// <summary>
         /// The next object ID.
         /// </summary>
-        private uint nextID = 1;
+        private uint nextID;
 
 
         /// <summary>
