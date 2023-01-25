@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
@@ -39,9 +39,6 @@ copy /Y Clatter.Unity.dll  "../../../../ClatterUnityExamples/Assets/Plugins"</Po
     <ItemGroup>
         <Reference Include="System" />
         <Reference Include="System.Core" />
-        <Reference Include="UnityEditor">
-          <HintPath>..\..\..\..\..\Program Files\Unity\Hub\Editor\2020.3.24f1\Editor\Data\Managed\UnityEditor.dll</HintPath>
-        </Reference>
         <Reference Include="UnityEngine">
             <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.24f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
         </Reference>
@@ -49,8 +46,6 @@ copy /Y Clatter.Unity.dll  "../../../../ClatterUnityExamples/Assets/Plugins"</Po
     <ItemGroup>
         <Compile Include="ClatterObject.cs" />
         <Compile Include="ClatterManager.cs" />
-        <Compile Include="Editor\ClatterObjectEditor.cs" />
-        <Compile Include="Editor\ClatterManagerEditor.cs" />
         <Compile Include="ImpactSound.cs" />
         <Compile Include="PhysicMaterialMode.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

@@ -44,22 +44,18 @@ namespace Clatter.Unity
         /// <summary>
         /// If true, automatically update by calling Awake(), Update(), and FixedUpdate() (like an ordinary MonoBehaviour object). If this is false, you must manually update instead by calling instance.Awake(), instance.OnUpdate(), and instance.OnFixedUpdate().
         /// </summary>
-        [HideInInspector]
         public bool auto = true;
         /// <summary>
         /// If true, generate a new random seed.
         /// </summary>
-        [HideInInspector]
         public bool generateRandomSeed = true;
         /// <summary>
         /// The random seed. Ignored if generateRandomSeed == true.
         /// </summary>
-        [HideInInspector]
         public int seed;
         /// <summary>
         /// If true, adjust the global audio settings for better-quality audio.
         /// </summary>
-        [HideInInspector]
         public bool adjustAudioSettings = true;
         /// <summary>
         /// The audio generator.
@@ -92,7 +88,7 @@ namespace Clatter.Unity
         /// <summary>
         /// The next object ID.
         /// </summary>
-        private uint nextID;
+        private uint nextId;
 
 
         /// <summary>
@@ -123,8 +119,8 @@ namespace Clatter.Unity
             foreach (ClatterObject o in objectsArray)
             {
                 // Initialize the audio object data with a unique ID.
-                o.Initialize(nextID);
-                nextID++;
+                o.Initialize(nextId);
+                nextId++;
                 // Remember this object.
                 objects.Add(o.data.id, o);
                 o.onDestroy.AddListener(RemoveObject);
@@ -217,11 +213,11 @@ namespace Clatter.Unity
         /// <param name="collisionEvent">The collision event that generated the audio.</param>
         /// <param name="samples">The audio samples.</param>
         /// <param name="position">The position of the audio source.</param>
-        /// <param name="audioSourceID">The ID of the audio source.</param>
-        private void OnImpact(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceID)
+        /// <param name="audioSourceId">The ID of the audio source.</param>
+        private void OnImpact(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceId)
         {
             // Do the impact.
-            OnAudioStart<ImpactSound>(samples, position, audioSourceID);
+            OnAudioStart<ImpactSound>(samples, position, audioSourceId);
         }
 
 
@@ -231,13 +227,13 @@ namespace Clatter.Unity
         /// <param name="collisionEvent">The collision event that generated the audio.</param>
         /// <param name="samples">The audio samples.</param>
         /// <param name="position">The position of the audio source.</param>
-        /// <param name="audioSourceID">The ID of the audio source.</param>
-        private void OnScrapeStart(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceID)
+        /// <param name="audioSourceId">The ID of the audio source.</param>
+        private void OnScrapeStart(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceId)
         {
             // Start a scrape sound.
-            ScrapeSound sound = OnAudioStart<ScrapeSound>(samples, position, audioSourceID);
+            ScrapeSound sound = OnAudioStart<ScrapeSound>(samples, position, audioSourceId);
             // Remember the scrape sound.
-            scrapeSounds.Add(audioSourceID, sound);
+            scrapeSounds.Add(audioSourceId, sound);
         }
         
         

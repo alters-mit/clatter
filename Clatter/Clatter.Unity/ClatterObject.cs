@@ -108,78 +108,68 @@ namespace Clatter.Unity
         /// <summary>
         /// The unsized impact material. This will be converted into an `ImpactMaterial` by applying the size field (see below).
         /// </summary>
-        [HideInInspector]
+        [Header("Audio Materials")]
         public ImpactMaterialUnsized impactMaterial;
         /// <summary>
         /// If true, the "size bucket" is automatically set based on its volume.
         /// </summary>
-        [HideInInspector]
         public bool autoSetSize = true;
         /// <summary>
         /// The "size bucket", on a scale of 0-5. To generate realistic audio, smaller objects should have smaller size bucket values. Ignored if `autoSetSize == true`. For more information, including how to derive size bucket values, see: `Clatter.ImpactMaterial` and `Clatter.ImpactMaterialData`.
         /// </summary>
-        [HideInInspector]
         public int size;
         /// <summary>
         /// If true, this object has a scrape material.
         /// </summary>
-        [HideInInspector]
         public bool hasScrapeMaterial;
         /// <summary>
         /// The scrape material, if any. Ignored if `hasScrapeMaterial == false`.
         /// </summary>
-        [HideInInspector]
         public ScrapeMaterial scrapeMaterial;
         /// <summary>
         /// The audio amplitude (0-1).
         /// </summary>
-        [HideInInspector]
+        [Header("Audio Properties")]
         public double amp = 0.1;
         /// <summary>
         /// The resonance value (0-1).
         /// </summary>
-        [HideInInspector]
         public double resonance = 0.1;
         /// <summary>
         /// The mode for how the object's physic material is set.
         /// </summary>
-        [HideInInspector]
+        [Header("Physic Material")]
         public PhysicMaterialMode physicMaterialMode = PhysicMaterialMode.auto;
         /// <summary>
         /// If physicMaterialMode == PhysicMaterialMode.manual, this is the physic material dynamic friction value (0-1). To derive friction values from `Clatter.Core.ImpactMaterialUnsized` values, see: ClatterObject.DynamicFriction.
         /// </summary>
-        [HideInInspector]
         public float dynamicFriction = 0.1f;
         /// <summary>
         /// If physicMaterialMode == PhysicMaterialMode.manual, this is the physic material static friction value (0-1). To derive friction values from `Clatter.Core.ImpactMaterialUnsized` values, see: ClatterObject.StaticFriction.
         /// </summary>
-        [HideInInspector]
         public float staticFriction = 0.1f;
         /// <summary>
         /// If physicMaterialMode == PhysicMaterialMode.manual or physicMaterialMode == PhysicMaterialMode.auto, this is the physic material bounciness value (0-1). This always needs to be set on a per-object basis, as opposed to being derived from a `Clatter.Core.ImpactMaterialUnsized` value.
         /// </summary>
-        [HideInInspector]
         public float bounciness = 0.2f;
         /// <summary>
         /// The mode for how the mass is set.
         /// </summary>
-        [HideInInspector]
+        [Header("Mass")]
         public MassMode massMode = MassMode.body;
         /// <summary>
         /// If massMode == MassMode.fake_mass, the underlying `Clatter.Core.ClatterObjectData` will use this value when generating audio rather than the true mass of the Rigibody/ArticulationBody.
         /// </summary>
-        [HideInInspector]
         public double fakeMass;
         /// <summary>
         /// If massMode == MassMode.volume, hollowness is the portion of the object that is hollow (0-1) as follows: mass = volume * density * (1 - hollowness) where volume is the sum of the bounding box sizes of each Renderer object and density is derived from the impact material (see: `Clatter.Core.ImpactMaterialData`).
         /// </summary>
-        [HideInInspector]
         public float hollowness;
         /// <summary>
         /// Invoked when this object is destroyed. Parameters: The ID of this object, i.e. `this.data.id`.
         /// </summary>
         // ReSharper disable once Unity.RedundantHideInInspectorAttribute
-        [HideInInspector]
+        [Header("Events")]
         public UnityEvent<uint> onDestroy = new UnityEvent<uint>();
         /// <summary>
         /// This object's data.
