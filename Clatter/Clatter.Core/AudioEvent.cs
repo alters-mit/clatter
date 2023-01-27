@@ -92,11 +92,7 @@ namespace Clatter.Core
             if (collisionCount == 0)
             {
                 // Set initial modes data.
-                double log10RelativeAmp = 20 * Math.Log10(secondary.amp / primary.amp);
-                for (int i = 0; i < modesB.decayTimes.Length; i++)
-                {
-                    modesB.decayTimes[i] += log10RelativeAmp;
-                }
+                modesB.AddAmpToDecayTimes(20 * Math.Log10(secondary.amp / primary.amp));
                 // Set the amp.
                 initialAmp = primary.amp * simulationAmp;
                 amp = initialAmp;

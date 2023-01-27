@@ -13,19 +13,7 @@ namespace Clatter.Core
         /// </summary>
         private const int MODES_DATA_LENGTH = 10;
 
-
-        /// <summary>
-        /// Mode frequencies in Hz.
-        /// </summary>
-        public readonly double[] frequencies = new double[MODES_DATA_LENGTH];
-        /// <summary>
-        /// Mode onset powers in dB.
-        /// </summary>
-        public readonly double[] powers = new double[MODES_DATA_LENGTH];
-        /// <summary>
-        /// Mode decay times i.e. the time in ms it takes for each mode to decay 60dB from its onset power.
-        /// </summary>
-        public readonly double[] decayTimes = new double[MODES_DATA_LENGTH];
+        
         /// <summary>
         /// The cached synth sound array.
         /// </summary>
@@ -44,6 +32,18 @@ namespace Clatter.Core
         /// </summary>
         [ThreadStatic]
         private static bool setMode;
+        /// <summary>
+        /// Mode frequencies in Hz.
+        /// </summary>
+        private readonly double[] frequencies = new double[MODES_DATA_LENGTH];
+        /// <summary>
+        /// Mode onset powers in dB.
+        /// </summary>
+        private readonly double[] powers = new double[MODES_DATA_LENGTH];
+        /// <summary>
+        /// Mode decay times i.e. the time in ms it takes for each mode to decay 60dB from its onset power.
+        /// </summary>
+        private readonly double[] decayTimes = new double[MODES_DATA_LENGTH];
 
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Clatter.Core
         /// <param name="rng">The random number generator.</param>
         public Modes(ImpactMaterialData material, Random rng)
         {
-            for (int jm = 0; jm < 10; jm++)
+            for (int jm = 0; jm < MODES_DATA_LENGTH; jm++)
             {
                 double jf = 0;
                 while (jf < 20)
@@ -75,7 +75,6 @@ namespace Clatter.Core
 
         /// <summary>
         /// Create a mode time-series from mode properties and sum them together.
-        /// Returns a synthesized sound.
         /// </summary>
         /// <param name="resonance">The object's audio resonance value.</param>
         public void Sum(double resonance)
@@ -85,7 +84,7 @@ namespace Clatter.Core
                 setMode = true;
                 mode = new double[Globals.DEFAULT_SAMPLES_LENGTH];
             }
-            for (int i = 0; i < frequencies.Length; i++)
+            for (int i = 0; i < MODES_DATA_LENGTH; i++)
             {
                 int modeCount = (int)Math.Ceiling((decayTimes[i] * (80.0 + powers[i]) / 60.0) / 1e3 * Globals.framerate);
                 // Clamp the count to positive values.
@@ -135,9 +134,22 @@ namespace Clatter.Core
         /// <param name="rng">The random number generator.</param>
         public void AdjustPowers(Random rng)
         {
-            for (int i = 0; i < powers.Length; i++)
+            for (int i = 0; i < MODES_DATA_LENGTH; i++)
             {
                 powers[i] += NormalDistribution.Random(0, 2, rng);
+            }
+        }
+
+
+        /// <summary>
+        /// Add an amp value to the decay times array.
+        /// </summary>
+        /// <param name="amp">The amp value.</param>
+        public void AddAmpToDecayTimes(double amp)
+        {
+            for (int i = 0; i < MODES_DATA_LENGTH; i++)
+            {
+                decayTimes[i] += amp;
             }
         }
 
