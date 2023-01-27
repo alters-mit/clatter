@@ -30,7 +30,8 @@ public class DefaultObjectData : MonoBehaviour
         clatterObject.resonance = 0.05;
         clatterObject.amp = 0.2;
         // Add the ClatterManager.
-        GameObject clatterManager = new GameObject("ClatterManager");
-        clatterManager.AddComponent<ClatterManager>();
+        ClatterManager clatterManager = new GameObject("ClatterManager").AddComponent<ClatterManager>();
+        clatterManager.auto = true;
+        clatterManager.OnAwake();
     }
 }

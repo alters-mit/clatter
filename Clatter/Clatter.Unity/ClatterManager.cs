@@ -139,6 +139,10 @@ namespace Clatter.Unity
             generator.onScrapeStart += OnScrapeStart;
             generator.onScrapeOngoing += OnScrapeOngoing;
             generator.onScrapeEnd += OnScrapeEnd;
+            // Remove additional state information.
+            endedSounds.Clear();
+            sounds.Clear();
+            scrapeSounds.Clear();
         }
 
 
@@ -204,6 +208,7 @@ namespace Clatter.Unity
         private void RemoveObject(uint id)
         {
             objects.Remove(id);
+            objectsArray = objectsArray.Where(o => o.data.id != id).ToArray();
         }
 
 

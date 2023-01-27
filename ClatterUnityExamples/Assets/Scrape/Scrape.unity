@@ -302,7 +302,7 @@ MonoBehaviour:
   scrapeMaterial: 1
   amp: 0.10000000149011612
   resonance: 0.10000000149011612
-  autoSetFriction: 0
+  physicMaterialMode: 4
   dynamicFriction: 0
   staticFriction: 0
   bounciness: 0.17
@@ -353,7 +353,7 @@ MonoBehaviour:
   scrapeMaterial: 0
   amp: 0.10000000149011612
   resonance: 0.10000000149011612
-  autoSetFriction: 0
+  physicMaterialMode: 4
   dynamicFriction: 0
   staticFriction: 0
   bounciness: 0.2
