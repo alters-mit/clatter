@@ -115,7 +115,9 @@ namespace Clatter.Unity
             // Find all of the audio-producing objects.
             objectsArray = FindObjectsOfType<ClatterObject>();
             IEnumerable<ClatterObjectData> objectData = objectsArray.Select(o => o.data);
+            objects.Clear();
             // Add all of the objects.
+            nextId = 0;
             foreach (ClatterObject o in objectsArray)
             {
                 // Initialize the audio object data with a unique ID.
@@ -253,7 +255,16 @@ namespace Clatter.Unity
         /// <param name="audioSourceId">The ID of the audio source.</param>
         private void OnScrapeOngoing(CollisionEvent collisionEvent, Samples samples, Vector3d position, int audioSourceId)
         {
-            scrapeSounds[audioSourceId].UpdateAudio(samples, position);
+            // Continue.
+            if (scrapeSounds.ContainsKey(audioSourceId))
+            {
+                scrapeSounds[audioSourceId].UpdateAudio(samples, position);          
+            }
+            // Restart.
+            else
+            {
+                OnScrapeStart(collisionEvent, samples, position, audioSourceId);
+            }
         }
 
 

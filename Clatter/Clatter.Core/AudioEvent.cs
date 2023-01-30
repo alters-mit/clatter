@@ -11,7 +11,7 @@ namespace Clatter.Core
         /// <summary>
         /// The overall amplitude of the simulation. The amplitude of generated audio is scaled by this factor. Must be between 0 and 0.99
         /// </summary>
-        public static double simulationAmp = 0.5;
+        public static double simulationAmp = 0.9;
         /// <summary>
         /// The audio samples generated from this event.
         /// </summary>

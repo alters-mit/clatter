@@ -138,7 +138,7 @@ namespace Clatter.Core
             // Apply roughness.
             for (int i = 0; i < SAMPLES_LENGTH; i++)
             {
-                samples.samples[i] *= scrapeMaterialData.roughnessRatio;
+                samples.samples[i] *= scrapeMaterialData.roughnessRatio * AudioEvent.simulationAmp;
             }
             samples.length = SAMPLES_LENGTH;
             scrapeIndex = finalIndex;

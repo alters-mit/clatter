@@ -61,6 +61,7 @@ public class ScrapeGenerator : MonoBehaviour
 
     private void Awake()
     {
+        AudioEvent.simulationAmp = 0.5;
         // Instantiate the objects and the audio generator.
         primary = new ClatterObjectData(0, ImpactMaterial.glass_1, 0.2, 0.1, 0.5);
         secondary = new ClatterObjectData(1, impactMaterialSurface, 0.2, 0.2, 100, scrapeMaterial);
@@ -78,7 +79,7 @@ public class ScrapeGenerator : MonoBehaviour
     private void Update()
     {
         // Generate audio.
-        if (scrapeCount < totalNumScrapes)
+        if (scrapeCount < totalNumScrapes && speed > 0)
         {
             // Add a collision to the AudioGenerator and update.
             generator.AddCollision(new CollisionEvent(primary, secondary, AudioEventType.scrape, speed, position));

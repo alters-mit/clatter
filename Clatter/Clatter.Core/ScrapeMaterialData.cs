@@ -12,7 +12,7 @@ namespace Clatter.Core
         /// <summary>
         /// Meters per pixel on the scrape surface.
         /// </summary>
-        public const double SCRAPE_M_PER_PIXEL = 1394.068 * 10e-10;
+        public const double SCRAPE_M_PER_PIXEL = 1394.068 * 10e-9;
 
         
         /// <summary>

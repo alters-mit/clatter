@@ -43,11 +43,7 @@ namespace Clatter.Core
         /// </summary>
         private const int DEFAULT_MAX_NUM_EVENTS = 200;
 
-
-        /// <summary>
-        /// The minimum collision speed in meters per second. If a `CollisionEvent` has a speed less than this, it is ignored.
-        /// </summary>
-        public static double minSpeed = 0.00001;
+        
         /// <summary>
         /// Invoked when impact audio is generated.
         /// </summary>
@@ -148,7 +144,7 @@ namespace Clatter.Core
             for (int i = 0; i < numEvents; i++)
             {
                 // Ignore collisions that are too slow.
-                if (collisionEvents[i].speed < minSpeed || collisionEvents[i].type == AudioEventType.none)
+                if (collisionEvents[i].type == AudioEventType.none)
                 {
                     eventDeaths[i] = true;
                     continue;
@@ -325,7 +321,6 @@ namespace Clatter.Core
                 if (audioEvents[collisionEvents[collisionIndex].ids].GetAudio(collisionEvents[collisionIndex].speed))
                 {
                     generatedAudio[collisionIndex] = true;
-
                 }
                 else
                 {
