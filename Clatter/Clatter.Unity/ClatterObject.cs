@@ -180,11 +180,6 @@ namespace Clatter.Unity
         [Header("Events")]
         public UnityEvent<uint> onDestroy = new UnityEvent<uint>();
         /// <summary>
-        /// If true, this will send log a message to the Unity console describing how this object interprets each collision event.
-        /// </summary>
-        [Header("Debug")]
-        public bool debugCollisions;
-        /// <summary>
         /// This object's data.
         /// </summary>
         public ClatterObjectData data;
@@ -407,10 +402,6 @@ namespace Clatter.Unity
             // Compare the IDs for filter out duplicate events.
             if (otherObjectExists && filterDuplicates && data.id > otherData.id)
             {
-                if (debugCollisions)
-                {
-                    Debug.Log("Ignored collision " + type + " between " + data.id + " and " + otherData.id + " because of the order of the ID pair.");
-                }
                 return;
             }
             // Set the primary and secondary IDs depending on:
@@ -436,10 +427,6 @@ namespace Clatter.Unity
             // This object IDs pair already exists.
             if (filterDuplicates && !collisionIds.Add(ids))
             {
-                if (debugCollisions)
-                {
-                    Debug.Log("Ignored collision " + type + " between " + data.id + " and " + otherData.id + " because this IDs pair has already been registered.");
-                }
                 return;
             }
             // Get the number of contacts.
@@ -447,10 +434,6 @@ namespace Clatter.Unity
             if (numContacts == 0)
             {
                 NoneCollisionEvent(primary, secondary);
-                if (debugCollisions)
-                {
-                    Debug.Log("None audio event from collision " + type + " between " + data.id + " and " + otherData.id + " because there ware no collision contacts.");
-                }
                 return;
             }
             // Resize the array so we can copy the contacts directly into it.
@@ -503,19 +486,11 @@ namespace Clatter.Unity
             if (type == OnCollisionType.exit)
             {
                 audioEventType = AudioEventType.none;
-                if (debugCollisions)
-                {
-                    Debug.Log("None audio event from collision " + type + " between " + data.id + " and " + otherData.id);
-                }
             }
             // Enters are always impacts.
             else if (type == OnCollisionType.enter)
             {
                 audioEventType = AudioEventType.impact;
-                if (debugCollisions)
-                {
-                    Debug.Log("Impact audio event from collision " + type + " between " + data.id + " and " + otherData.id);
-                }
             }
             // Stays can be anything.
             else
@@ -529,29 +504,17 @@ namespace Clatter.Unity
                         // The angle between the collision and the up angle is high enough that this is a scrape.
                         if (Vector3.Angle(collision.relativeVelocity, Vector3.up) >= scrapeAngle)
                         {
-                            if (debugCollisions)
-                            {
-                                Debug.Log("Scrape audio event from collision " + type + " between " + data.id + " and " + otherData.id + " because there is no previous contact area, the contact area is > areaNewCollision, and the scrape angle is >= ClatterObject.scrapeAngle");
-                            }
                             audioEventType = AudioEventType.scrape;
                         }
                         // The angle is shallow enough that this is an impact.
                         else
                         {
-                            if (debugCollisions)
-                            {
-                                Debug.Log("Impact audio event from collision " + type + " between " + data.id + " and " + otherData.id + " because there is no previous contact area, the contact area is > areaNewCollision, and the scrape angle is < ClatterObject.scrapeAngle");
-                            }
                             audioEventType = AudioEventType.impact;
                         }
                     }
                     // This is a non-event.
                     else
                     {
-                        if (debugCollisions)
-                        {
-                            Debug.Log("None audio event from collision " + type + " between " + data.id + " and " + otherData.id + " because there is no previous contact area and contact area <= areaNewCollision");
-                        }
                         audioEventType = AudioEventType.none;
                     }
                 }
@@ -564,19 +527,11 @@ namespace Clatter.Unity
                         // If the angular speed is fast, this is a roll.
                         if (angularSpeed > rollAngularSpeed)
                         {
-                            if (debugCollisions)
-                            {
-                                Debug.Log("Roll audio event from collision " + type + " between " + data.id + " and " + otherData.id + " because previous contact area > 0 and area / previous area < ClatterObject.impactAreaRatio and angular speed > ClatterObject.rollAngularSpeed");
-                            }
                             audioEventType = AudioEventType.roll;
                         }
                         // If the angular speed is slow, this is a scrape.
                         else
                         {
-                            if (debugCollisions)
-                            {
-                                Debug.Log("Scrape audio event from collision " + type + " between " + data.id + " and " + otherData.id + " because previous contact area > 0 and area / previous area < ClatterObject.impactAreaRatio and angular speed <= ClatterObject.rollAngularSpeed");
-                            }
                             audioEventType = AudioEventType.scrape;
                         }          
                     }
@@ -596,19 +551,11 @@ namespace Clatter.Unity
                         // The contact separation is low. This is an impact.
                         if (isImpact)
                         {
-                            if (debugCollisions)
-                            {
-                                Debug.Log("Impact audio event from collision " + type + " between " + data.id + " and " + otherData.id + " because previous contact area > 0 and area / previous area >= ClatterObject.impactAreaRatio and contact separation > ClatterObject.maxContactSeparation");
-                            }
                             audioEventType = AudioEventType.impact;                 
                         }
                         // The contact separation is high. This is an none-event.
                         else
                         {
-                            if (debugCollisions)
-                            {
-                                Debug.Log("None audio event from collision " + type + " between " + data.id + " and " + otherData.id + " because previous contact area > 0 and area / previous area >= ClatterObject.impactAreaRatio and contact separation <= ClatterObject.maxContactSeparation");
-                            }
                             audioEventType = AudioEventType.none;    
                         }
                     }
@@ -616,10 +563,6 @@ namespace Clatter.Unity
                 // This is a non-event.
                 else
                 {
-                    if (debugCollisions)
-                    {
-                        Debug.LogWarning("None audio event from collision " + type + " between " + data.id + " and " + otherData.id + " because previous area < 0 (this should never happen)");
-                    }
                     audioEventType = AudioEventType.none;
                 }
             }
@@ -649,10 +592,6 @@ namespace Clatter.Unity
             // Ignore low-speed events.
             if (speed < minSpeed)
             {
-                if (debugCollisions)
-                {
-                    Debug.Log("None audio event from collision " + type + " between " + data.id + " and " + otherData.id + " because the averaged contact normal speed is < ClatterObject.minSpeed");
-                }
                 NoneCollisionEvent(primary, secondary);
                 return;
             }
@@ -661,10 +600,6 @@ namespace Clatter.Unity
             {
                 speed = angularSpeed;
                 audioEventType = rollSubstitute;
-                if (debugCollisions)
-                {
-                    Debug.Log("Reinterpreted the roll audio event from collision " + type + " between " + data.id + " and " + otherData.id + " as a " + audioEventType);
-                }
             }
             // Add the collision.
             ClatterManager.instance.generator.AddCollision(new CollisionEvent(ids, primary, secondary, audioEventType, speed, centroid));
