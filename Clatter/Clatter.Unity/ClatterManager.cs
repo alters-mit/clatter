@@ -125,6 +125,8 @@ namespace Clatter.Unity
                 objects.Add(o.data.id, o);
                 o.onDestroy.AddListener(RemoveObject);
             }
+            // End ongoing audio.
+            EndAllAudio();
             // Set the random number generator.
             if (generateRandomSeed)
             {
@@ -286,6 +288,25 @@ namespace Clatter.Unity
         }
 
 
+        /// <summary>
+        /// End any ongoing audio.
+        /// </summary>
+        private void EndAllAudio()
+        {
+            // Stop the generator.
+            if (generator != null)
+            {
+                generator.End();       
+            }
+            // Destroy all remaining audio sources.
+            foreach (int id in sounds.Keys)
+            {
+                sounds[id].End();
+                Destroy(sounds[id].gameObject);
+            }
+        }
+
+
         private void Awake()
         {
             if (auto)
@@ -315,13 +336,7 @@ namespace Clatter.Unity
 
         private void OnDestroy()
         {
-            // Stop the generator.
-            generator.End();
-            // Destroy all remaining audio sources.
-            foreach (int id in sounds.Keys)
-            {
-                sounds[id].End();
-            }
+            EndAllAudio();
             // Destroy all remaining audio-producing objects.
             foreach (uint id in objects.Keys)
             {

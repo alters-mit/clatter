@@ -442,9 +442,8 @@ namespace Clatter.Unity
                 contactPoints[i] = contacts[i].point;
                 contactNormals[i] = contacts[i].normal;
             }
-            // Get the normalized relative velocity of the collision.
-            Vector3 normalizedVelocity = collision.relativeVelocity.normalized;
-            double speed = normalizedVelocity.magnitude;
+            // Get the relative speed of the collision.
+            double speed = collision.relativeVelocity.magnitude;
             // Ignore low-speed events.
             if (speed < AudioGenerator.minSpeed)
             {
@@ -578,6 +577,7 @@ namespace Clatter.Unity
             // For scrapes, use the averaged speed.
             if (audioEventType == AudioEventType.scrape)
             {
+                Vector3 normalizedVelocity = collision.relativeVelocity.normalized;
                 // Get the normal speeds.
                 double normalSpeeds = 0;
                 for (int i = 0; i < numContacts; i++)

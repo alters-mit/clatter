@@ -220,7 +220,7 @@ namespace Clatter.Core
                             onImpact?.Invoke(collisionEvents[i], impacts[collisionEvents[i].ids].samples, collisionEvents[i].position, rng.Next());
                         }
                         // Announce scrape audio.
-                        else if (collisionEvents[i].type == AudioEventType.scrape)
+                        else if (collisionEvents[i].type == AudioEventType.scrape && scrapes.ContainsKey(collisionEvents[i].ids))
                         {
                             // Start a new scrape.
                             if (scrapes[collisionEvents[i].ids].state == EventState.start)
