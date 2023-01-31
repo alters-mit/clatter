@@ -312,8 +312,11 @@ namespace Clatter.Unity
             // Destroy all remaining audio sources.
             foreach (int id in sounds.Keys)
             {
-                sounds[id].End();
-                Destroy(sounds[id].gameObject);
+                if (sounds[id] != null)
+                {
+                    sounds[id].End();
+                    Destroy(sounds[id].gameObject);             
+                }
             }
         }
 
