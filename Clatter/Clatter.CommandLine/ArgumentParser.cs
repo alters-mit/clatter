@@ -15,8 +15,7 @@
         {
             for (int i = 0; i < args.Length; i++)
             {
-                // This is the flag.
-                if (args[i].StartsWith("--") && args[i].Substring(2) == flag)
+                if (ArgIsFlag(args[i], flag))
                 {
                     return args[i + 1];
                 }
@@ -35,8 +34,7 @@
         {
             for (int i = 0; i < args.Length; i++)
             {
-                // This is the flag.
-                if (args[i].StartsWith("--") && args[i].Substring(2) == flag)
+                if (ArgIsFlag(args[i], flag))
                 {
                     double d;
                     if (double.TryParse(args[i + 1], out d))
@@ -54,6 +52,26 @@
         
         
         /// <summary>
+        /// Try to get a string value from an optional flag. Returns true if the flag is present.
+        /// </summary>
+        /// <param name="args">The command-line arguments.</param>
+        /// <param name="flag">The flag preceding the value without the `"--"` prefix.</param>
+        /// <param name="value">The value.</param>
+        public static bool TryGetStringValue(string[] args, string flag, ref string value)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (ArgIsFlag(args[i], flag))
+                {
+                    value = args[i + 1];
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        
+        /// <summary>
         /// Try to get a double value from an optional flag. If the flag isn't present, the value isn't set.
         /// </summary>
         /// <param name="args">The command-line arguments.</param>
@@ -63,8 +81,7 @@
         {
             for (int i = 0; i < args.Length; i++)
             {
-                // This is the flag.
-                if (args[i].StartsWith("--") && args[i].Substring(2) == flag)
+                if (ArgIsFlag(args[i], flag))
                 {
                     double d;
                     if (double.TryParse(args[i + 1], out d))
@@ -87,13 +104,23 @@
         {
             for (int i = 0; i < args.Length; i++)
             {
-                // This is the flag.
-                if (args[i].StartsWith("--") && args[i].Substring(2) == flag)
+                if (ArgIsFlag(args[i], flag))
                 {
                     value = !value;
                     return;
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Returns true if this argument is the flag.
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <param name="flag">The flag.</param>
+        private static bool ArgIsFlag(string arg, string flag)
+        {
+            return arg.StartsWith("--") && arg.Substring(2) == flag;
         }
     }
 }

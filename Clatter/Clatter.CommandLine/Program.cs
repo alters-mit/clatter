@@ -30,7 +30,7 @@ namespace Clatter.CommandLine
             {"--scrape_material [STRING]", "If --type is scrape, this sets the secondary object's scrape map. See ScrapeMaterial API documentation for a list of options."},
             {"--duration [FLOAT]", "If --type is scrape, this sets the duration of the scrape audio."},
             {"--simulation_amp [FLOAT]", "The overall amp (0-1)."},
-            {"--path [STRING]", "The path to a .wav file. If not included, audio will be sent to stdout."},
+            {"--path [STRING]", "OPTIONAL. The path to a .wav file. If not included, audio will be written to stdout."},
             {"--min_speed [FLOAT]", "OPTIONAL. If included, set the minimum speed. If the speed is slower than this, don't generate audio. See: AudioGenerator.minSpeed"},
             {"--allow_distortion", "OPTIONAL. If included, don't clamp impact amp values to 0.99. See: Impact.preventDistortion"},
             {"--unclamp_contact_time", "OPTIONAL. If included, don't clamp impact contact times to plausible values. See: Impact.clampContactTime"},
@@ -85,17 +85,36 @@ namespace Clatter.CommandLine
             ClatterObjectData secondary = GetClatterObjectData(args, 1, "secondary", scrape);
             // Get the speed.
             double speed = ArgumentParser.GetDoubleValue(args, "speed");
-            // Get the path to the output file.
-            string path = ArgumentParser.GetStringValue(args, "path");
-            // Write a file.
-            if (scrape)
+            // Write a wav file.
+            string path = "";
+            if (ArgumentParser.TryGetStringValue(args, "path", ref path))
             {
-                WriteScrape(primary, secondary, speed, scrapeDuration, path);
+                if (scrape)
+                {
+                    WriteScrape(primary, secondary, speed, scrapeDuration, path);
+                }
+                else
+                {
+                    WriteImpact(primary, secondary, speed, path);
+                }     
             }
+            // Generate data and write to standard output.
             else
             {
-                WriteImpact(primary, secondary, speed, path);
-            }  
+                byte[] audio;
+                if (scrape)
+                {
+                    audio = GetScrape(primary, secondary, speed, scrapeDuration);
+                }
+                else
+                {
+                    audio = GetImpact(primary, secondary, speed);
+                }
+                using (Stream stream = Console.OpenStandardOutput())
+                {
+                    stream.Write(audio, 0, audio.Length);
+                }
+            }
         }
         
 

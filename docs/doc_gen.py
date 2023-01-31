@@ -756,6 +756,9 @@ def get_cli() -> str:
         downloads += f'<a href="https://github.com/alters-mit/clatter/releases/download/{version}/{exe}">{platform}</a>&emsp;'
     downloads += "</p>"
     text = text.replace("<p>[URLS]</p>", downloads)
+    text = re.sub(r'<p><code>(.*?)</code></p>', r'<p><pre><code>\1</code></pre></p>', text, flags=re.MULTILINE)
+    # Fix the Python example.
+    text = re.sub(r'```python\n((.|\n)*?)```', r'<pre><code>\1</pre></code', text, flags=re.MULTILINE)
     return get_html_prefix() + text.strip() + get_html_suffix()
 
 
