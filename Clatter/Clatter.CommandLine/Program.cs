@@ -10,7 +10,7 @@ namespace Clatter.CommandLine
     {
         private const string HELP_HEADER = "A command-line program for generating audio using Clatter.\n\n" +
                                            "EXAMPLE CALL:\n\n" +
-                                           "./clatter.exe --primary_material glass_1 --primary_amp 0.2 --primary_resonance 0.2 --primary_mass 1 --secondary_material stone_4 --secondary_amp 0.5 --secondary_resonance 0.1 --secondary_mass 100 --type impact --path out.wav\n\n" +
+                                           "./clatter.exe --primary_material glass_1 --primary_amp 0.2 --primary_resonance 0.2 --primary_mass 1 --secondary_material stone_4 --secondary_amp 0.5 --secondary_resonance 0.1 --secondary_mass 100 --speed 1 --type impact --path out.wav\n\n" +
                                            "ARGUMENTS:\n\n";
         /// <summary>
         /// Help text per argument.

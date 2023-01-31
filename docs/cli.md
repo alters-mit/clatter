@@ -38,6 +38,7 @@ resp = run(['./clatter.exe',
             '--secondary_amp', '0.5',
             '--secondary_resonance', '0.1',
             '--secondary_mass', '100',
+            '--speed', '1',
             '--type', 'impact'],
            check=True,
            stdout=PIPE)
