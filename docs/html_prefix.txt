@@ -10,8 +10,8 @@
     <meta name="description" content="Clatter API Documentation">
     <meta name="author" content="Esther Alter">
 
-    <link rel="stylesheet" href="../style.css?">
-    <script src="../highlight/highlight.min.js"></script>
+    <link rel="stylesheet" href="style.css?">
+    <script src="highlight/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
 
 </head>

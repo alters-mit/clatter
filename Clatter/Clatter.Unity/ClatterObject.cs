@@ -12,13 +12,16 @@ namespace Clatter.Unity
     ///
     /// A ClatterObject must have either a Rigidbody or ArticulationBody component and at least one Collider.
     ///
+    /// ClatterObjects are automatically initialized and updated by `ClatterManager`; you *can* use a ClatterObject without `ClatterManager` but it's very difficult to do so. Notice that there is no Update or FixedUpdate call because it's assumed that `ClatterManager` will call ClatterObject.OnUpdate() and ClatterObject.OnFixedUpdate().
+    ///
     /// ClatterObject listens for Unity collision events (enter, stay, exit) and converts them into `Clatter.Core.CollisionEvent` data objects:
     /// 
     /// - "Enter" events are always impacts.
-    /// - "Exit" events are always "none" audio events that will end an ongoing audio event series.
-    /// - "Stay" events can be impacts, scrapes, rolls, or none-events. This is determined by a number of factors; see `areaNewCollision`, `scrapeAngle`, `impactAreaRatio`, and `rollAngularSpeed`.
+    /// - "Exit" events are always none-events.
+    /// - "Stay" events can be impacts, scrapes, rolls, or none-events.
     /// 
-    /// ClatterObjects are automatically initialized and updated by `ClatterManager`; you *can* use a ClatterObject without `ClatterManager` but it's very difficult to do so. Notice that there is no Update or FixedUpdate call because it's assumed that `ClatterManager` will call ClatterObject.OnUpdate() and ClatterObject.OnFixedUpdate().
+    /// ![](images/collision.png)
+    /// 
     /// </summary>
     public class ClatterObject : MonoBehaviour
     {

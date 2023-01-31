@@ -3,7 +3,7 @@ import re
 from typing import Dict, List, Union, Tuple
 from subprocess import call, DEVNULL
 from pathlib import Path
-from shutil import rmtree
+from shutil import rmtree, copyfile
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import ElementTree, Element
 from markdown import markdown
@@ -27,6 +27,7 @@ def get_description(e: Element, is_paragraphs: bool, brief_description: bool = T
 
     :return: Description text.
     """
+
 
     descriptions: List[str] = list()
     keys = []
@@ -65,6 +66,11 @@ def get_description(e: Element, is_paragraphs: bool, brief_description: bool = T
             else:
                 de_text = de_text.strip()
             descriptions.append(de_text)
+    # Try to find an image.
+    raw_e = ET.tostring(e).decode()
+    if "png" in raw_e:
+        image_name = re.search(r'<image inline="\w+" name="(.*?)" type="\w+" />', raw_e).group(1)
+        descriptions.append(f'\n\n<p><img src="images/{image_name}" width="50%"></p>')
     return " ".join(descriptions)
 
 
@@ -530,7 +536,7 @@ def get_sidebar() -> str:
     """
 
     sidebar = '<div class="sidepanel">\n'
-    sidebar += '\t\t\t\t<a class="title" href="overview.html">Overview</a>\n\n'
+    sidebar += '\t\t\t\t<a class="title" href="index.html">Overview</a>\n\n'
     sidebar += f'\n\t\t\t\t<div class="divider left"></div>\n\n'
     for namespace in namespaces:
         # Add a title.
@@ -753,19 +759,33 @@ def get_cli() -> str:
     return get_html_prefix() + text.strip() + get_html_suffix()
 
 
+def images() -> None:
+    """
+    Copy all images.
+    """
+
+    images_src_directory = Path("images")
+    images_dst_directory = Path("html/images").resolve()
+    if not images_dst_directory.exists():
+        images_dst_directory.mkdir(parents=True)
+    for f in images_src_directory.iterdir():
+        if f.is_file() and f.suffix == ".png" or f.suffix == ".jpg":
+            copyfile(src=str(f), dst=str(images_dst_directory.joinpath(f.name)))
+
+
 # Generate XML with Doxygen.
 doxygen()
 # Get the namespaces.
 namespaces = get_namespaces()
 # Get the sidebar html.
 sidebar = get_sidebar()
-dst = Path("html/html").resolve()
+dst = Path("html").resolve()
 # Remove the existing docs.
-if dst.exists():
-    rmtree(str(dst))
-dst.mkdir(parents=True)
+for f in dst.iterdir():
+    if f.is_file() and f.suffix == ".html":
+        f.unlink()
 # Write the overview doc.
-dst.joinpath("overview.html").write_text(get_readme())
+dst.joinpath("index.html").write_text(get_readme())
 # Add the overview docs.
 dst.joinpath("cli_overview.html").write_text(get_cli())
 dst.joinpath("benchmark.html").write_text(get_benchmark())
@@ -795,3 +815,5 @@ for ns in namespaces:
     class_inheritance()
 # Remove the XML.
 rmtree(Path("xml").absolute())
+# Copy the images.
+images()
