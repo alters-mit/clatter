@@ -20,8 +20,8 @@ Pre-alpha to-dos:
 - [ ] Add documentation.
 - [x] Add releases and build tools.
 - [x] Add command-line tools for OS X and Linux.
-- [ ] Add Clatter to TDW.
-- [ ] Add links to Clatter/TDW documentation
+- [x] Add Clatter to TDW.
+- [x] Add links to Clatter/TDW documentation
 - [ ] Videos
 - [x] Add a license.
 - [x] Add attribution.
