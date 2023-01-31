@@ -482,7 +482,7 @@ namespace Clatter.Unity
             // Get the approximate area.
             double area = Math.PI * radius * radius;
             AudioEventType audioEventType;
-            // Exits are always none.
+            // Exits are always none-events.
             if (type == OnCollisionType.exit)
             {
                 audioEventType = AudioEventType.none;
@@ -512,7 +512,7 @@ namespace Clatter.Unity
                             audioEventType = AudioEventType.impact;
                         }
                     }
-                    // This is a non-event.
+                    // This is a none-event.
                     else
                     {
                         audioEventType = AudioEventType.none;
@@ -560,7 +560,7 @@ namespace Clatter.Unity
                         }
                     }
                 }
-                // This is a non-event.
+                // This is a none-event.
                 else
                 {
                     audioEventType = AudioEventType.none;
