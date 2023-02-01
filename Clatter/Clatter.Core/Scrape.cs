@@ -28,7 +28,7 @@ namespace Clatter.Core
 
         
         /// <summary>
-        /// For the purposes of audio generation, the collision speed is clamped to this maximum value.
+        /// For the purposes of audio generation, the collision speed is clamped to this maximum value in meters per second.
         /// </summary>
         public static double maxSpeed = 5;
         /// <summary>

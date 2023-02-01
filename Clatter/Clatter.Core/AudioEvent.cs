@@ -41,7 +41,7 @@ namespace Clatter.Core
         /// </summary>
         private double initialAmp;
         /// <summary>
-        /// The speed of the initial collision.
+        /// The speed of the initial collision in meters per second.
         /// </summary>
         private double initialSpeed = 1;
         /// <summary>

@@ -116,8 +116,8 @@ namespace Clatter.Core
             Buffer.BlockCopy(BitConverter.GetBytes(16), 0, wavHeader, 16, 4);
             Buffer.BlockCopy(BitConverter.GetBytes((ushort)1), 0, wavHeader, 20, 2);
             Buffer.BlockCopy(BitConverter.GetBytes((ushort)channels), 0, wavHeader, 22, 2);
-            Buffer.BlockCopy(BitConverter.GetBytes(Globals.framerateInt), 0, wavHeader, 24, 4);
-            Buffer.BlockCopy(BitConverter.GetBytes(Globals.framerateInt * channels * 2), 0, wavHeader, 28, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(Globals.framerate), 0, wavHeader, 24, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(Globals.framerate * channels * 2), 0, wavHeader, 28, 4);
             Buffer.BlockCopy(BitConverter.GetBytes((ushort)(channels * 2)), 0, wavHeader, 32, 2);
             Buffer.BlockCopy(BitConverter.GetBytes((ushort)16), 0, wavHeader, 34, 2);
             Buffer.BlockCopy(System.Text.Encoding.ASCII.GetBytes("data"), 0, wavHeader, 36, 4);

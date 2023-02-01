@@ -77,20 +77,45 @@
         /// <param name="args">The command-line arguments.</param>
         /// <param name="flag">The flag preceding the value without the `"--"` prefix.</param>
         /// <param name="value">The value.</param>
-        public static void TryGetDoubleValue(string[] args, string flag, ref double value)
+        public static bool TryGetDoubleValue(string[] args, string flag, ref double value)
         {
             for (int i = 0; i < args.Length; i++)
             {
                 if (ArgIsFlag(args[i], flag))
                 {
-                    double d;
-                    if (double.TryParse(args[i + 1], out d))
+                    double v;
+                    if (double.TryParse(args[i + 1], out v))
                     {
-                        value = d;
-                        return;
+                        value = v;
+                        return true;
                     }
                 }
             }
+            return false;
+        }
+        
+        
+        /// <summary>
+        /// Try to get an int value from an optional flag. If the flag isn't present, the value isn't set.
+        /// </summary>
+        /// <param name="args">The command-line arguments.</param>
+        /// <param name="flag">The flag preceding the value without the `"--"` prefix.</param>
+        /// <param name="value">The value.</param>
+        public static bool TryGetIntValue(string[] args, string flag, ref int value)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (ArgIsFlag(args[i], flag))
+                {
+                    int v;
+                    if (int.TryParse(args[i + 1], out v))
+                    {
+                        value = v;
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         
         
@@ -100,16 +125,17 @@
         /// <param name="args">The command-line arguments.</param>
         /// <param name="flag">The flag preceding the value without the `"--"` prefix.</param>
         /// <param name="value">The value.</param>
-        public static void TryGetBooleanValue(string[] args, string flag, ref bool value)
+        public static bool TryGetBooleanValue(string[] args, string flag, ref bool value)
         {
             for (int i = 0; i < args.Length; i++)
             {
                 if (ArgIsFlag(args[i], flag))
                 {
                     value = !value;
-                    return;
+                    return true;
                 }
             }
+            return false;
         }
 
 

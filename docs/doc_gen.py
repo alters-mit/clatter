@@ -248,12 +248,8 @@ class Method:
         self.type: str = e.find("type").text
         if self.type is None:
             self.type = "void"
-        if "const " in self.type:
-            self.const: bool = True
-            self.type = self.type.split("const")[1].strip()
-        else:
-            self.const = False
         self.name: str = e.find("name").text
+        self.delegate: bool = "delegate" in self.type
         self.description = get_description(e, detailed_description=False, is_paragraphs=True)
         self.args_string: str = e.find("argsstring").text
         self.static: bool = e.attrib["static"] == "yes"
@@ -406,6 +402,8 @@ class Klass:
         html += markdown(f'{description.strip()}\n\n')
         constants = [f for f in self.public_static_fields if f.const]
         static_fields = [f for f in self.public_static_fields if not f.const]
+        delegates = [m for m in self.public_methods if m.delegate]
+        public_methods = [m for m in self.public_methods if not m.delegate]
         # Add members.
         if len(constants) > 0:
             html += f'<h2>Constants</h2>\n\n'
@@ -428,13 +426,17 @@ class Klass:
                 table += f"\t<tr>\n\t\t<th>{field.name}</th>\n\t\t<th>{field.type}</th>\n\t\t<th>{field.description}</th>\n\t\t<th>{' '.join(get_set)}</th>\n\t</tr>\n"
             table += "\n</table>"
             html += table + "\n\n"
+        if len(delegates) > 0:
+            html += f'<h2>Delegates</h2>\n\n'
+            for method in delegates:
+                html += method.html()
         if len(self.public_static_methods) > 0:
             html += f'<h2>Static Methods</h2>\n\n'
             for method in self.public_static_methods:
                 html += method.html()
-        if len(self.public_methods) > 0:
+        if len(public_methods) > 0:
             html += f'<h2>Methods</h2>\n\n'
-            for method in self.public_methods:
+            for method in public_methods:
                 html += method.html()
         if len(code_examples) > 0:
             html += "\n\n" + code_examples

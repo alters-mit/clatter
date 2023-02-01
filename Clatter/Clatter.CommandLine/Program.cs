@@ -17,7 +17,6 @@ namespace Clatter.CommandLine
         /// </summary>
         private static readonly Dictionary<string, string> ArgsHelp = new()
         {
-            {"--type [STRING]", "The type of audio event. Options: impact, scrape"},
             {"--primary_material [STRING]", "The primary object's ImpactMaterial. See ImpactMaterial API documentation for a list of options."},
             {"--primary_amp [FLOAT]", "The primary object's amp value (0-1)."},
             {"--primary_resonance [FLOAT]", "The primary object's resonance value (0-1)."},
@@ -30,11 +29,13 @@ namespace Clatter.CommandLine
             {"--scrape_material [STRING]", "If --type is scrape, this sets the secondary object's scrape map. See ScrapeMaterial API documentation for a list of options."},
             {"--duration [FLOAT]", "If --type is scrape, this sets the duration of the scrape audio."},
             {"--simulation_amp [FLOAT]", "The overall amp (0-1)."},
+            {"--type [STRING]", "The type of audio event. Options: impact, scrape"},
             {"--path [STRING]", "OPTIONAL. The path to a .wav file. If not included, audio will be written to stdout."},
             {"--min_speed [FLOAT]", "OPTIONAL. If included, set the minimum speed. If the speed is slower than this, don't generate audio. See: AudioGenerator.minSpeed"},
             {"--allow_distortion", "OPTIONAL. If included, don't clamp impact amp values to 0.99. See: Impact.preventDistortion"},
             {"--unclamp_contact_time", "OPTIONAL. If included, don't clamp impact contact times to plausible values. See: Impact.clampContactTime"},
             {"--scrape_max_speed [FLOAT]", "OPTIONAL. Clamp scrape speeds to this maximum value. See: Scrape.maxSpeed"},
+            {"--framerate [INT]", "OPTIONAL. The audio framerate. If not included, defaults to 44100. See: Globals.framerate"},
             {"--help", "OPTIONAL. Print this message and exit."}
         };
         
@@ -60,6 +61,10 @@ namespace Clatter.CommandLine
             ArgumentParser.TryGetBooleanValue(args, "allow_distortion", ref Impact.preventDistortion);
             ArgumentParser.TryGetBooleanValue(args, "unclamp_contact_time", ref Impact.clampContactTime);
             ArgumentParser.TryGetDoubleValue(args, "scrape_max_speed", ref Scrape.maxSpeed);
+            if (ArgumentParser.TryGetIntValue(args, "framerate", ref Globals.framerate))
+            {
+                Globals.framerateD = Globals.framerate;
+            }
             // Set the primary object.
             ClatterObjectData primary = GetClatterObjectData(args, 0, "primary", false);
             // Get the audio type.

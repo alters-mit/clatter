@@ -53,7 +53,7 @@
         /// </summary>
         public double speed;
         /// <summary>
-        /// The angular speed of the object  in meters per second.
+        /// The angular speed of the object in meters per second.
         /// </summary>
         public double angularSpeed;
 

@@ -116,7 +116,7 @@ namespace Clatter.Unity
             playing = true;
             hasClip = true;
             // Create the clip.
-            source.clip = AudioClip.Create("audio", data.Length, 1, Globals.framerateInt, false);
+            source.clip = AudioClip.Create("audio", data.Length, 1, Globals.framerate, false);
             // Set the audio data.
             source.clip.SetData(data, 0);
             source.loop = Loop();

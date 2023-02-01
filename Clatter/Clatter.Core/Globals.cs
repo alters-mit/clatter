@@ -14,10 +14,10 @@
         /// <summary>
         /// The audio samples framerate.
         /// </summary>
-        public static double framerate = 44100;
+        public static int framerate = 44100;
         /// <summary>
-        /// The framerate expressed as an integer.
+        /// The audio samples framerate cast as a double.
         /// </summary>
-        public static int framerateInt = (int)framerate;
+        public static double framerateD =  framerate;
     }
 }

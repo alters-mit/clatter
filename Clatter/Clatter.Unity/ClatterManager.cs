@@ -100,7 +100,7 @@ namespace Clatter.Unity
             if (adjustAudioSettings)
             {
                 AudioConfiguration audioConfiguration = AudioSettings.GetConfiguration();
-                audioConfiguration.sampleRate = Globals.framerateInt;
+                audioConfiguration.sampleRate = Globals.framerate;
                 audioConfiguration.dspBufferSize = DSP_BUFFER_SIZE;
                 AudioSettings.Reset(audioConfiguration);
             }

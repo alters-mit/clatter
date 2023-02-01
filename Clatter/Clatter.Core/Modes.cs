@@ -106,7 +106,7 @@ namespace Clatter.Core
                     double tt;
                     for (int j = 0; j < modeCount; j++)
                     {
-                        tt = j / Globals.framerate;
+                        tt = j / Globals.framerateD;
                         mode[j] = Math.Cos(tt * q) * pow * Math.Pow(10, tt * dcy);
                     }
                 }
