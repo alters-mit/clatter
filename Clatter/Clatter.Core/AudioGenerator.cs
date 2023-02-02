@@ -43,7 +43,11 @@ namespace Clatter.Core
         /// </summary>
         private const int DEFAULT_MAX_NUM_EVENTS = 200;
 
-        
+
+        /// <summary>
+        /// The maximum number of impacts, scrapes, and rolls that can occur on one frame. After this many events, any new audio events are ignored.
+        /// </summary>
+        public static int maxNumRealEvents = 200;
         /// <summary>
         /// Invoked when impact audio is generated.
         /// </summary>
@@ -100,6 +104,10 @@ namespace Clatter.Core
         /// The number of events on this frame.
         /// </summary>
         private int numEvents;
+        /// <summary>
+        /// The number of impacts, scrapes, and rolls on this frame.
+        /// </summary>
+        private int numRealEvents;
         /// <summary>
         /// If true, the application has quit.
         /// </summary>
@@ -268,6 +276,7 @@ namespace Clatter.Core
             }
             // Reset the collision events index for the next frame.
             numEvents = 0;
+            numRealEvents = 0;
             // Reset the thread life states.
             Buffer.BlockCopy(falses, 0, threadDeaths, 0, falses.Length);
             Buffer.BlockCopy(falses, 0, eventDeaths, 0, falses.Length);
@@ -281,15 +290,25 @@ namespace Clatter.Core
         /// <param name="collisionEvent">The collision event.</param>
         public void AddCollision(CollisionEvent collisionEvent)
         {
+            // Check if this is a real event.
+            if (collisionEvent.type != AudioEventType.none)
+            {
+                numRealEvents++;
+            }
+            // Check if there are too many real events already.
+            if (numRealEvents >= maxNumRealEvents)
+            {
+                return;
+            }
             // Resize the arrays if needed.
             if (numEvents >= collisionEvents.Length)
             {
-                Array.Resize(ref collisionEvents, numEvents);
-                Array.Resize(ref audioThreads, numEvents);
-                Array.Resize(ref threadDeaths, numEvents);
-                Array.Resize(ref eventDeaths, numEvents);
-                Array.Resize(ref generatedAudio, numEvents);
-                Array.Resize(ref falses, numEvents);
+                Array.Resize(ref collisionEvents, numEvents + 1);
+                Array.Resize(ref audioThreads, numEvents + 1);
+                Array.Resize(ref threadDeaths, numEvents + 1);
+                Array.Resize(ref eventDeaths, numEvents + 1);
+                Array.Resize(ref generatedAudio, numEvents + 1);
+                Array.Resize(ref falses, numEvents + 1);
             }
             // Add the event.
             collisionEvents[numEvents] = collisionEvent;
