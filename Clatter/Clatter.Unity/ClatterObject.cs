@@ -45,7 +45,7 @@ namespace Clatter.Unity
         /// </summary>
         public static double areaNewCollision = 1e-5;
         /// <summary>
-        /// On a collision stay event, there is a large new contact area (see areaNewCollision), if the angle between Vector3.up and the normalized relative velocity of the collision is greater than this value, then the audio event is a scrape. Otherwise, it's an impact. 
+        /// On a collision stay event, there is a large new contact area (see areaNewCollision), if the angle in degrees between Vector3.up and the normalized relative velocity of the collision is greater than this value, then the audio event is a scrape. Otherwise, it's an impact. 
         /// </summary>
         public static float scrapeAngle = 80;
         /// <summary>
@@ -53,7 +53,7 @@ namespace Clatter.Unity
         /// </summary>
         public static double impactAreaRatio = 5;
         /// <summary>
-        /// On a collision stay event, if the angular speed is this or greater, the audio event is a roll; otherwise, it's a scrape.
+        /// On a collision stay event, if the angular speed in meters per second is greater than or equal to this value, the audio event is a roll; otherwise, it's a scrape.
         /// </summary>
         public static double rollAngularSpeed = 1;
         /// <summary>
