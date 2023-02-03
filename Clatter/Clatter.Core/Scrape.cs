@@ -25,8 +25,12 @@ namespace Clatter.Core
         /// The default impulse response length.
         /// </summary>
         private const int DEFAULT_IMPULSE_RESPONSE_LENGTH = 9000;
-
         
+        
+        /// <summary>
+        /// When setting the amplitude for a scrape, multiply `AudioEvent.simulationAmp` by this factor.
+        /// </summary>
+        public static double scrapeAmp = 1;
         /// <summary>
         /// For the purposes of audio generation, the collision speed is clamped to this maximum value in meters per second.
         /// </summary>
@@ -135,10 +139,11 @@ namespace Clatter.Core
             }
             // Convolve.
             impulseResponse.Convolve(force, SAMPLES_LENGTH, ref samples.samples);
-            // Apply roughness.
+            // Apply roughness and amp.
+            double a = scrapeMaterialData.roughnessRatio * simulationAmp * scrapeAmp;
             for (int i = 0; i < SAMPLES_LENGTH; i++)
             {
-                samples.samples[i] *= scrapeMaterialData.roughnessRatio * AudioEvent.simulationAmp;
+                samples.samples[i] *= a;
             }
             samples.length = SAMPLES_LENGTH;
             scrapeIndex = finalIndex;

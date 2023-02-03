@@ -47,7 +47,7 @@ namespace Clatter.Core
         /// <summary>
         /// The maximum number of impacts, scrapes, and rolls that can occur on one frame. After this many events, any new audio events are ignored.
         /// </summary>
-        public static int maxNumRealEvents = 200;
+        public static int maxNumAudioEvents = 200;
         /// <summary>
         /// Invoked when impact audio is generated.
         /// </summary>
@@ -107,7 +107,7 @@ namespace Clatter.Core
         /// <summary>
         /// The number of impacts, scrapes, and rolls on this frame.
         /// </summary>
-        private int numRealEvents;
+        private int numAudioEvents;
         /// <summary>
         /// If true, the application has quit.
         /// </summary>
@@ -276,7 +276,7 @@ namespace Clatter.Core
             }
             // Reset the collision events index for the next frame.
             numEvents = 0;
-            numRealEvents = 0;
+            numAudioEvents = 0;
             // Reset the thread life states.
             Buffer.BlockCopy(falses, 0, threadDeaths, 0, falses.Length);
             Buffer.BlockCopy(falses, 0, eventDeaths, 0, falses.Length);
@@ -290,13 +290,8 @@ namespace Clatter.Core
         /// <param name="collisionEvent">The collision event.</param>
         public void AddCollision(CollisionEvent collisionEvent)
         {
-            // Check if this is a real event.
-            if (collisionEvent.type != AudioEventType.none)
-            {
-                numRealEvents++;
-            }
             // Check if there are too many real events already.
-            if (numRealEvents >= maxNumRealEvents)
+            if (numAudioEvents >= maxNumAudioEvents)
             {
                 return;
             }
@@ -334,6 +329,8 @@ namespace Clatter.Core
         private void GetAudio<T>(int collisionIndex, Dictionary<ulong, T> audioEvents)
             where T : AudioEvent
         {
+            // Remember that this is an audio event.
+            numAudioEvents++;
             // Try to generate audio.
             try
             {
