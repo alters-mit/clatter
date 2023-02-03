@@ -126,7 +126,7 @@ namespace Clatter.Unity
         /// </summary>
         public bool autoSetSize = true;
         /// <summary>
-        /// The "size bucket", on a scale of 0-5. To generate realistic audio, smaller objects should have smaller size bucket values. Ignored if `autoSetSize == true`. For more information, including how to derive size bucket values, see: `Clatter.ImpactMaterial` and `Clatter.ImpactMaterialData`.
+        /// The "size bucket", on a scale of 0 to 5. To generate realistic audio, smaller objects should have smaller size bucket values. Ignored if `autoSetSize == true`. For more information, including how to derive size bucket values, see: `Clatter.ImpactMaterial` and `Clatter.ImpactMaterialData`.
         /// </summary>
         [Range(0, 5)]
         public int size;
