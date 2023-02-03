@@ -608,7 +608,6 @@ namespace Clatter.Unity
             // Re-interpret roll events.
             if (audioEventType == AudioEventType.roll)
             {
-                speed = angularSpeed;
                 audioEventType = rollSubstitute;
             }
             // Add the collision.
