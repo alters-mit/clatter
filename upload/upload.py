@@ -83,7 +83,6 @@ def upload_github_release() -> None:
         f.write("clatter.exe", arcname="clatter.exe")
     chdir(cwd)
     zip_path = clatter_cli_directory.joinpath("clatter_windows.zip").absolute()
-    exit()
     release.upload_asset(path=str(zip_path),
                          name="clatter_windows.zip",
                          content_type="application/gzip")
