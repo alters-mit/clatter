@@ -1,3 +1,4 @@
+from os import getcwd, chdir
 import tarfile
 from zipfile import ZipFile
 import re
@@ -56,27 +57,32 @@ def upload_github_release() -> None:
     # Get the paths.
     root_src_path: Path = Path("../Clatter/").absolute().resolve()
     clatter_cli_directory: Path = root_src_path.joinpath("Clatter.CommandLine/bin/Release/net7.0")
-    clatter_cli_linux_path: Path = clatter_cli_directory.joinpath("linux-x64/publish/clatter").resolve()
-    clatter_cli_osx_path: Path = clatter_cli_directory.joinpath("osx-x64/publish/clatter").resolve()
-    clatter_cli_win_path: Path = clatter_cli_directory.joinpath("win-x64/publish/clatter.exe").resolve()
+    clatter_cli_linux_path: Path = clatter_cli_directory.joinpath("linux-x64/publish").resolve()
+    clatter_cli_osx_path: Path = clatter_cli_directory.joinpath("osx-x64/publish").resolve()
+    clatter_cli_win_path: Path = clatter_cli_directory.joinpath("win-x64/publish").resolve()
+    cwd = getcwd()
     # Upload the UNIX CLI executables.
     for exe_path, platform in zip([clatter_cli_linux_path, clatter_cli_osx_path], ["linux", "osx"]):
+        chdir(str(exe_path))
         # Make it an executable.
-        call(["chmod", "+x", str(exe_path)])
+        call(["chmod", "+x", "clatter"])
         tar_name = f"clatter_{platform}.tar.gz"
-        tar_path = clatter_cli_directory.joinpath(tar_name).absolute()
         # Tar.
-        with tarfile.open(name=str(tar_path), mode="w|gz") as f:
-            f.add(str(exe_path), arcname=str(tar_path.parent))
+        with tarfile.open(name=tar_name, mode="w|gz") as f:
+            f.add("clatter")
+        chdir(cwd)
+        tar_path = exe_path.parent.joinpath(tar_name)
         # Upload.
         release.upload_asset(path=str(tar_path),
                              name=tar_name,
                              content_type="application/gzip")
         print(f"Uploaded: {exe_path}")
     # Upload the Windows CLI executable.
+    chdir(str(clatter_cli_win_path))
+    with ZipFile("clatter.zip", "w") as f:
+        f.write("clatter.exe")
+    chdir(cwd)
     zip_path = clatter_cli_directory.joinpath("clatter_windows.zip").absolute()
-    with ZipFile(str(zip_path), "w") as f:
-        f.write(str(clatter_cli_win_path))
     release.upload_asset(path=str(zip_path),
                          name="clatter_windows.zip",
                          content_type="application/gzip")
