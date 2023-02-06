@@ -1,3 +1,4 @@
+import tarfile
 import re
 from subprocess import call
 from pathlib import Path
@@ -64,7 +65,8 @@ def upload_github_release() -> None:
         tar_name = f"clatter_{platform}.tar"
         tar_path = clatter_cli_directory.joinpath(tar_name).absolute()
         # Tar.
-        call(["tar", "czfp", str(tar_path), "-C", str(exe_path), "TDW"])
+        with tarfile.open(name=str(tar_path), mode="w") as f:
+            f.add(str(exe_path))
         # Upload.
         release.upload_asset(path=str(tar_path),
                              name=tar_name,
