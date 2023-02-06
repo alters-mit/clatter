@@ -1,4 +1,5 @@
 import tarfile
+from zipfile import ZipFile
 import re
 from subprocess import call
 from pathlib import Path
@@ -66,16 +67,19 @@ def upload_github_release() -> None:
         tar_path = clatter_cli_directory.joinpath(tar_name).absolute()
         # Tar.
         with tarfile.open(name=str(tar_path), mode="w|gz") as f:
-            f.add(str(exe_path), arcname="clatter")
+            f.add(str(exe_path), arcname=str(tar_path.parent))
         # Upload.
         release.upload_asset(path=str(tar_path),
                              name=tar_name,
                              content_type="application/gzip")
         print(f"Uploaded: {exe_path}")
     # Upload the Windows CLI executable.
-    release.upload_asset(path=str(clatter_cli_win_path),
-                         name="clatter.exe",
-                         content_type="application/x-dosexec")
+    zip_path = clatter_cli_directory.joinpath("clatter_windows.zip").absolute()
+    with ZipFile(str(zip_path), "w") as f:
+        f.write(str(clatter_cli_win_path))
+    release.upload_asset(path=str(zip_path),
+                         name="clatter_windows.zip",
+                         content_type="application/gzip")
     print(f"Uploaded: {clatter_cli_win_path}")
     # Upload the DLLs.
     clatter_core_path: Path = root_src_path.joinpath("Clatter.Core/bin/Release/Clatter.Core.dll").resolve()
