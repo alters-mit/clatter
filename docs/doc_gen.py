@@ -754,7 +754,7 @@ def get_cli() -> str:
     text: str = markdown(Path("cli.md").resolve().read_text(encoding="utf-8").replace("powershell", ""))
     # Add the download links.
     downloads = '\n\n<p><strong>Download:</strong></p>\n\n<p>'
-    for platform, exe in zip(["Linux", "OSX", "Windows"], ["clatter_linux.tar.gz", "clatter_osx.tar.gz", "clatter.zip"]):
+    for platform, exe in zip(["Linux", "OSX", "Windows"], ["clatter_linux.tar.gz", "clatter_osx.tar.gz", "clatter_windows.zip"]):
         downloads += f'<a href="https://github.com/alters-mit/clatter/releases/download/{version}/{exe}">{platform}</a>&emsp;'
     downloads += "</p>"
     text = text.replace("<p>[URLS]</p>", downloads)
