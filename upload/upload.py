@@ -65,7 +65,7 @@ def upload_github_release() -> None:
     for exe_path, platform in zip([clatter_cli_linux_path, clatter_cli_osx_path], ["linux", "osx"]):
         chdir(str(exe_path))
         # Make it an executable.
-        call(["chmod", "+x", "clatter"])
+        call(["wsl", "chmod", "+x", "clatter"])
         tar_name = f"clatter_{platform}.tar.gz"
         # Tar.
         with tarfile.open(name=tar_name, mode="w|gz") as f:
@@ -76,17 +76,18 @@ def upload_github_release() -> None:
         release.upload_asset(path=str(tar_path),
                              name=tar_name,
                              content_type="application/gzip")
-        print(f"Uploaded: {exe_path}")
+        print(f"Uploaded: {tar_name}")
     # Upload the Windows CLI executable.
     chdir(str(clatter_cli_win_path))
     with ZipFile("clatter.zip", "w") as f:
-        f.write("clatter.exe")
+        f.write("clatter.exe", arcname="clatter.exe")
     chdir(cwd)
     zip_path = clatter_cli_directory.joinpath("clatter_windows.zip").absolute()
+    exit()
     release.upload_asset(path=str(zip_path),
                          name="clatter_windows.zip",
                          content_type="application/gzip")
-    print(f"Uploaded: {clatter_cli_win_path}")
+    print(f"Uploaded: clatter_windows.zip")
     # Upload the DLLs.
     clatter_core_path: Path = root_src_path.joinpath("Clatter.Core/bin/Release/Clatter.Core.dll").resolve()
     clatter_unity_path: Path = root_src_path.joinpath("Clatter.Unity/bin/Release/Clatter.Unity.dll").resolve()
