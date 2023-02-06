@@ -65,8 +65,8 @@ def upload_github_release() -> None:
         tar_name = f"clatter_{platform}.tar"
         tar_path = clatter_cli_directory.joinpath(tar_name).absolute()
         # Tar.
-        with tarfile.open(name=str(tar_path), mode="w") as f:
-            f.add(str(exe_path))
+        with tarfile.open(name=str(tar_path), mode="w|gz") as f:
+            f.add(str(exe_path), arcname="clatter")
         # Upload.
         release.upload_asset(path=str(tar_path),
                              name=tar_name,
