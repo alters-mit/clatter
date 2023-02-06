@@ -71,7 +71,7 @@ def upload_github_release() -> None:
         with tarfile.open(name=tar_name, mode="w|gz") as f:
             f.add("clatter")
         chdir(cwd)
-        tar_path = exe_path.parent.joinpath(tar_name)
+        tar_path = exe_path.joinpath(tar_name)
         # Upload.
         release.upload_asset(path=str(tar_path),
                              name=tar_name,
