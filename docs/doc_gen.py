@@ -770,7 +770,7 @@ def images() -> None:
     """
 
     images_src_directory = Path("images")
-    images_dst_directory = Path("html/images").resolve()
+    images_dst_directory = dst.joinpath("images").resolve()
     if not images_dst_directory.exists():
         images_dst_directory.mkdir(parents=True)
     for f in images_src_directory.iterdir():
@@ -784,7 +784,7 @@ doxygen()
 namespaces = get_namespaces()
 # Get the sidebar html.
 sidebar = get_sidebar()
-dst = Path("html").resolve()
+dst = Path.home().joinpath("alters-mit.github.io/clatter").resolve()
 # Remove the existing docs.
 for f in dst.iterdir():
     if f.is_file() and f.suffix == ".html":

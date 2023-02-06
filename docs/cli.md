@@ -4,6 +4,8 @@ Use the Clatter command-line executable to generate audio and save it as a .wav 
 
 [URLS]
 
+Linux and OS X users may need to run `chmod +x clatter` after downloading.
+
 Example call to write impact audio:
 
 ```powershell

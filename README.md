@@ -1,8 +1,8 @@
 # Clatter
 
-**Clatter is a C# library that can synthesize plausible sounds from physics-driven events.** Given a collision, the mass of the two objects, their "audio materials", the relative velocity, and so on, Clatter will generate a unique sound. Currently, Clatter is capable of generating impact and scrape sounds.
+**[Clatter](https://alters-mit.github.io/clatter/) is a C# library that can synthesize plausible sounds from physics-driven events.** Given a collision, the mass of the two objects, their "audio materials", the relative velocity, and so on, Clatter will generate a unique sound. Currently, Clatter is capable of generating impact and scrape sounds.
 
-**TODO add documentation link**
+**[Read the documentation here.](https://alters-mit.github.io/clatter/)**
 
 [![Hippocratic License HL3-BDS-ECO-FFD-LAW-MEDIA-MIL-SV](https://img.shields.io/static/v1?label=Hippocratic%20License&message=HL3-BDS-ECO-FFD-LAW-MEDIA-MIL-SV&labelColor=5e2751&color=bc8c3d)](LICENSE.md)
 
@@ -14,17 +14,6 @@
 - An intuitive, flexible API.
 
 ## Roadmap
-
-Pre-alpha to-dos:
-
-- [ ] Add documentation.
-- [x] Add releases and build tools.
-- [x] Add command-line tools for OS X and Linux.
-- [x] Add Clatter to TDW.
-- [x] Add links to Clatter/TDW documentation
-- [ ] Videos
-- [x] Add a license.
-- [x] Add attribution.
 
 Clatter is currently in alpha. It is likely still buggy and unstable. The API will likely change often until the first stable release.
 

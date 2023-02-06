@@ -2,6 +2,8 @@
 
 **Clatter is a C# library that can synthesize plausible sounds from physics-driven events.** Given a collision, the mass of the two objects, their "audio materials", the relative velocity, and so on, Clatter will generate a unique sound. Currently, Clatter is capable of generating impact and scrape sounds.
 
+<div class="video-container"><iframe class="video" src="https://www.youtube.com/embed/9Xg6mdddQLQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+
 ## Features
 
 - Unique and powerful audio synthesis capabilities. Unlike most physics driven audio generators, Clatter generates audio out of scientifically accurate, pre-computed data, rather than relying on modifying or mixing pre-existing audio files.
@@ -11,10 +13,10 @@
 
 ## You can use Clatter as:
 
-1. An add-on in [ThreeDWorld (TDW)](https://github.com/threedworld-mit/tdw). **If you are a TDW user, you do not need to read this documentation.** For a lesson on Clatter in TDW, read [this](https://github.com/threedworld-mit/tdw/blob/master/Documentation/lessons/audio/clatter.md). For API documentation, read [this](https://github.com/threedworld-mit/tdw/blob/master/Documentation/python/add_ons/clatter.md).
+1. An add-on in [ThreeDWorld (TDW)](https://github.com/threedworld-mit/tdw). If you are a TDW user, read [the TDW-specific documentation for Clatter](https://github.com/threedworld-mit/tdw/blob/master/Documentation/lessons/clatter/overview.md) instead of this website. You shouldn't need to understand the Clatter C# API unless you intend to contribute to it.
 2. [A C# library.](clatter.core_overview.html) The `Clatter.Core.dll` library can accept object physics properties, collision speeds, etc. as inputs, and output raw wav data of generated audio or save the data as a .wav file.
 3. [A Unity plugin.](clatter.unity_overview.html) The `Clatter.Unity.dll` library includes helpful scripts that automatically listen for collision events and generate and play audio.
-4. [A command-line executable.](cli_overview.html)
+4. [A command-line executable.](cli_overview.html) This executable can generate .wav files.
 
 ## Roadmap
 
