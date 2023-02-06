@@ -63,7 +63,7 @@ def upload_github_release() -> None:
     for exe_path, platform in zip([clatter_cli_linux_path, clatter_cli_osx_path], ["linux", "osx"]):
         # Make it an executable.
         call(["chmod", "+x", str(exe_path)])
-        tar_name = f"clatter_{platform}.tar"
+        tar_name = f"clatter_{platform}.tar.gz"
         tar_path = clatter_cli_directory.joinpath(tar_name).absolute()
         # Tar.
         with tarfile.open(name=str(tar_path), mode="w|gz") as f:
