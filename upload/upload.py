@@ -64,8 +64,6 @@ def upload_github_release() -> None:
     # Upload the UNIX CLI executables.
     for exe_path, platform in zip([clatter_cli_linux_path, clatter_cli_osx_path], ["linux", "osx"]):
         chdir(str(exe_path))
-        # Make it an executable.
-        call(["wsl", "chmod", "+x", "clatter"])
         tar_name = f"clatter_{platform}.tar.gz"
         # Tar.
         with tarfile.open(name=tar_name, mode="w|gz") as f:
