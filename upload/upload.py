@@ -58,15 +58,17 @@ def upload_github_release() -> None:
     clatter_cli_osx_path: Path = clatter_cli_directory.joinpath("osx-x64/publish/clatter").resolve()
     clatter_cli_win_path: Path = clatter_cli_directory.joinpath("win-x64/publish/clatter.exe").resolve()
     # Upload the UNIX CLI executables.
-    for exe_path, platform, mime_type in zip([clatter_cli_linux_path, clatter_cli_osx_path],
-                                             ["linux", "osx"],
-                                             ["application/x-sharedlib", "application/x-mach-binary"]):
+    for exe_path, platform in zip([clatter_cli_linux_path, clatter_cli_osx_path], ["linux", "osx"]):
         # Make it an executable.
         call(["chmod", "+x", str(exe_path)])
+        tar_name = f"clatter_{platform}.tar"
+        tar_path = clatter_cli_directory.joinpath(tar_name).absolute()
+        # Tar.
+        call(["tar", "czfp", str(tar_path), "-C", str(exe_path), "TDW"])
         # Upload.
-        release.upload_asset(path=str(exe_path),
-                             name=f"clatter_{platform}",
-                             content_type=mime_type)
+        release.upload_asset(path=str(tar_path),
+                             name=tar_name,
+                             content_type="application/gzip")
         print(f"Uploaded: {exe_path}")
     # Upload the Windows CLI executable.
     release.upload_asset(path=str(clatter_cli_win_path),

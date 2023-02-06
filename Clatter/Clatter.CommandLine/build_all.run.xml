@@ -5,6 +5,7 @@
       <option name="Build" default="false" projectName="Clatter.Core" projectPath="file://$PROJECT_DIR$/Clatter.Core/Clatter.Core.csproj" />
       <option name="Build" default="false" projectName="Clatter.Unity" projectPath="file://$PROJECT_DIR$/Clatter.Unity/Clatter.Unity.csproj" />
       <option name="Build" default="false" projectName="Clatter.CommandLine" projectPath="file://$PROJECT_DIR$/Clatter.CommandLine/Clatter.CommandLine.csproj" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="linux" run_configuration_type="DotNetFolderPublish" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="osx64" run_configuration_type="DotNetFolderPublish" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="win64" run_configuration_type="DotNetFolderPublish" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="upload_py" run_configuration_type="ShConfigurationType" />
