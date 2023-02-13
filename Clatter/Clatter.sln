@@ -1,0 +1,48 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clatter.Core", "Clatter.Core\Clatter.Core.csproj", "{08D6715D-6E55-40C7-A606-9865F2E8CCCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clatter.Unity", "Clatter.Unity\Clatter.Unity.csproj", "{EA92CB47-4969-43E2-91BC-93CFB803E289}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clatter.CommandLine", "Clatter.CommandLine\Clatter.CommandLine.csproj", "{3173AD13-502B-4B31-B87B-70BF77AA6EC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "doc_code_examples", "doc_code_examples\doc_code_examples.csproj", "{16B72EEF-5FA8-4523-9D2B-1716F29B0D96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clatter.Benchmark", "Clatter.Benchmark\Clatter.Benchmark.csproj", "{9BEF67DB-4680-4DB5-B400-F13D4D13F668}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08D6715D-6E55-40C7-A606-9865F2E8CCCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08D6715D-6E55-40C7-A606-9865F2E8CCCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08D6715D-6E55-40C7-A606-9865F2E8CCCD}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{08D6715D-6E55-40C7-A606-9865F2E8CCCD}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{EA92CB47-4969-43E2-91BC-93CFB803E289}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA92CB47-4969-43E2-91BC-93CFB803E289}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA92CB47-4969-43E2-91BC-93CFB803E289}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{EA92CB47-4969-43E2-91BC-93CFB803E289}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{3173AD13-502B-4B31-B87B-70BF77AA6EC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3173AD13-502B-4B31-B87B-70BF77AA6EC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3173AD13-502B-4B31-B87B-70BF77AA6EC3}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{3173AD13-502B-4B31-B87B-70BF77AA6EC3}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{16B72EEF-5FA8-4523-9D2B-1716F29B0D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16B72EEF-5FA8-4523-9D2B-1716F29B0D96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16B72EEF-5FA8-4523-9D2B-1716F29B0D96}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{16B72EEF-5FA8-4523-9D2B-1716F29B0D96}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{9BEF67DB-4680-4DB5-B400-F13D4D13F668}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BEF67DB-4680-4DB5-B400-F13D4D13F668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BEF67DB-4680-4DB5-B400-F13D4D13F668}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{9BEF67DB-4680-4DB5-B400-F13D4D13F668}.Debug|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
+		File = Clatter.CommandLine\osx64.run.xml
+		File = Clatter.CommandLine\win64.run.xml
+		File = Clatter.CommandLine\build_all.run.xml
+		File = Clatter.CommandLine\upload_py.run.xml
+		File = Clatter.CommandLine\doc_gen.run.xml
+		File = Clatter.CommandLine\linux.run.xml
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,16 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+.idea/
+ClatterUnityExamples/.vs/
+ClatterUnityExamples/Logs/
+ClatterUnityExamples/Library/
+ClatterUnityExamples/Temp/
+ClatterUnityExamples/.vsconfig
+docs/xml/
+github_auth.txt
+ClatterUnityExamples/Assets/Plugins/Clatter.Core.dll
+ClatterUnityExamples/Assets/Plugins/Clatter.Unity.dll
+ClatterUnityExamples/UserSettings/EditorUserSettings.asset

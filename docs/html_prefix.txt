@@ -1,0 +1,44 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Clatter</title>
+    <meta name="description" content="Clatter API Documentation">
+    <meta name="author" content="Esther Alter">
+
+    <link rel="stylesheet" href="style.css?">
+    <script src="highlight/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</head>
+
+<body>
+
+    <div class="navbar clear nav-top">
+        <div class="navbar-row">
+            <p>Clatter API </p>
+            <p><a class="right" href="https://github.com/alters-mit/clatter">GitHub Repo</a></p>
+        </div>
+        <div class="container nav-container">
+            <input class="checkbox" type="checkbox" name="" id="" />
+            <div class="hamburger-lines">
+              <span class="line line1"></span>
+              <span class="line line2"></span>
+              <span class="line line3"></span>
+            </div>
+            <div class="menu-items">
+                <li><a class="left" href="index.html"><strong>Clatter API</strong></a></li>
+                <li><div class="divider-menu"></div></li>
+                <li><a class="left" href="https://github.com/alters-mit/clatter"><strong>GitHub Repo</strong></a></li>
+                <li><div class="divider-menu"></div></li>
+MOBILE_MENU
+            </div>
+        </div>
+    </div>
+
+    <div class="container clear">
+        <div class="row wrapper">

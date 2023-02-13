@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{08D6715D-6E55-40C7-A606-9865F2E8CCCD}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>Clatter.Core</RootNamespace>
+        <AssemblyName>Clatter.Core</AssemblyName>
+        <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+        <LangVersion>7.3</LangVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Xml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="AudioEvent.cs" />
+        <Compile Include="AudioEventType.cs" />
+        <Compile Include="AudioGenerator.cs" />
+        <Compile Include="ClatterObjectData.cs" />
+        <Compile Include="CollisionEvent.cs" />
+        <Compile Include="DoubleExtensions.cs" />
+        <Compile Include="EventState.cs" />
+        <Compile Include="Globals.cs" />
+        <Compile Include="Impact.cs" />
+        <Compile Include="ImpactMaterialUnsized.cs" />
+        <Compile Include="ImpactMaterialData.cs" />
+        <Compile Include="ImpactMaterial.cs" />
+        <Compile Include="LinSpace.cs" />
+        <Compile Include="MedianFilter.cs" />
+        <Compile Include="Modes.cs" />
+        <Compile Include="NormalDistribution.cs" />
+        <Compile Include="Loader.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Samples.cs" />
+        <Compile Include="Scrape.cs" />
+        <Compile Include="ScrapeMaterial.cs" />
+        <Compile Include="ScrapeMaterialData.cs" />
+        <Compile Include="ShortExtensions.cs" />
+        <Compile Include="Vector3d.cs" />
+        <Compile Include="WavWriter.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="Data\ImpactMaterials\cardboard_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\cardboard_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\cardboard_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\cardboard_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\cardboard_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\cardboard_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\ceramic_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\ceramic_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\ceramic_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\ceramic_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\ceramic_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\ceramic_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\fabric_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\fabric_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\fabric_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\fabric_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\fabric_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\fabric_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\glass_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\glass_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\glass_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\glass_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\glass_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\glass_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\leather_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\leather_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\leather_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\leather_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\leather_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\leather_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\metal_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\metal_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\metal_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\metal_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\metal_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\metal_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\paper_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\paper_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\paper_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\paper_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\paper_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\paper_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\plastic_hard_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\plastic_hard_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\plastic_hard_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\plastic_hard_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\plastic_hard_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\plastic_hard_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\plastic_soft_foam_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\plastic_soft_foam_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\plastic_soft_foam_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\plastic_soft_foam_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\plastic_soft_foam_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\plastic_soft_foam_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\rubber_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\rubber_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\rubber_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\rubber_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\rubber_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\rubber_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\stone_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\stone_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\stone_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\stone_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\stone_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\stone_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_hard_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_hard_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_hard_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_hard_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_hard_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_hard_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_medium_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_medium_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_medium_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_medium_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_medium_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_medium_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_soft_0_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_soft_1_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_soft_2_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_soft_3_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_soft_4_mm.bytes" />
+      <EmbeddedResource Include="Data\ImpactMaterials\wood_soft_5_mm.bytes" />
+      <EmbeddedResource Include="Data\ScrapeMaterials\acrylic.bytes" />
+      <EmbeddedResource Include="Data\ScrapeMaterials\bass_wood.bytes" />
+      <EmbeddedResource Include="Data\ScrapeMaterials\ceramic.bytes" />
+      <EmbeddedResource Include="Data\ScrapeMaterials\plywood.bytes" />
+      <EmbeddedResource Include="Data\ScrapeMaterials\polycarbonate.bytes" />
+      <EmbeddedResource Include="Data\ScrapeMaterials\polyethylene.bytes" />
+      <EmbeddedResource Include="Data\ScrapeMaterials\poplar_wood.bytes" />
+      <EmbeddedResource Include="Data\ScrapeMaterials\pvc.bytes" />
+      <EmbeddedResource Include="Data\ScrapeMaterials\rough_wood.bytes" />
+      <EmbeddedResource Include="Data\ScrapeMaterials\sanded_acrylic.bytes" />
+      <EmbeddedResource Include="Data\ScrapeMaterials\sandpaper.bytes" />
+      <EmbeddedResource Include="Data\ScrapeMaterials\vinyl.bytes" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+
+</Project>

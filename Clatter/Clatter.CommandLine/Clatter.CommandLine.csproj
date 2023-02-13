@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Clatter.CommandLine</RootNamespace>
+        <Company>MIT</Company>
+        <Product>clatter</Product>
+        <AssemblyVersion>0.0.1</AssemblyVersion>
+        <AssemblyName>clatter</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Clatter.Core\Clatter.Core.csproj" />
+    </ItemGroup>
+
+</Project>
