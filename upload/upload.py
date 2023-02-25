@@ -77,8 +77,8 @@ def upload_github_release() -> None:
         print(f"Uploaded: {tar_name}")
     # Upload the Windows CLI executable.
     chdir(str(clatter_cli_win_path))
-    with ZipFile("clatter.zip", "w") as f:
-        f.write("clatter.exe", arcname="clatter.exe")
+    with ZipFile("clatter_windows.zip", "w") as f:
+        f.write("clatter.exe", "clatter.exe")
     chdir(cwd)
     zip_path = clatter_cli_directory.joinpath("clatter_windows.zip").absolute()
     release.upload_asset(path=str(zip_path),
