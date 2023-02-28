@@ -37,7 +37,7 @@ namespace Clatter.Core
             double simulationAmp, double scrapeMaxSpeed, bool preventDistortion, bool clampContactTime, int framerate)
         {
             // Set static variables.
-            AudioEvent.simulationAmp = AudioEvent.simulationAmp.Clamp(0, 0.99);
+            AudioEvent.simulationAmp = simulationAmp.Clamp(0, 0.99);
             Scrape.maxSpeed = scrapeMaxSpeed;
             Impact.preventDistortion = preventDistortion;
             Impact.clampContactTime = clampContactTime;
