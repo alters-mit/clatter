@@ -80,7 +80,7 @@ def upload_github_release() -> None:
     with ZipFile("clatter_windows.zip", "w") as f:
         f.write("clatter.exe", "clatter.exe")
     chdir(cwd)
-    zip_path = clatter_cli_directory.joinpath("clatter_windows.zip").absolute()
+    zip_path = clatter_cli_win_path.joinpath("clatter_windows.zip").absolute()
     release.upload_asset(path=str(zip_path),
                          name="clatter_windows.zip",
                          content_type="application/gzip")
