@@ -31,7 +31,6 @@ namespace Clatter.CommandLine
             {"--simulation_amp [FLOAT]", "The overall amp (0-1)."},
             {"--type [STRING]", "The type of audio event. Options: impact, scrape"},
             {"--path [STRING]", "OPTIONAL. The path to a .wav file. If not included, audio will be written to stdout."},
-            {"--min_speed [FLOAT]", "OPTIONAL. If included, set the minimum speed. If the speed is slower than this, don't generate audio. See: AudioGenerator.minSpeed"},
             {"--allow_distortion", "OPTIONAL. If included, don't clamp impact amp values to 0.99. See: Impact.preventDistortion"},
             {"--unclamp_contact_time", "OPTIONAL. If included, don't clamp impact contact times to plausible values. See: Impact.clampContactTime"},
             {"--scrape_max_speed [FLOAT]", "OPTIONAL. Clamp scrape speeds to this maximum value. See: Scrape.maxSpeed"},
@@ -57,7 +56,7 @@ namespace Clatter.CommandLine
             }
             // Set static values.
             ArgumentParser.TryGetDoubleValue(args, "simulation_amp", ref AudioEvent.simulationAmp);
-            AudioEvent.simulationAmp = AudioEvent.simulationAmp.Clamp(0, 1);
+            AudioEvent.simulationAmp = AudioEvent.simulationAmp.Clamp(0, 0.99);
             ArgumentParser.TryGetBooleanValue(args, "allow_distortion", ref Impact.preventDistortion);
             ArgumentParser.TryGetBooleanValue(args, "unclamp_contact_time", ref Impact.clampContactTime);
             ArgumentParser.TryGetDoubleValue(args, "scrape_max_speed", ref Scrape.maxSpeed);
@@ -65,182 +64,92 @@ namespace Clatter.CommandLine
             {
                 Globals.framerateD = Globals.framerate;
             }
-            // Set the primary object.
-            ClatterObjectData primary = GetClatterObjectData(args, 0, "primary", false);
+            // Get the primary object's data.
+            ImpactMaterial primaryImpactMaterial;
+            double primaryAmp;
+            double primaryResonance;
+            double primaryMass;
+            GetClatterObjectData(args, "primary", out primaryImpactMaterial, out primaryAmp, out primaryResonance, out primaryMass);
+            // Get the secondary object's data.
+            ImpactMaterial secondaryImpactMaterial;
+            double secondaryAmp;
+            double secondaryResonance;
+            double secondaryMass;
+            GetClatterObjectData(args, "secondary", out secondaryImpactMaterial, out secondaryAmp, out secondaryResonance, out secondaryMass);
             // Get the audio type.
-            string audioType = ArgumentParser.GetStringValue(args, "type");
+            string audioEventTypeStr = ArgumentParser.GetStringValue(args, "type");
+            AudioEventType audioEventType;
             // Check if this is a scrape.
-            bool scrape;
             double scrapeDuration;
-            if (audioType == "impact")
+            ScrapeMaterial scrapeMaterial;
+            if (audioEventTypeStr == "impact")
             {
-                scrape = false;
+                audioEventType = AudioEventType.impact;
                 scrapeDuration = -1;
+                scrapeMaterial = default;
             }
-            else if (audioType == "scrape")
+            else if (audioEventTypeStr == "scrape")
             {
-                scrape = true;
+                audioEventType = AudioEventType.scrape;
                 scrapeDuration = ArgumentParser.GetDoubleValue(args, "duration");
+                string s = ArgumentParser.GetStringValue(args, "scrape_material");
+                if (!Enum.TryParse(s, out scrapeMaterial))
+                {
+                    throw new Exception("Invalid scrape material: " + s);
+                }
+                ScrapeMaterialData.Load(scrapeMaterial);
             }
             else
             {
-                throw new Exception("Invalid audio type: " + audioType);
+                throw new Exception("Invalid audio type: " + audioEventTypeStr);
             }
-            // Set the secondary object.
-            ClatterObjectData secondary = GetClatterObjectData(args, 1, "secondary", scrape);
             // Get the speed.
             double speed = ArgumentParser.GetDoubleValue(args, "speed");
+            // Generate audio.
+            byte[] audio = ExternalEntryPoint.GetAudio((byte)primaryImpactMaterial, primaryAmp, primaryResonance, primaryMass, 
+                (byte)secondaryImpactMaterial, secondaryAmp, secondaryResonance, secondaryMass, speed, 
+                (byte)audioEventType, (byte)scrapeMaterial, scrapeDuration, false, 0, 
+                AudioEvent.simulationAmp,  Scrape.maxSpeed, Impact.preventDistortion, Impact.clampContactTime,
+                Globals.framerate);
             // Write a wav file.
             string path = "";
             if (ArgumentParser.TryGetStringValue(args, "path", ref path))
             {
-                if (scrape)
-                {
-                    WriteScrape(primary, secondary, speed, scrapeDuration, path);
-                }
-                else
-                {
-                    WriteImpact(primary, secondary, speed, path);
-                }     
+                WavWriter writer = new WavWriter(path);
+                writer.Write(audio);
+                writer.End();
             }
             // Generate data and write to standard output.
             else
             {
-                byte[] audio;
-                if (scrape)
-                {
-                    audio = GetScrape(primary, secondary, speed, scrapeDuration);
-                }
-                else
-                {
-                    audio = GetImpact(primary, secondary, speed);
-                }
                 using (Stream stream = Console.OpenStandardOutput())
                 {
                     stream.Write(audio, 0, audio.Length);
                 }
             }
         }
-        
+
 
         /// <summary>
-        /// Return a Clatter object.
+        /// Get Clatter object data.
         /// </summary>
         /// <param name="args">The args.</param>
-        /// <param name="id">The object ID.</param>
         /// <param name="target">Either primary or secondary.</param>
-        /// <param name="scrape">If true, look for a scrape material.</param>
-        private static ClatterObjectData GetClatterObjectData(string[] args, uint id, string target, bool scrape)
+        /// <param name="impactMaterial">The impact material.</param>
+        /// <param name="amp">The amp value.</param>
+        /// <param name="resonance">The resonance value.</param>
+        /// <param name="mass">The mass value.</param>
+        private static void GetClatterObjectData(string[] args, string target, out ImpactMaterial impactMaterial, out double amp, out double resonance, out double mass)
         {
             string m = ArgumentParser.GetStringValue(args, target + "_material");
-            ImpactMaterial impactMaterial;
             if (!Enum.TryParse(m, out impactMaterial))
             {
                 throw new Exception("Invalid impact material: " + m);
             }
             ImpactMaterialData.Load(impactMaterial);
-            double amp = ArgumentParser.GetDoubleValue(args, target + "_amp");
-            double resonance = ArgumentParser.GetDoubleValue(args, target + "_resonance");
-            double mass = ArgumentParser.GetDoubleValue(args, target + "_mass");
-            if (scrape)
-            {
-                string s = ArgumentParser.GetStringValue(args, "scrape_material");
-                ScrapeMaterial scrapeMaterial;
-                if (!Enum.TryParse(s, out scrapeMaterial))
-                {
-                    throw new Exception("Invalid scrape material: " + s);
-                }
-                ScrapeMaterialData.Load(scrapeMaterial);
-                return new ClatterObjectData(id, impactMaterial, amp, resonance, mass, scrapeMaterial);
-            }
-            else
-            {
-                return new ClatterObjectData(id, impactMaterial, amp, resonance, mass);
-            }
-        }
-
-
-        /// <summary>
-        /// Generate an impact sound.
-        /// This assumes that you have called SetPrimaryObject and SetSecondaryObject.
-        /// </summary>
-        /// <param name="primary">The primary object.</param>
-        /// <param name="secondary">The secondary object.</param>
-        /// <param name="speed">The speed of the impact.</param>
-        private static byte[] GetImpact(ClatterObjectData primary, ClatterObjectData secondary, double speed)
-        {
-            Impact impact = new Impact(primary, secondary, new Random());
-            // Generate audio.
-            bool ok = impact.GetAudio(speed);
-            if (!ok)
-            {
-                return new byte[0];
-            }
-            else
-            {
-                return impact.samples.ToInt16Bytes();
-            }
-        }
-        
-        
-        /// <summary>
-        /// Generate a scrape sound.
-        /// This assumes that you have called SetPrimaryObject and SetSecondaryObject, and that in the latter call you provided a scrape material.
-        /// </summary>
-        /// <param name="primary">The primary object.</param>
-        /// <param name="secondary">The secondary object.</param>
-        /// <param name="speed">The speed of the scrape.</param>
-        /// <param name="duration">The duration of the scrape in seconds. This will be rounded to the nearest tenth of a second.</param>
-        private static byte[] GetScrape(ClatterObjectData primary, ClatterObjectData secondary, double speed, double duration)
-        {
-            // Get the number of scrape events.
-            int count = Scrape.GetNumScrapeEvents(duration);
-            // Get the scrape material.
-            primary.speed = speed;
-            // Get the scrape.
-            Scrape scrape = new Scrape(secondary.scrapeMaterial, primary, secondary, new Random());
-            byte[] audio = new byte[Scrape.SAMPLES_LENGTH * 2 * count];
-            int c = Scrape.SAMPLES_LENGTH * 2;
-            for (int i = 0; i < count; i++)
-            {
-                // Continue the scrape.
-                scrape.GetAudio(speed);
-                // Get the audio and copy it to the buffer.
-                Buffer.BlockCopy(scrape.samples.ToInt16Bytes(), 0, audio, i * c, c);
-            }
-            return audio;
-        }
-        
-        
-        /// <summary>
-        /// Generate an impact sound and write it to disk as a .wav file.
-        /// </summary>
-        /// <param name="primary">The primary object.</param>
-        /// <param name="secondary">The secondary object.</param>
-        /// <param name="speed">The speed of the impact.</param>
-        /// <param name="path">The path to the output file.</param>
-        private static void WriteImpact(ClatterObjectData primary, ClatterObjectData secondary, double speed, string path)
-        {
-            WavWriter writer = new WavWriter(path);
-            writer.Write(GetImpact(primary, secondary, speed));
-            writer.End();
-        }
-        
-        
-        /// <summary>
-        /// Generate a scrape sound and write it to disk as a .wav file.
-        /// This assumes that you have called SetPrimaryObject and SetSecondaryObject, and that in the latter call you provided a scrape material.
-        /// </summary>
-        /// <param name="primary">The primary object.</param>
-        /// <param name="secondary">The secondary object.</param>
-        /// <param name="speed">The speed of the scrape.</param>
-        /// <param name="duration">The duration of the scrape in seconds. This will be rounded to the nearest tenth of a second.</param>
-        /// <param name="path">The path to the output file.</param>
-        private static void WriteScrape(ClatterObjectData primary, ClatterObjectData secondary, double speed, double duration, string path)
-        {
-            WavWriter writer = new WavWriter(path);
-            writer.Write(GetScrape(primary, secondary, speed, duration));
-            writer.End();
+            amp = ArgumentParser.GetDoubleValue(args, target + "_amp");
+            resonance = ArgumentParser.GetDoubleValue(args, target + "_resonance");
+            mass = ArgumentParser.GetDoubleValue(args, target + "_mass");
         }
     }   
 }
