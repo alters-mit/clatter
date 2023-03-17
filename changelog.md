@@ -1,3 +1,7 @@
+# 0.1.2
+
+- Resonance values are no longer clamped between 0 and 1. Now, they are clamped to be at least zero, and the documentation recommends keeping the value under 1.
+
 # 0.1.1
 
 - Added: `Clatter.Core.ExternalEntyPoint`. A convenient entry point for external (non-C#) applications for generating single-event Clatter audio.

@@ -19,11 +19,11 @@ namespace Clatter.CommandLine
         {
             {"--primary_material [STRING]", "The primary object's ImpactMaterial. See ImpactMaterial API documentation for a list of options."},
             {"--primary_amp [FLOAT]", "The primary object's amp value (0-1)."},
-            {"--primary_resonance [FLOAT]", "The primary object's resonance value (0-1)."},
+            {"--primary_resonance [FLOAT]", "The primary object's resonance value."},
             {"--primary_mass [FLOAT]", "The primary object's mass."},
             {"--secondary_material [STRING]", "The secondary object's ImpactMaterial. See ImpactMaterial API documentation for a list of options."},
             {"--secondary_amp [FLOAT]", "The secondary object's amp value (0-1)."},
-            {"--secondary_resonance [FLOAT]", "The secondary object's resonance value (0-1)."},
+            {"--secondary_resonance [FLOAT]", "The secondary object's resonance value."},
             {"--secondary_mass [FLOAT]", "The secondary object's mass."},
             {"--speed [FLOAT]", "The speed of the collision."},
             {"--scrape_material [STRING]", "If --type is scrape, this sets the secondary object's scrape map. See ScrapeMaterial API documentation for a list of options."},
