@@ -547,9 +547,9 @@ def get_mobile_menu() -> str:
         for fi in namespaces[namespace]:
             mobile_menu.append(f'<p><a href="{fi}.html">{fi}</a></p>')
         # Add a divider.
-        mobile_menu.append('<div class="divider-menu"></div>')
+        mobile_menu.append('<ul><li><div class="divider-menu"></div></li></ul>')
     mobile_menu.append(f'<p><a href="cli_overview.html"><strong>Clatter CLI</strong></a></p>')
-    mobile_menu.append('<div class="divider-menu"></div>')
+    mobile_menu.append('<ul><li><div class="divider-menu"></div></li></ul>')
     mobile_menu.append(f'<p><a href="benchmark.html">Benchmark</a></p>')
     return '\n                '.join(mobile_menu)
 
