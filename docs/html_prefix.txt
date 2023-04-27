@@ -31,10 +31,10 @@
               <span class="line line3"></span>
             </div>
             <div class="menu-items">
-                <li><a class="left" href="index.html"><strong>Clatter API</strong></a></li>
-                <li><div class="divider-menu"></div></li>
-                <li><a class="left" href="https://github.com/alters-mit/clatter"><strong>GitHub Repo</strong></a></li>
-                <li><div class="divider-menu"></div></li>
+                <p><a class="left" href="index.html"><strong>Clatter API</strong></a></p>
+                <ul><li><div class="divider-menu"></div></li></ul>
+                <p><a class="left" href="https://github.com/alters-mit/clatter"><strong>GitHub Repo</strong></a></p>
+                <ul><li><div class="divider-menu"></div></li></ul>
 MOBILE_MENU
             </div>
         </div>

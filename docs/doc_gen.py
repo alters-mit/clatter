@@ -394,7 +394,12 @@ class Klass:
         if len(self.inheritance) > 0:
             inheritance_p = f'<p class="subtitle">Inherits from '
             for inh in self.inheritance:
-                inheritance_p += f'<a href="{inh}.html"><code>{inh}</code></a>, '
+                # Link out to Unity.
+                if inh == "MonoBehaviour":
+                    inheritance_p += f'<a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html"><code>{inh}</code></a>, '
+                # This is a Clatter class.
+                else:
+                    inheritance_p += f'<a href="{inh}.html"><code>{inh}</code></a>, '
             html += inheritance_p[:-2] + f'</p>\n\n'
         # Add the description.
         description = self.description.replace("\n\n", "%%").replace("\n", "\n\n").replace("%%", "\n\n")
@@ -537,15 +542,15 @@ def get_mobile_menu() -> str:
     for namespace in namespaces:
         # Add a title.
         ns_lower = namespace.lower()
-        mobile_menu.append(f'<li><a href="{ns_lower}_overview.html"><strong>{namespace}</strong></a></li>')
+        mobile_menu.append(f'<p><a href="{ns_lower}_overview.html"><strong>{namespace}</strong></a></p>')
         # Add a link to each file.
         for fi in namespaces[namespace]:
-            mobile_menu.append(f'<li><a href="{fi}.html">{fi}</a></li>')
+            mobile_menu.append(f'<p><a href="{fi}.html">{fi}</a></p>')
         # Add a divider.
-        mobile_menu.append('<li><div class="divider-menu"></div></li>')
-    mobile_menu.append(f'<li><a href="cli_overview.html"><strong>Clatter CLI</strong></a></li>')
-    mobile_menu.append('<li><div class="divider-menu"></div></li>')
-    mobile_menu.append(f'<li><a href="benchmark.html">Benchmark</a></li>')
+        mobile_menu.append('<div class="divider-menu"></div>')
+    mobile_menu.append(f'<p><a href="cli_overview.html"><strong>Clatter CLI</strong></a></p>')
+    mobile_menu.append('<div class="divider-menu"></div>')
+    mobile_menu.append(f'<p><a href="benchmark.html">Benchmark</a></p>')
     return '\n                '.join(mobile_menu)
 
 
