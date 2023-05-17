@@ -225,10 +225,6 @@ namespace Clatter.Unity
         /// </summary>
         private Vector3[] contactPoints;
         /// <summary>
-        /// A cached array of contact normals.
-        /// </summary>
-        private Vector3[] contactNormals;
-        /// <summary>
         /// The object's physic material.
         /// </summary>
         private PhysicMaterial physicMaterial;
@@ -245,7 +241,6 @@ namespace Clatter.Unity
         public void Initialize(uint id)
         {
             contactPoints = new Vector3[maxNumContacts];
-            contactNormals = new Vector3[maxNumContacts];
             double volume = 0;
             Vector3 boundsSize;
             Bounds b = new Bounds(gameObject.transform.position, Vector3.zero);
@@ -457,7 +452,6 @@ namespace Clatter.Unity
             for (int i = 0; i < numContacts; i++)
             {
                 contactPoints[i] = contacts[i].point;
-                contactNormals[i] = contacts[i].normal;
             }
             // Get the relative speed of the collision.
             double speed = collision.relativeVelocity.magnitude;
@@ -584,19 +578,6 @@ namespace Clatter.Unity
             {
                 primaryMono.hasPreviousArea = true;
                 primaryMono.previousArea = area; 
-            }
-            // For scrapes, use the averaged speed.
-            if (audioEventType == AudioEventType.scrape)
-            {
-                Vector3 normalizedVelocity = collision.relativeVelocity.normalized;
-                // Get the normal speeds.
-                double normalSpeeds = 0;
-                for (int i = 0; i < numContacts; i++)
-                {
-                    normalSpeeds += speed * Mathf.Acos(Mathf.Clamp(Vector3.Dot(contactNormals[i], normalizedVelocity), -1, 1));
-                }
-                // Get the average normal speed.
-                speed = normalSpeeds / numContacts;
             }
             // Ignore low-speed events.
             if (speed < minSpeed)

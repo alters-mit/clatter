@@ -28,7 +28,7 @@ public class Marbles : MonoBehaviour
         f.autoSetSize = false;
         f.size = 4;
         f.amp = 0.5;
-        f.resonance = 0.4;
+        f.resonance = 0.2;
         // Add the floor's Rigidbody and set the mass.
         Rigidbody fr = floor.AddComponent<Rigidbody>();
         fr.isKinematic = true;

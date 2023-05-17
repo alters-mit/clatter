@@ -299,7 +299,7 @@ MonoBehaviour:
   autoSetSize: 0
   size: 4
   hasScrapeMaterial: 1
-  scrapeMaterial: 1
+  scrapeMaterial: 3
   amp: 0.2
   resonance: 0.6
   physicMaterialMode: 4
@@ -312,7 +312,6 @@ MonoBehaviour:
   onDestroy:
     m_PersistentCalls:
       m_Calls: []
-  debugCollisions: 0
 --- !u!1 &1788447130
 GameObject:
   m_ObjectHideFlags: 0
@@ -364,7 +363,6 @@ MonoBehaviour:
   onDestroy:
     m_PersistentCalls:
       m_Calls: []
-  debugCollisions: 0
 --- !u!54 &1788447132
 Rigidbody:
   m_ObjectHideFlags: 0
