@@ -13,6 +13,10 @@ namespace Clatter.Core
         /// Meters per pixel on the scrape surface.
         /// </summary>
         public const double SCRAPE_M_PER_PIXEL = 1394.068 * 10e-9;
+        /// <summary>
+        /// An exponent for each scrape material's roughness ratio. A lower value will cause all scrape audio to be louder relative to impact audio.
+        /// </summary>
+        public static double roughnessRatioExponent = 0.7;
 
         
         /// <summary>
@@ -81,7 +85,7 @@ namespace Clatter.Core
             {
                 dsdx = dsdx,
                 d2sdx2 = d2sdx2,
-                roughnessRatio = BitConverter.ToDouble(raw, 0)
+                roughnessRatio = Math.Pow(BitConverter.ToDouble(raw, 0), roughnessRatioExponent)
             };
             ScrapeMaterials.Add(scrapeMaterial, scrapeMaterialData);
         }

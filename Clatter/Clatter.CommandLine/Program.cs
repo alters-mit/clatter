@@ -34,6 +34,7 @@ namespace Clatter.CommandLine
             {"--allow_distortion", "OPTIONAL. If included, don't clamp impact amp values to 0.99. See: Impact.preventDistortion"},
             {"--unclamp_contact_time", "OPTIONAL. If included, don't clamp impact contact times to plausible values. See: Impact.clampContactTime"},
             {"--scrape_max_speed [FLOAT]", "OPTIONAL. Clamp scrape speeds to this maximum value. See: Scrape.maxSpeed"},
+            {"--roughness_ratio_exponent [FLOAT]", "OPTIONAL. Set the roughness ratio exponent. See: Scrape.roughnessRatioExponent"},
             {"--framerate [INT]", "OPTIONAL. The audio framerate. If not included, defaults to 44100. See: Globals.framerate"},
             {"--help", "OPTIONAL. Print this message and exit."}
         };
@@ -90,6 +91,8 @@ namespace Clatter.CommandLine
             }
             else if (audioEventTypeStr == "scrape")
             {
+                ArgumentParser.TryGetDoubleValue(args, "roughness_ratio_exponent",
+                    ref ScrapeMaterialData.roughnessRatioExponent);
                 audioEventType = AudioEventType.scrape;
                 scrapeDuration = ArgumentParser.GetDoubleValue(args, "duration");
                 string s = ArgumentParser.GetStringValue(args, "scrape_material");
