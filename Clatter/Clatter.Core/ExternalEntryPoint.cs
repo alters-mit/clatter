@@ -82,7 +82,7 @@ namespace Clatter.Core
                 // Get the number of scrape events.
                 int count = Scrape.GetNumScrapeEvents(duration);
                 // Get the scrape.
-                Scrape scrape = new Scrape(secondary.scrapeMaterial, primary, secondary, new Random());
+                Scrape scrape = new Scrape(sm, primary, secondary, new Random());
                 audio = new byte[Scrape.SAMPLES_LENGTH * 2 * count];
                 int c = Scrape.SAMPLES_LENGTH * 2;
                 for (int i = 0; i < count; i++)
