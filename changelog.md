@@ -1,3 +1,8 @@
+# 0.1.4
+
+- `ClatterManager.auto` and `ClatterManager.adjustAudioSettings` are now static fields.
+- Added: `Sound.spatialize`
+
 # 0.1.3
 
 - Added: `ScrapeMaterialData.roughnessRatioExponent` An exponent for each scrape material's roughness ratio. A lower value will cause all scrape audio to be louder relative to impact audio.

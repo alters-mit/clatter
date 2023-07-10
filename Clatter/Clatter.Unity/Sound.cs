@@ -23,6 +23,10 @@ namespace Clatter.Unity
         /// </summary>
         public static Action<Sound, AudioSource> onCreate;
         /// <summary>
+        /// If true, spatialize each AudioSource.
+        /// </summary>
+        public static bool spatialize = true;
+        /// <summary>
         /// Invoked when the audio ends.
         /// </summary>
         public Action<int> onEnd;
@@ -76,7 +80,10 @@ namespace Clatter.Unity
             sound.id = id;
             sound.samples = samples;
             sound.source = go.AddComponent<AudioSource>();
-            sound.source.spatialize = true;
+            if (spatialize)
+            {
+                sound.source.spatialize = true;           
+            }
             // Set the audio clip.
             sound.Play(sound.samples.ToFloats());
             // Announce creation.

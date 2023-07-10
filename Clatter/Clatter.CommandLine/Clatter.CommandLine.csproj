@@ -8,7 +8,7 @@
         <RootNamespace>Clatter.CommandLine</RootNamespace>
         <Company>MIT</Company>
         <Product>clatter</Product>
-        <AssemblyVersion>0.1.3</AssemblyVersion>
+        <AssemblyVersion>0.1.4</AssemblyVersion>
         <AssemblyName>clatter</AssemblyName>
     </PropertyGroup>
 

@@ -44,7 +44,11 @@ namespace Clatter.Unity
         /// <summary>
         /// If true, automatically update by calling Awake(), Update(), and FixedUpdate() (like an ordinary MonoBehaviour object). If this is false, you must manually update instead by calling instance.Awake(), instance.OnUpdate(), and instance.OnFixedUpdate().
         /// </summary>
-        public bool auto = true;
+        public static bool auto = true;
+        /// <summary>
+        /// If true, adjust the global audio settings for better-quality audio.
+        /// </summary>
+        public static bool adjustAudioSettings = true;
         /// <summary>
         /// If true, generate a new random seed.
         /// </summary>
@@ -53,10 +57,6 @@ namespace Clatter.Unity
         /// The random seed. Ignored if generateRandomSeed == true.
         /// </summary>
         public int seed;
-        /// <summary>
-        /// If true, adjust the global audio settings for better-quality audio.
-        /// </summary>
-        public bool adjustAudioSettings = true;
         /// <summary>
         /// The audio generator.
         /// </summary>

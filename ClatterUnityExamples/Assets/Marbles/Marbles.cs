@@ -82,7 +82,6 @@ public class Marbles : MonoBehaviour
         // Add the ClatterManager.
         GameObject go = new GameObject("ClatterManager");
         ClatterManager cm = go.AddComponent<ClatterManager>();
-        cm.auto = true;
         cm.OnAwake();
     }
 }
