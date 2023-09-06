@@ -1,4 +1,5 @@
 ﻿using System;
+using ClatterRs;
 
 
 namespace Clatter.Core
@@ -97,17 +98,39 @@ namespace Clatter.Core
                 {
                     Array.Resize(ref mode, modeCount);
                 }
+                // Synthesize a sinusoid.
                 if (modeCount > 0)
                 {
-                    // Synthesize a sinusoid.
-                    double pow = Math.Pow(10, powers[i] / 20);
-                    double dcy = -60 / (decayTimes[i] * resonance / 1e3) / 20;
-                    double q = 2 * frequencies[i] * Math.PI;
-                    double tt;
-                    for (int j = 0; j < modeCount; j++)
+                    // Use the native Rust library.
+                    if (Globals.CanUseNativeLibrary)
                     {
-                        tt = j / Globals.framerateD;
-                        mode[j] = Math.Cos(tt * q) * pow * Math.Pow(10, tt * dcy);
+                        unsafe
+                        {
+                            fixed (double* modePointer = mode)
+                            {
+                                UIntPtr modeLength = (UIntPtr)mode.Length;
+                                Vec_double_t modeVec = new Vec_double_t
+                                {
+                                    ptr = modePointer,
+                                    len = modeLength,
+                                    cap = modeLength
+                                };
+                                Ffi.ir_sinusoid(powers[i], decayTimes[i], frequencies[i], resonance, (UIntPtr)modeCount, Globals.framerateD, &modeVec);
+                            }
+                        }
+                    }
+                    // Use C# code.
+                    else
+                    {
+                        double pow = Math.Pow(10, powers[i] / 20);
+                        double dcy = -60 / (decayTimes[i] * resonance / 1e3) / 20;
+                        double q = 2 * frequencies[i] * Math.PI;
+                        double tt;
+                        for (int j = 0; j < modeCount; j++)
+                        {
+                            tt = j / Globals.framerateD;
+                            mode[j] = Math.Cos(tt * q) * pow * Math.Pow(10, tt * dcy);
+                        }                  
                     }
                 }
                 if (i == 0)

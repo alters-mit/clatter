@@ -46,11 +46,14 @@ public unsafe partial class Ffi {
 
 public unsafe partial class Ffi {
     [DllImport(RustLib, ExactSpelling = true)] public static unsafe extern
-    void ffi_convolve (
-        Vec_double_t /*const*/ * input,
-        Vec_double_t /*const*/ * kernel,
-        Vec_double_t * output,
-        UIntPtr length);
+    void ir_sinusoid (
+        double power,
+        double decay,
+        double frequency,
+        double resonance,
+        UIntPtr mode_count,
+        double framerate,
+        Vec_double_t * mode);
 }
 
 public unsafe partial class Ffi {

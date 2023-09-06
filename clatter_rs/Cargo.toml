@@ -13,5 +13,3 @@ headers = ["safer-ffi/headers"]
 
 [dependencies]
 safer-ffi = { version = "0.1.2", features = ["alloc"] }
-fftconvolve = "0.1.1"
-ndarray = "0.15.6"
