@@ -3,14 +3,14 @@
     /// <summary>
     /// Extensions for shorts.
     /// </summary>
-    public static class ShortExtensions
+    internal static class ShortExtensions
     {
         /// <summary>
         /// Fills an existing byte array with bytes.
         /// </summary>
         /// <param name="value">(this)</param>
         /// <param name="bytes">The byte array.</param>
-        public static unsafe void GetBytes(this short value, byte[] bytes)
+        internal static unsafe void GetBytes(this short value, byte[] bytes)
         {
             fixed (byte* numPtr = bytes)
                 *(short*) numPtr = value;

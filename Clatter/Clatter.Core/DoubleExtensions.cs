@@ -121,7 +121,7 @@ namespace Clatter.Core
         /// <param name="yIndexOffset">Offset the y index by this value.</param>
         /// <param name="startX">Start interpolating the x array at this index.</param>
         /// <param name="endX">The final index in the x array.</param>
-        public static double Interpolate1D(this double value, double[] x, double[] y, double lower, double upper, int yIndexOffset, ref int startX, int endX)
+        internal static double Interpolate1D(this double value, double[] x, double[] y, double lower, double upper, int yIndexOffset, ref int startX, int endX)
         {
             int start;
             int next;
