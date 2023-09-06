@@ -36,7 +36,7 @@ namespace Clatter.Core
                 Array.Resize(ref arr, steps * 2);
             }
             double stepSize = (b - a) / (steps - 1);
-            for (uint i = 0; i < arr.Length - 1; i++)
+            for (uint i = 0; i < steps; i++)
             {
                 arr[i] = a + i * stepSize;
             }

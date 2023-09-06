@@ -11,7 +11,7 @@ namespace Clatter.Core
     ///
     /// This is an optimized version of this class: https://github.com/mathnet/mathnet-filtering/blob/master/src/Filtering/Median/OnlineMedianFilter.cs
     /// </summary>
-    public class MedianFilter
+    internal class MedianFilter
     {
         /// <summary>
         /// The filter buffer.
@@ -35,7 +35,7 @@ namespace Clatter.Core
         /// Create a Median Filter.
         /// </summary>
         /// <param name="windowSize">The window size.</param>
-        public MedianFilter(int windowSize)
+        internal MedianFilter(int windowSize)
         {
             // Set the buffer.
             buffer = new double[windowSize];
@@ -51,7 +51,7 @@ namespace Clatter.Core
         /// Process a single sample.
         /// </summary>
         /// <param name="sample">The sample.</param>
-        public double ProcessSample(double sample)
+        internal double ProcessSample(double sample)
         {
             buffer[offset = (offset == 0) ? buffer.Length - 1 : offset - 1] = sample;
             bufferFull |= offset == 0;
