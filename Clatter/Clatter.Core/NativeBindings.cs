@@ -37,6 +37,15 @@ public unsafe struct Vec_double_t {
 
 public unsafe partial class Ffi {
     [DllImport(RustLib, ExactSpelling = true)] public static unsafe extern
+    void convolve (
+        Vec_double_t /*const*/ * input,
+        Vec_double_t /*const*/ * kernel,
+        Vec_double_t * output,
+        UIntPtr length);
+}
+
+public unsafe partial class Ffi {
+    [DllImport(RustLib, ExactSpelling = true)] public static unsafe extern
     void ffi_convolve (
         Vec_double_t /*const*/ * input,
         Vec_double_t /*const*/ * kernel,
