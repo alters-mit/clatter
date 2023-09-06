@@ -1,0 +1,17 @@
+[package]
+name = "clatter_rs"
+version = "0.1.0"
+edition = "2021"
+authors = ["Esther Alter <subalterngames@gmail.com>"]
+description = "Rust code for Clatter"
+
+[lib]
+crate-type = ["lib", "cdylib"]
+
+[features]
+headers = ["safer-ffi/headers"]
+
+[dependencies]
+safer-ffi = { version = "0.1.2", features = ["alloc"] }
+fftconvolve = "0.1.1"
+ndarray = "0.15.6"

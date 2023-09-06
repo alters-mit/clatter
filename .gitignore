@@ -11,6 +11,7 @@ ClatterUnityExamples/Temp/
 ClatterUnityExamples/.vsconfig
 docs/xml/
 github_auth.txt
-ClatterUnityExamples/Assets/Plugins/Clatter.Core.dll
-ClatterUnityExamples/Assets/Plugins/Clatter.Unity.dll
+ClatterUnityExamples/Assets/Plugins/
 ClatterUnityExamples/UserSettings/EditorUserSettings.asset
+Clatter/Clatter.Core/clatter_rs.dll
+clatter_rs/target/

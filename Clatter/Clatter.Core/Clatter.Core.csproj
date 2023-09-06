@@ -57,6 +57,7 @@
         <Compile Include="LinSpace.cs" />
         <Compile Include="MedianFilter.cs" />
         <Compile Include="Modes.cs" />
+        <Compile Include="NativeBindings.cs" />
         <Compile Include="NormalDistribution.cs" />
         <Compile Include="Loader.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
@@ -165,6 +166,11 @@
       <EmbeddedResource Include="Data\ScrapeMaterials\sanded_acrylic.bytes" />
       <EmbeddedResource Include="Data\ScrapeMaterials\sandpaper.bytes" />
       <EmbeddedResource Include="Data\ScrapeMaterials\vinyl.bytes" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="clatter_rs.dll">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

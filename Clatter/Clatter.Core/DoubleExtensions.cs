@@ -1,4 +1,5 @@
 ﻿using System;
+using ClatterRs;
 
 
 namespace Clatter.Core
@@ -6,21 +7,21 @@ namespace Clatter.Core
     /// <summary>
     /// Extensions for doubles.
     /// </summary>
-    public static class DoubleExtensions
+    internal static class DoubleExtensions
     {
         /// <summary>
         /// Conversion factor for float to short.
         /// </summary>
         private const int FLOAT_TO_SHORT = 32767;
-        
-        
+
+
         /// <summary>
         /// Clamp this value to be between a and b.
         /// </summary>
         /// <param name="d">(this)</param>
         /// <param name="a">The lower bound.</param>
         /// <param name="b">The upper bound (inclusive).</param>
-        public static double Clamp(this double d, double a, double b)
+        internal static double Clamp(this double d, double a, double b)
         {
             if (d < a)
             {
@@ -46,27 +47,63 @@ namespace Clatter.Core
         /// <param name="kernel">A convolution kernel.</param>
         /// <param name="length">The length of the convolved array.</param>
         /// <param name="result">The output array.</param>
-        public static void Convolve(this double[] a, double[] kernel, int length, ref double[] result)
+        internal static void Convolve(this double[] a, double[] kernel, int length, ref double[] result)
         {
             if (result.Length < length)
             {
                 Array.Resize(ref result, length * 2);
             }
-            double sum;
-            int n1;
-            int n2;
-            int inputLength = a.Length;
-            int kernelLength = kernel.Length;
-            for (int i = length - 1; i >= 0; i--)
+            // Rust convolution.
+            if (Globals.CanUseNativeLibrary)
             {
-                sum = 0;
-                n1 = i < inputLength ? 0 : i - inputLength - 1;
-                n2 = i < kernelLength ? i : kernelLength - 1;
-                for (int j = n1; j <= n2; j++)
+                unsafe
                 {
-                    sum += a[i - j] * kernel[j];
+                    UIntPtr aLength = (UIntPtr)a.Length;
+                    UIntPtr kernelLength = (UIntPtr)kernel.Length;
+                    UIntPtr resultLength = (UIntPtr)result.Length;
+                    fixed (double* aPointer = a, kernelPointer = kernel, resultPointer = result)
+                    {
+                        Vec_double_t aVec = new Vec_double_t()
+                        {
+                            ptr = aPointer,
+                            len = aLength,
+                            cap = aLength,
+                        };
+                        Vec_double_t kernelVec = new Vec_double_t()
+                        {
+                            ptr = kernelPointer,
+                            len = kernelLength,
+                            cap = kernelLength,
+                        };
+                        Vec_double_t resultVec = new Vec_double_t()
+                        {
+                            ptr = resultPointer,
+                            len = resultLength,
+                            cap = resultLength,
+                        };
+                        Ffi.ffi_convolve(&aVec, &kernelVec, &resultVec, (UIntPtr)length);
+                    }
                 }
-                result[i] = sum;
+            }
+            // Pure-C# convolution.
+            else
+            {
+                double sum;
+                int n1;
+                int n2;
+                int inputLength = a.Length;
+                int kernelLength = kernel.Length;
+                for (int i = length - 1; i >= 0; i--)
+                {
+                    sum = 0;
+                    n1 = i < inputLength ? 0 : i - inputLength - 1;
+                    n2 = i < kernelLength ? i : kernelLength - 1;
+                    for (int j = n1; j <= n2; j++)
+                    {
+                        sum += a[i - j] * kernel[j];
+                    }
+                    result[i] = sum;
+                }  
             }
         }
 
@@ -84,7 +121,7 @@ namespace Clatter.Core
         /// <param name="yIndexOffset">Offset the y index by this value.</param>
         /// <param name="startX">Start interpolating the x array at this index.</param>
         /// <param name="endX">The final index in the x array.</param>
-        public static double Interpolate1D(this double value, double[] x, double[] y, double lower, double upper, int yIndexOffset, ref int startX, int endX)
+        internal static double Interpolate1D(this double value, double[] x, double[] y, double lower, double upper, int yIndexOffset, ref int startX, int endX)
         {
             int start;
             int next;
@@ -114,7 +151,7 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="a">(this)</param>
         /// <param name="length">The length of the converted array.</param>
-        public static float[] ToFloats(this double[] a, int length)
+        internal static float[] ToFloats(this double[] a, int length)
         {
             float[] fs = new float[length];
             for (int i = 0; i < length; i++)
@@ -130,7 +167,7 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="a">(this)</param>
         /// <param name="length">The length of the converted array.</param>
-        public static byte[] ToInt16Bytes(this double[] a, int length)
+        internal static byte[] ToInt16Bytes(this double[] a, int length)
         {
             byte[] bs = new byte[length * 2];
             byte[] shortArray = new byte[2];
@@ -156,7 +193,7 @@ namespace Clatter.Core
         /// Source: https://github.com/mathnet/mathnet-numerics/blob/master/src/Numerics/Statistics/ArrayStatistics.cs#L413
         /// </summary>
         /// <param name="data">Sample array, no sorting is assumed. Will be reordered.</param>
-        public static double MedianInPlace(this double[] data)
+        internal static double MedianInPlace(this double[] data)
         {
             int k = data.Length / 2;
             return data.Length % 2 != 0
