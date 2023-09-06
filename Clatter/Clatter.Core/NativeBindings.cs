@@ -57,6 +57,13 @@ public unsafe partial class Ffi {
 }
 
 public unsafe partial class Ffi {
+    [DllImport(RustLib, ExactSpelling = true)] public static unsafe extern
+    void impact_frequencies (
+        Vec_double_t * linear_space,
+        UIntPtr length);
+}
+
+public unsafe partial class Ffi {
     /// <summary>
     /// No-op to let the C# library check if it can load this library.
     /// </summary>

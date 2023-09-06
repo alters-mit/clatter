@@ -1,4 +1,4 @@
-use std::f64::consts::TAU;
+use std::f64::consts::{TAU, PI};
 use safer_ffi::ffi_export;
 #[cfg(feature = "headers")]
 use safer_ffi::headers::Language::CSharp;
@@ -12,6 +12,7 @@ pub fn is_ok() {}
 /// 
 /// Source: https://stackoverflow.com/a/7239016
 /// This code is a more optimized version of the source.
+/// 
 /// We're not using an fft convolve because it's actually faster to convolve in-place without ndarray.
 /// 
 /// - `input` The input array.
@@ -69,6 +70,16 @@ pub fn mode_sinusoid(
         .map(|t| t as f64 / framerate)
         .zip(mode.iter_mut())
         .for_each(|(t, m)| *m = (t * q).cos() * pow * 10.0f64.powf(t * dcy));
+}
+
+/// Create a sine wave for impact audio.
+/// 
+/// - `arr` The array that will be filled.
+/// - `length` The array will be filled up to this length.
+#[ffi_export]
+pub fn impact_frequencies(arr: &mut safer_ffi::Vec<f64>, length: usize) {
+    let step = PI / (length - 1) as f64;
+    arr[0..length].iter_mut().enumerate().for_each(|(i, v)| *v = (i as f64 * step).sin());
 }
 
 #[cfg(feature = "headers")]

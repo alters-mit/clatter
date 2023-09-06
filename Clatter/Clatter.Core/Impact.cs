@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using ClatterRs;
 
 
 namespace Clatter.Core
@@ -106,15 +107,32 @@ namespace Clatter.Core
                     maxT = Math.Min(maxT, MAX_CONTACT_TIME);
                 }
                 // Convolve with force, with contact time scaled by the object mass.
-                double[] frc = LinSpace.Get(0, Math.PI, (int)Math.Ceiling(maxT * Globals.framerate));
-                // Clamp the amp.
-                if (preventDistortion && amp > MAX_AMP)
+                double[] frc;
+                if (Globals.CanUseNativeLibrary)
                 {
-                    amp = MAX_AMP;
+                    frc = new double[(int)Math.Ceiling(maxT * Globals.framerate)];
+                    UIntPtr frcLength = (UIntPtr)frc.Length;
+                    unsafe
+                    {
+                        fixed (double* frcPointer = frc)
+                        {
+                            Vec_double_t frcVec = new Vec_double_t
+                            {
+                                ptr = frcPointer,
+                                len = frcLength,
+                                cap = frcLength
+                            };
+                            Ffi.impact_frequencies(&frcVec, frcLength);
+                        }
+                    }
                 }
-                for (int i = 0; i < frc.Length; i++)
+                else
                 {
-                    frc[i] = Math.Sin(frc[i]);
+                    frc = LinSpace.Get(0, Math.PI, (int)Math.Ceiling(maxT * Globals.framerate));
+                    for (int i = 0; i < frc.Length; i++)
+                    {
+                        frc[i] = Math.Sin(frc[i]);
+                    }                 
                 }
                 // Convolve.
                 impulseResponse.Convolve(frc, impulseResponseLength, ref samples.samples);
@@ -125,6 +143,11 @@ namespace Clatter.Core
                     {
                         maxSample = samples.samples[i];
                     }
+                }
+                // Clamp the amp.
+                if (preventDistortion && amp > MAX_AMP)
+                {
+                    amp = MAX_AMP;
                 }
                 maxSample = Math.Abs(maxSample);
                 double maxAbsSample = 0;
