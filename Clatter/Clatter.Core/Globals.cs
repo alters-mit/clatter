@@ -50,7 +50,6 @@ namespace Clatter.Core
                         canUseNativeLibrary = false;
                     }
                 }
-
                 return canUseNativeLibrary;
             }
         }

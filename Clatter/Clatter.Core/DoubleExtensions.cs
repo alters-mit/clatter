@@ -7,7 +7,7 @@ namespace Clatter.Core
     /// <summary>
     /// Extensions for doubles.
     /// </summary>
-    internal static class DoubleExtensions
+    public static class DoubleExtensions
     {
         /// <summary>
         /// Conversion factor for float to short.
@@ -21,7 +21,7 @@ namespace Clatter.Core
         /// <param name="d">(this)</param>
         /// <param name="a">The lower bound.</param>
         /// <param name="b">The upper bound (inclusive).</param>
-        internal static double Clamp(this double d, double a, double b)
+        public static double Clamp(this double d, double a, double b)
         {
             if (d < a)
             {
