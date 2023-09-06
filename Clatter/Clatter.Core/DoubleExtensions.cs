@@ -200,8 +200,8 @@ namespace Clatter.Core
                 ? data.SelectInPlace(k)
                 : (data.SelectInPlace(k - 1) + data.SelectInPlace(k)) / 2.0;
         }
-        
-        
+
+
         /// <summary>
         /// Source: https://github.com/mathnet/mathnet-numerics/blob/70d45612af89d3b70661a566c9b82a8982a23f1d/src/Numerics/Statistics/ArrayStatistics.cs#L663
         /// </summary>
