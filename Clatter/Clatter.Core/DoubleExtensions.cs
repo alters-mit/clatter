@@ -47,7 +47,7 @@ namespace Clatter.Core
         /// <param name="kernel">A convolution kernel.</param>
         /// <param name="length">The length of the convolved array.</param>
         /// <param name="result">The output array.</param>
-        internal static void Convolve(this double[] a, double[] kernel, int length, ref double[] result)
+        public static void Convolve(this double[] a, double[] kernel, int length, ref double[] result)
         {
             if (result.Length < length)
             {
@@ -121,7 +121,7 @@ namespace Clatter.Core
         /// <param name="yIndexOffset">Offset the y index by this value.</param>
         /// <param name="startX">Start interpolating the x array at this index.</param>
         /// <param name="endX">The final index in the x array.</param>
-        internal static double Interpolate1D(this double value, double[] x, double[] y, double lower, double upper, int yIndexOffset, ref int startX, int endX)
+        public static double Interpolate1D(this double value, double[] x, double[] y, double lower, double upper, int yIndexOffset, ref int startX, int endX)
         {
             int start;
             int next;
@@ -151,7 +151,7 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="a">(this)</param>
         /// <param name="length">The length of the converted array.</param>
-        internal static float[] ToFloats(this double[] a, int length)
+        public static float[] ToFloats(this double[] a, int length)
         {
             float[] fs = new float[length];
             for (int i = 0; i < length; i++)
@@ -167,7 +167,7 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="a">(this)</param>
         /// <param name="length">The length of the converted array.</param>
-        internal static byte[] ToInt16Bytes(this double[] a, int length)
+        public static byte[] ToInt16Bytes(this double[] a, int length)
         {
             byte[] bs = new byte[length * 2];
             byte[] shortArray = new byte[2];
@@ -193,7 +193,7 @@ namespace Clatter.Core
         /// Source: https://github.com/mathnet/mathnet-numerics/blob/master/src/Numerics/Statistics/ArrayStatistics.cs#L413
         /// </summary>
         /// <param name="data">Sample array, no sorting is assumed. Will be reordered.</param>
-        internal static double MedianInPlace(this double[] data)
+        public static double MedianInPlace(this double[] data)
         {
             int k = data.Length / 2;
             return data.Length % 2 != 0
@@ -207,7 +207,7 @@ namespace Clatter.Core
         /// </summary>
         /// <param name="workingData">The data.</param>
         /// <param name="rank">The rank value.</param>
-        private static double SelectInPlace(this double[] workingData, int rank)
+        public static double SelectInPlace(this double[] workingData, int rank)
         {
             // Numerical Recipes: select
             // http://en.wikipedia.org/wiki/Selection_algorithm
@@ -289,7 +289,7 @@ namespace Clatter.Core
         /// Source: https://github.com/mathnet/mathnet-numerics/blob/70d45612af89d3b70661a566c9b82a8982a23f1d/src/Numerics/Statistics/ArrayStatistics.cs#L51
         /// </summary>
         /// <param name="data">Sample array, no sorting is assumed.</param>
-        private static double Minimum(this double[] data)
+        public static double Minimum(this double[] data)
         {
             double min = double.PositiveInfinity;
             for (int i = 0; i < data.Length; i++)
