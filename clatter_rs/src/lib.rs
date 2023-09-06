@@ -1,5 +1,6 @@
 use std::f64::consts::{TAU, PI};
 use safer_ffi::ffi_export;
+use lazy_static::lazy_static;
 #[cfg(feature = "headers")]
 use safer_ffi::headers::Language::CSharp;
 
@@ -7,7 +8,7 @@ use safer_ffi::headers::Language::CSharp;
 const SCRAPE_M_PER_PIXEL: f64 = 1394.068 * 10e-9;
 const SCRAPE_LINEAR_SPACE_LEN: usize = 4410;
 const SCRAPE_LINEAR_SPACE_STEP: f64 = 1.0 / (SCRAPE_LINEAR_SPACE_LEN - 1) as f64;
-const SCRAPE_LINEAR_SPACE: Vec<f64> = (0usize..SCRAPE_LINEAR_SPACE_LEN).map(|i| i as f64 * SCRAPE_LINEAR_SPACE_STEP).collect();
+lazy_static! { static ref SCRAPE_LINEAR_SPACE: Vec<f64> = (0usize..SCRAPE_LINEAR_SPACE_LEN).map(|i| i as f64 * SCRAPE_LINEAR_SPACE_STEP).collect(); }
 
 type SafeVec = safer_ffi::Vec<f64>;
 

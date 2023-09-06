@@ -13,3 +13,4 @@ headers = ["safer-ffi/headers"]
 
 [dependencies]
 safer-ffi = { version = "0.1.2", features = ["alloc"] }
+lazy_static = "1.4.0"
