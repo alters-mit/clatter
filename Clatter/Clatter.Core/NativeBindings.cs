@@ -36,24 +36,24 @@ public unsafe struct Vec_double_t {
 }
 
 public unsafe partial class Ffi {
+    /// <summary>
+    /// Convolve the input by the kernel.
+    ///
+    /// Source: https://stackoverflow.com/a/7239016
+    /// This code is a more optimized version of the source.
+    /// We're not using an fft convolve because it's actually faster to convolve in-place without ndarray.
+    ///
+    /// - <c>input</c> The input array.
+    /// - <c>kernel</c> A convolution kernel.
+    /// - <c>length</c> The length of the convolved array.
+    /// - <c>output</c> The output array.
+    /// </summary>
     [DllImport(RustLib, ExactSpelling = true)] public static unsafe extern
     void convolve (
         Vec_double_t /*const*/ * input,
         Vec_double_t /*const*/ * kernel,
-        Vec_double_t * output,
-        UIntPtr length);
-}
-
-public unsafe partial class Ffi {
-    [DllImport(RustLib, ExactSpelling = true)] public static unsafe extern
-    void ir_sinusoid (
-        double power,
-        double decay,
-        double frequency,
-        double resonance,
-        UIntPtr mode_count,
-        double framerate,
-        Vec_double_t * mode);
+        UIntPtr length,
+        Vec_double_t * output);
 }
 
 public unsafe partial class Ffi {
@@ -62,6 +62,28 @@ public unsafe partial class Ffi {
     /// </summary>
     [DllImport(RustLib, ExactSpelling = true)] public static unsafe extern
     void is_ok ();
+}
+
+public unsafe partial class Ffi {
+    /// <summary>
+    /// Synthesize a sinusoid from mode data.
+    ///
+    /// - <c>power</c> The mode onset powers in dB.
+    /// - <c>decay</c> The mode decay time i.e. the time in ms it takes for this mode to decay 60dB from its onset power.
+    /// - <c>frequency</c> The mode frequency in Hz.
+    /// - <c>resonance</c> The object's resonance value.
+    /// - <c>mode_count</c> The actual length of the sinusoid.
+    /// - <c>framerate</c> The audio framerate.
+    /// </summary>
+    [DllImport(RustLib, ExactSpelling = true)] public static unsafe extern
+    void mode_sinusoid (
+        double power,
+        double decay,
+        double frequency,
+        double resonance,
+        UIntPtr mode_count,
+        double framerate,
+        Vec_double_t * mode);
 }
 
 

@@ -81,7 +81,7 @@ namespace Clatter.Core
                             len = resultLength,
                             cap = resultLength,
                         };
-                        Ffi.convolve(&aVec, &kernelVec, &resultVec, (UIntPtr)length);
+                        Ffi.convolve(&aVec, &kernelVec, (UIntPtr)length, &resultVec);
                     }
                 }
             }

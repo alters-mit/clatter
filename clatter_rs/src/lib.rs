@@ -8,12 +8,22 @@ use safer_ffi::Vec as SafeVec;
 #[ffi_export]
 pub fn is_ok() {}
 
+/// Convolve the input by the kernel.
+/// 
+/// Source: https://stackoverflow.com/a/7239016
+/// This code is a more optimized version of the source.
+/// We're not using an fft convolve because it's actually faster to convolve in-place without ndarray.
+/// 
+/// - `input` The input array.
+/// - `kernel` A convolution kernel.
+/// - `length` The length of the convolved array.
+/// - `output` The output array.
 #[ffi_export]
 pub fn convolve(
     input: &SafeVec<f64>,
     kernel: &SafeVec<f64>,
-    output: &mut SafeVec<f64>,
     length: usize,
+    output: &mut SafeVec<f64>,
 ) {
     let input_length = input.len();
     let kernel_length = kernel.len();
@@ -34,8 +44,16 @@ pub fn convolve(
     }
 }
 
+/// Synthesize a sinusoid from mode data.
+/// 
+/// - `power` The mode onset powers in dB. 
+/// - `decay` The mode decay time i.e. the time in ms it takes for this mode to decay 60dB from its onset power.
+/// - `frequency` The mode frequency in Hz.
+/// - `resonance` The object's resonance value.
+/// - `mode_count` The actual length of the sinusoid.
+/// - `framerate` The audio framerate.
 #[ffi_export]
-pub fn ir_sinusoid(
+pub fn mode_sinusoid(
     power: f64,
     decay: f64,
     frequency: f64,

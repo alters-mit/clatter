@@ -115,7 +115,7 @@ namespace Clatter.Core
                                     len = modeLength,
                                     cap = modeLength
                                 };
-                                Ffi.ir_sinusoid(powers[i], decayTimes[i], frequencies[i], resonance, (UIntPtr)modeCount, Globals.framerateD, &modeVec);
+                                Ffi.mode_sinusoid(powers[i], decayTimes[i], frequencies[i], resonance, (UIntPtr)modeCount, Globals.framerateD, &modeVec);
                             }
                         }
                     }
