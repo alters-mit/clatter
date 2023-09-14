@@ -75,8 +75,7 @@ namespace Clatter.Core
         /// Generate audio. Returns true if audio was generated. This will set the `samples` field.
         /// </summary>
         /// <param name="speed">The collision speed in meters per second.</param>
-        /// <param name="impulseResponsePath">Optional. If included, this is the path to a file containing impulse response data.</param>
-        public override bool GetAudio(double speed, string impulseResponsePath = null)
+        public override bool GetAudio(double speed)
         {
             // Get the elapsed time.
             dt = watch.Elapsed.TotalSeconds;
@@ -95,7 +94,7 @@ namespace Clatter.Core
                 // Adjust the modes and get the amp value.
                 double amp = AdjustModes(speed);
                 // Get the impulse response.
-                int impulseResponseLength = impulseResponsePath == null ? GetImpulseResponse(amp, ref impulseResponse) : LoadImpulseResponse(impulseResponsePath, amp, ref impulseResponse);
+                int impulseResponseLength = GetImpulseResponse(amp, ref impulseResponse);
                 if (impulseResponseLength == 0)
                 {
                     return false;
