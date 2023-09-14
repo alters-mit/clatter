@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 
 namespace Clatter.Core
@@ -78,7 +79,8 @@ namespace Clatter.Core
         /// Generate audio. Returns true if audio was generated. This will set the `samples` field.
         /// </summary>
         /// <param name="speed">The collision speed in meters per second.</param>
-        public abstract bool GetAudio(double speed);
+        /// <param name="impulseResponsePath">Optional. If included, this is the path to a file containing impulse response data.</param>
+        public abstract bool GetAudio(double speed, string impulseResponsePath = null);
         
         
         /// <summary>
@@ -126,6 +128,38 @@ namespace Clatter.Core
             modesA.Sum(primary.resonance);
             modesB.Sum(secondary.resonance);
             int impulseResponseLength = Modes.Add(modesA.synthSound, modesA.synthSoundLength, modesB.synthSound, modesB.synthSoundLength, ref impulseResponse);
+            return impulseResponseLength;
+        }
+        
+        
+        /// <summary>
+        /// Load an impulse response from a file.
+        /// </summary>
+        /// <param name="path">The file path.</param>
+        /// <param name="amp">The amplitude multiplier of the sound.</param>
+        /// <param name="impulseResponse">The generated impulse response. The returned integer is the length of the data.</param>
+        protected int LoadImpulseResponse(string path, double amp, ref double[] impulseResponse)
+        {
+            if (amp <= 0)
+            {
+                return 0;
+            }
+            // Sum the modes.
+            modesA.Sum(primary.resonance);
+            modesB.Sum(secondary.resonance);
+            
+            // Load the impulse response.
+            byte[] impulseResponseBytes = File.ReadAllBytes(path);
+            int impulseResponseLength = impulseResponseBytes.Length / 8;
+            
+            // Resize the output array if needed.
+            if (impulseResponse.Length < impulseResponseLength)
+            {
+                Array.Resize(ref impulseResponse, impulseResponseLength);;
+            }
+            
+            // Copy the bytes.
+            Buffer.BlockCopy(impulseResponseBytes, 0, impulseResponse, 0, impulseResponseLength);
             return impulseResponseLength;
         }
 

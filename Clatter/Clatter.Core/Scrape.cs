@@ -91,7 +91,8 @@ namespace Clatter.Core
         /// Generate audio. Returns true if audio was generated. This will set the `samples` field.
         /// </summary>
         /// <param name="speed">The collision speed in meters per second.</param>
-        public override bool GetAudio(double speed)
+        /// <param name="impulseResponsePath">Optional. If included, this is the path to a file containing impulse response data.</param>
+        public override bool GetAudio(double speed, string impulseResponsePath = null)
         {
             double scrapeSpeed = Math.Min(speed, maxSpeed);
             int numPts = (int)(Math.Floor((scrapeSpeed / 10) / ScrapeMaterialData.SCRAPE_M_PER_PIXEL) + 1);
@@ -102,7 +103,8 @@ namespace Clatter.Core
             // Get impulse response of the colliding objects.
             if (!gotImpulseResponse)
             {
-                int impulseResponseLength = GetImpulseResponse(AdjustModes(speed), ref impulseResponse);
+                double amp = AdjustModes(speed);
+                int impulseResponseLength = impulseResponsePath == null ? GetImpulseResponse(amp, ref impulseResponse) : LoadImpulseResponse(impulseResponsePath, amp, ref impulseResponse);
                 if (impulseResponseLength == 0)
                 {
                     return false;
