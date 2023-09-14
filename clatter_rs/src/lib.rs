@@ -4,8 +4,6 @@ use safer_ffi::ffi_export;
 use safer_ffi::headers::Language::CSharp;
 use std::f64::consts::{PI, TAU};
 
-/// Meters per pixel on the scrape surface.
-const SCRAPE_M_PER_PIXEL: f64 = 1394.068 * 10e-9;
 const SCRAPE_LINEAR_SPACE_LEN: usize = 4410;
 const SCRAPE_LINEAR_SPACE_STEP: f64 = 1.0 / (SCRAPE_LINEAR_SPACE_LEN - 1) as f64;
 lazy_static! {
@@ -33,24 +31,24 @@ impl MedianFilter {
         self.buffer[self.offset] = sample;
         self.full |= self.offset == 0;
         if self.full {
-            Self::median_in_place(&self.buffer)
+            Self::median_in_place(&mut self.buffer)
         } else {
             let length = 5 - self.offset;
             // Get the offset buffer.
-            let mut offset_buffer = match length {
-                1 => self.offset_buffer_1,
-                2 => self.offset_buffer_2,
-                3 => self.offset_buffer_3,
-                4 => self.offset_buffer_4,
+            let offset_buffer = match length {
+                1 => &mut self.offset_buffer_1,
+                2 => &mut self.offset_buffer_2,
+                3 => &mut self.offset_buffer_3,
+                4 => &mut self.offset_buffer_4,
                 other => unreachable!("Median filter offset buffer length wants to be {}", other),
             };
             // Copy to the offset buffer.
             offset_buffer[0..length].copy_from_slice(&self.buffer[0..length]);
-            Self::median_in_place(&offset_buffer)
+            Self::median_in_place(offset_buffer)
         }
     }
 
-    fn median_in_place(data: &SafeVec) -> f64 {
+    fn median_in_place(data: &mut SafeVec) -> f64 {
         let k = (data.len() / 2) as i32;
         if data.len() % 2 != 0 {
             Self::select_in_place(data, k)
@@ -59,33 +57,54 @@ impl MedianFilter {
         }
     }
 
-    fn select_in_place(data: &SafeVec, rank: i32) -> f64 {
+    fn select_in_place(data: &mut SafeVec, rank: i32) -> f64 {
         if rank <= 0 {
             *data.iter().min_by(|&a, &b| a.total_cmp(b)).unwrap()
         } else if rank as usize >= data.len() - 1 {
             *data.iter().max_by(|&a, &b| a.total_cmp(b)).unwrap()
         } else {
             let rank = rank as usize;
-            let mut a = data.clone();
             let mut low = 0;
-            let mut low1 = 1;
-            for high in (low..=data.len() - 1).rev() {
+            let mut high = data.len() - 1;
+            for _ in 0..100 {
+                let low1 = low + 1;
                 if high <= low1 {
                     if high == low1 && data[high] < data[low] {
-                        a.swap(low, high);
+                        data.swap(low, high);
                     }
-                    return a[rank];
+                    return data[rank];
                 }
-                a.swap((low + high) >> 1, low1);
-                if a[low] > a[high] {
-                    a.swap(low, high);
+                data.swap((low + high) >> 1, low1);
+                if data[low] > data[high] {
+                    data.swap(low, high);
                 }
-                if a[low] > a[low1] {
-                    a.swap(low, low1);
+                if data[low] > data[low1] {
+                    data.swap(low, low1);
+                }
+                let pivot = data[low1];
+                let mut begin = low1;
+                let mut end = high;
+
+                // Unclear how many times we need to iterate?
+                for _ in 0usize..100 {
+                    begin = data[begin..].iter().enumerate().find(|(_, &v)| v < pivot).unwrap().0;
+                    end = data[0..end].iter().rev().enumerate().find(|(_, &v)| v > pivot).unwrap().0;
+                    if end < begin {
+                        break;
+                    }
+                    data.swap(begin, end);
                 }
 
-                // TODO pivot.
+                data[low1] = data[end];
+                data[end] = pivot;
+                if end >= rank {
+                    high = end - 1;
+                }
+                if end <= rank {
+                    low = begin;
+                }
             }
+            0.0
         }
     }
 }
@@ -174,7 +193,7 @@ pub fn get_scrape(
     simulation_amp: f64,
     scrape_amp: f64,
     scrape_index: &mut usize,
-    num_points: &mut usize,
+    num_points: usize,
     dsdx: &SafeVec,
     d2sdx2: &SafeVec,
     linear_space: &mut SafeVec,
@@ -184,17 +203,17 @@ pub fn get_scrape(
     samples: &mut SafeVec,
 ) {
     // Define the linear space.
-    let step = 1.0 / (*num_points - 1) as f64;
-    linear_space[0..*num_points]
+    let step = 1.0 / (num_points - 1) as f64;
+    linear_space[0..num_points]
         .iter_mut()
         .enumerate()
         .for_each(|(i, v)| *v = i as f64 * step);
 
     // Define and reset the indices.
-    let mut final_index = *scrape_index + *num_points;
+    let mut final_index = *scrape_index + num_points;
     if final_index > dsdx.len() {
         *scrape_index = 0;
-        final_index = *num_points;
+        final_index = num_points;
     }
 
     // Calculate the force by adding the horizontal force and the vertical force.
@@ -219,7 +238,7 @@ pub fn get_scrape(
                 upper_dsdx,
                 *scrape_index,
                 &mut horizontal_interpolation_index,
-                *num_points,
+                num_points,
             )
             + vertical
                 * median_filter.process(
@@ -231,7 +250,7 @@ pub fn get_scrape(
                         upper_d2sdx2,
                         *scrape_index,
                         &mut vertical_interpolation_index,
-                        *num_points,
+                        num_points,
                     ) / curve_mass)
                         .tanh(),
                 );
