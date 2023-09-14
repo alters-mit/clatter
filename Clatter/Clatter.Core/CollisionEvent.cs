@@ -76,11 +76,22 @@
         /// <summary>
         /// Returns an object ID pair as a ulong. Source: https://stackoverflow.com/a/827267
         /// </summary>
+        /// <param name="primary">The primary object ID.</param>
+        /// <param name="secondary">The secondary object ID.</param>
+        public static ulong GetIds(uint primary, uint secondary)
+        {
+            return ((ulong)primary << 32) | secondary;
+        }
+        
+        
+        /// <summary>
+        /// Returns an object ID pair as a ulong. Source: https://stackoverflow.com/a/827267
+        /// </summary>
         /// <param name="primary">The primary object.</param>
         /// <param name="secondary">The secondary object.</param>
         public static ulong GetIds(ClatterObjectData primary, ClatterObjectData secondary)
         {
-            return ((ulong)primary.id << 32) | secondary.id;
+            return GetIds(primary.id, secondary.id);
         }
     }
 }

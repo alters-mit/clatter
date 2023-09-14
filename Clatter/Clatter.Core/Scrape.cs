@@ -91,7 +91,8 @@ namespace Clatter.Core
         /// Generate audio. Returns true if audio was generated. This will set the `samples` field.
         /// </summary>
         /// <param name="speed">The collision speed in meters per second.</param>
-        public override bool GetAudio(double speed)
+        /// <param name="pregeneratedImpulseResponse">An optional pre-generated impulse response array. If null, impulse response will be generated at runtime.</param>
+        public override bool GetAudio(double speed, double[] pregeneratedImpulseResponse = null)
         {
             double scrapeSpeed = Math.Min(speed, maxSpeed);
             int numPts = (int)(Math.Floor((scrapeSpeed / 10) / ScrapeMaterialData.SCRAPE_M_PER_PIXEL) + 1);
@@ -102,7 +103,18 @@ namespace Clatter.Core
             // Get impulse response of the colliding objects.
             if (!gotImpulseResponse)
             {
-                int impulseResponseLength = GetImpulseResponse(AdjustModes(speed), ref impulseResponse);
+                int impulseResponseLength;
+                // Generate an impulse response.
+                if (pregeneratedImpulseResponse == null)
+                {
+                    impulseResponseLength = GetImpulseResponse(AdjustModes(speed), ref this.impulseResponse);
+                }
+                // Use the prerecorded impulse response.
+                else
+                {
+                    Buffer.BlockCopy(pregeneratedImpulseResponse, 0, impulseResponse, 0, pregeneratedImpulseResponse.Length * 8);
+                    impulseResponseLength = pregeneratedImpulseResponse.Length;
+                }
                 if (impulseResponseLength == 0)
                 {
                     return false;
@@ -138,7 +150,7 @@ namespace Clatter.Core
                                ref verticalInterpolationIndex, numPts) / curveMass)));
             }
             // Convolve.
-            impulseResponse.Convolve(force, SAMPLES_LENGTH, ref samples.samples);
+            this.impulseResponse.Convolve(force, SAMPLES_LENGTH, ref samples.samples);
             // Apply roughness and amp.
             double a = scrapeMaterialData.roughnessRatio * simulationAmp * scrapeAmp;
             for (int i = 0; i < SAMPLES_LENGTH; i++)

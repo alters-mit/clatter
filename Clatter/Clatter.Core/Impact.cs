@@ -75,7 +75,8 @@ namespace Clatter.Core
         /// Generate audio. Returns true if audio was generated. This will set the `samples` field.
         /// </summary>
         /// <param name="speed">The collision speed in meters per second.</param>
-        public override bool GetAudio(double speed)
+        /// <param name="pregeneratedImpulseResponse">An optional pre-generated impulse response array. If null, impulse response will be generated at runtime.</param>
+        public override bool GetAudio(double speed, double[] pregeneratedImpulseResponse = null)
         {
             // Get the elapsed time.
             dt = watch.Elapsed.TotalSeconds;
@@ -93,8 +94,18 @@ namespace Clatter.Core
             {
                 // Adjust the modes and get the amp value.
                 double amp = AdjustModes(speed);
-                // Get the impulse response.
-                int impulseResponseLength = GetImpulseResponse(amp, ref impulseResponse);
+                int impulseResponseLength;
+                // Generate an impulse response.
+                if (pregeneratedImpulseResponse == null)
+                {
+                    impulseResponseLength = GetImpulseResponse(amp, ref impulseResponse);
+                }
+                // Use the prerecorded impulse response.
+                else
+                {
+                    Buffer.BlockCopy(pregeneratedImpulseResponse, 0, impulseResponse, 0, pregeneratedImpulseResponse.Length * 8);
+                    impulseResponseLength = pregeneratedImpulseResponse.Length;
+                }
                 if (impulseResponseLength == 0)
                 {
                     return false;
@@ -117,7 +128,7 @@ namespace Clatter.Core
                     frc[i] = Math.Sin(frc[i]);
                 }
                 // Convolve.
-                impulseResponse.Convolve(frc, impulseResponseLength, ref samples.samples);
+                this.impulseResponse.Convolve(frc, impulseResponseLength, ref samples.samples);
                 double maxSample = 0;
                 for (int i = 0; i < impulseResponseLength; i++)
                 {
