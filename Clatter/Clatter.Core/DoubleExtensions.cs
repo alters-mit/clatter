@@ -47,64 +47,28 @@ namespace Clatter.Core
         /// <param name="kernel">A convolution kernel.</param>
         /// <param name="length">The length of the convolved array.</param>
         /// <param name="result">The output array.</param>
-        public static void Convolve(this double[] a, double[] kernel, int length, ref double[] result)
+        internal static void Convolve(this double[] a, double[] kernel, int length, ref double[] result)
         {
             if (result.Length < length)
             {
                 Array.Resize(ref result, length * 2);
             }
-            // Rust convolution.
-            if (Globals.CanUseNativeLibrary)
+            double sum;
+            int n1;
+            int n2;
+            int inputLength = a.Length;
+            int kernelLength = kernel.Length;
+            for (int i = length - 1; i >= 0; i--)
             {
-                unsafe
+                sum = 0;
+                n1 = i < inputLength ? 0 : i - inputLength - 1;
+                n2 = i < kernelLength ? i : kernelLength - 1;
+                for (int j = n1; j <= n2; j++)
                 {
-                    UIntPtr aLength = (UIntPtr)a.Length;
-                    UIntPtr kernelLength = (UIntPtr)kernel.Length;
-                    UIntPtr resultLength = (UIntPtr)result.Length;
-                    fixed (double* aPointer = a, kernelPointer = kernel, resultPointer = result)
-                    {
-                        Vec_double_t aVec = new Vec_double_t()
-                        {
-                            ptr = aPointer,
-                            len = aLength,
-                            cap = aLength,
-                        };
-                        Vec_double_t kernelVec = new Vec_double_t()
-                        {
-                            ptr = kernelPointer,
-                            len = kernelLength,
-                            cap = kernelLength,
-                        };
-                        Vec_double_t resultVec = new Vec_double_t()
-                        {
-                            ptr = resultPointer,
-                            len = resultLength,
-                            cap = resultLength,
-                        };
-                        Ffi.convolve(&aVec, &kernelVec, (UIntPtr)length, &resultVec);
-                    }
+                    sum += a[i - j] * kernel[j];
                 }
-            }
-            // Pure-C# convolution.
-            else
-            {
-                double sum;
-                int n1;
-                int n2;
-                int inputLength = a.Length;
-                int kernelLength = kernel.Length;
-                for (int i = length - 1; i >= 0; i--)
-                {
-                    sum = 0;
-                    n1 = i < inputLength ? 0 : i - inputLength - 1;
-                    n2 = i < kernelLength ? i : kernelLength - 1;
-                    for (int j = n1; j <= n2; j++)
-                    {
-                        sum += a[i - j] * kernel[j];
-                    }
-                    result[i] = sum;
-                }  
-            }
+                result[i] = sum;
+            }  
         }
 
 

@@ -1,11 +1,12 @@
 use lazy_static::lazy_static;
-use safer_ffi::ffi_export;
+use safer_ffi::{ffi_export, derive_ReprC};
 #[cfg(feature = "headers")]
 use safer_ffi::headers::Language::CSharp;
 use std::f64::consts::{PI, TAU};
 
 const SCRAPE_LINEAR_SPACE_LEN: usize = 4410;
 const SCRAPE_LINEAR_SPACE_STEP: f64 = 1.0 / (SCRAPE_LINEAR_SPACE_LEN - 1) as f64;
+const MAX_AMP: f64 = 0.99;
 lazy_static! {
     static ref SCRAPE_LINEAR_SPACE: Vec<f64> = (0usize..SCRAPE_LINEAR_SPACE_LEN)
         .map(|i| i as f64 * SCRAPE_LINEAR_SPACE_STEP)
@@ -15,6 +16,17 @@ lazy_static! {
 type SafeVec = safer_ffi::Vec<f64>;
 
 #[ffi_export]
+#[repr(C)]
+#[derive_ReprC]
+pub struct ScrapeMaterialData {
+    pub roughness_ratio: f64,
+    pub dsdx: SafeVec,
+    pub d2sdx2: SafeVec
+}
+
+#[ffi_export]
+#[repr(C)]
+#[derive_ReprC]
 pub struct MedianFilter {
     pub buffer: SafeVec,
     pub offset_buffer_1: SafeVec,
@@ -33,7 +45,7 @@ impl MedianFilter {
         if self.full {
             Self::median_in_place(&mut self.buffer)
         } else {
-            let length = 5 - self.offset;
+            let length = 5usize - self.offset;
             // Get the offset buffer.
             let offset_buffer = match length {
                 1 => &mut self.offset_buffer_1,
@@ -109,41 +121,7 @@ impl MedianFilter {
     }
 }
 
-/// No-op to let the C# library check if it can load this library.
-#[ffi_export]
-pub fn is_ok() {}
 
-/// Convolve the input by the kernel.
-///
-/// Source: https://stackoverflow.com/a/7239016
-/// This code is a more optimized version of the source.
-///
-/// We're not using an fft convolve because it's actually faster to convolve in-place without ndarray.
-///
-/// - `input` The input array.
-/// - `kernel` A convolution kernel.
-/// - `length` The length of the convolved array.
-/// - `output` The output array.
-#[ffi_export]
-pub fn convolve(input: &SafeVec, kernel: &SafeVec, length: usize, output: &mut SafeVec) {
-    let input_length = input.len();
-    let kernel_length = kernel.len();
-    for (i, o) in (0..length - 1).zip(output.iter_mut()).rev() {
-        *o = kernel[if i < input_length {
-            0
-        } else {
-            i - input_length - 1
-        }..=if i < kernel_length {
-            0
-        } else {
-            kernel_length - 1
-        }]
-            .iter()
-            .enumerate()
-            .map(|(j, k)| input[i - j] * *k)
-            .sum();
-    }
-}
 
 /// Synthesize a sinusoid from mode data.
 ///
@@ -172,36 +150,22 @@ pub fn mode_sinusoid(
         .for_each(|(t, m)| *m = (t * q).cos() * pow * 10.0f64.powf(t * dcy));
 }
 
-/// Create a sine wave for impact audio.
-///
-/// - `length` The array will be filled up to this length.
-/// - `arr` The array that will be filled.
 #[ffi_export]
-pub fn impact_frequencies(length: usize, arr: &mut SafeVec) {
-    let step = PI / (length - 1) as f64;
-    arr[0..length]
-        .iter_mut()
-        .enumerate()
-        .for_each(|(i, v)| *v = (i as f64 * step).sin());
-}
-
 pub fn get_scrape(
     primary_mass: f64,
     scrape_speed: f64,
     max_speed: f64,
-    roughness_ratio: f64,
     simulation_amp: f64,
     scrape_amp: f64,
-    scrape_index: &mut usize,
     num_points: usize,
-    dsdx: &SafeVec,
-    d2sdx2: &SafeVec,
+    scrape_index: usize,
+    scrape_material: &ScrapeMaterialData,
+    impulse_response: &SafeVec,
     linear_space: &mut SafeVec,
     force: &mut SafeVec,
-    impulse_response: &SafeVec,
     median_filter: &mut MedianFilter,
     samples: &mut SafeVec,
-) {
+) -> usize {
     // Define the linear space.
     let step = 1.0 / (num_points - 1) as f64;
     linear_space[0..num_points]
@@ -210,33 +174,37 @@ pub fn get_scrape(
         .for_each(|(i, v)| *v = i as f64 * step);
 
     // Define and reset the indices.
-    let mut final_index = *scrape_index + num_points;
-    if final_index > dsdx.len() {
-        *scrape_index = 0;
+    let mut final_index = scrape_index + num_points;
+    let scrape_index = if final_index > scrape_material.dsdx.len() {
         final_index = num_points;
+        0
     }
+    else {
+        scrape_index
+    };
 
-    // Calculate the force by adding the horizontal force and the vertical force.
-    // The horizontal force is the interpolation of the dsdx array multiplied by a factor.
-    // The vertical force is a median filter sample of tanh of (the interpolation of the d2sdx2 array multiplied by a factor).
     let mut horizontal_interpolation_index = 0;
     let mut vertical_interpolation_index = 0;
     let vertical = 0.5 * (scrape_speed / max_speed).powf(2.0);
     let horizontal = 0.05 * (scrape_speed / max_speed);
     let curve_mass = 10.0 * primary_mass;
-    let lower_dsdx = dsdx[*scrape_index];
-    let upper_dsdx = dsdx[final_index];
-    let lower_d2sdx2 = d2sdx2[*scrape_index];
-    let upper_d2sdx2 = d2sdx2[final_index];
+    let lower_dsdx = scrape_material.dsdx[scrape_index];
+    let upper_dsdx = scrape_material.dsdx[final_index];
+    let lower_d2sdx2 = scrape_material.d2sdx2[scrape_index];
+    let upper_d2sdx2 = scrape_material.d2sdx2[final_index];
+
+    // Calculate the force by adding the horizontal force and the vertical force.
+    // The horizontal force is the interpolation of the dsdx array multiplied by a factor.
+    // The vertical force is a median filter sample of tanh of (the interpolation of the d2sdx2 array multiplied by a factor).
     for (s, f) in SCRAPE_LINEAR_SPACE.iter().zip(force.iter_mut()) {
         *f = horizontal
             * interpolate1d(
                 *s,
                 linear_space,
-                dsdx,
+                &scrape_material.dsdx,
                 lower_dsdx,
                 upper_dsdx,
-                *scrape_index,
+                scrape_index,
                 &mut horizontal_interpolation_index,
                 num_points,
             )
@@ -245,10 +213,10 @@ pub fn get_scrape(
                     (interpolate1d(
                         *f,
                         linear_space,
-                        d2sdx2,
+                        &scrape_material.d2sdx2,
                         lower_d2sdx2,
                         upper_d2sdx2,
-                        *scrape_index,
+                        scrape_index,
                         &mut vertical_interpolation_index,
                         num_points,
                     ) / curve_mass)
@@ -260,11 +228,54 @@ pub fn get_scrape(
     convolve(impulse_response, force, SCRAPE_LINEAR_SPACE_LEN, samples);
 
     // Apply roughness and amp.
-    let a = roughness_ratio * simulation_amp * scrape_amp;
+    let a = scrape_material.roughness_ratio * simulation_amp * scrape_amp;
     samples.iter_mut().for_each(|v| *v *= a);
 
     // Update the scrape index.
-    *scrape_index = final_index;
+    final_index
+}
+
+#[ffi_export]
+pub fn get_impact(
+    max_t: f64,
+    framerate: f64,
+    prevent_distortion: bool,
+    amp: &mut f64,
+    impulse_response_length: usize,
+    impulse_response: &SafeVec,
+    samples: &mut SafeVec,
+) {
+    let length = (max_t * framerate).ceil() as usize;
+    let step = PI / (length - 1) as f64;
+    // Generate the frequencies sinusoid.
+    let frc = SafeVec::from(
+        (0..length)
+            .map(|i| (i as f64 * step).sin())
+            .collect::<Vec<f64>>(),
+    );
+    // Convolve with the impulse response.
+    convolve(&impulse_response, &frc, impulse_response_length, samples);
+    // Get the max sample.
+    let max_sample = samples.iter().fold(f64::INFINITY, |a, &b| a.max(b)).abs();
+    // Clamp the amp.
+    if prevent_distortion && *amp > MAX_AMP {
+        *amp = MAX_AMP;
+    }
+    // Divide by the max sample.
+    samples[0..impulse_response_length]
+        .iter_mut()
+        .for_each(|s| *s /= max_sample);
+    // Get the abs max sample.
+    let max_sample = samples
+        .iter()
+        .map(|v| v.abs())
+        .fold(f64::INFINITY, |a, b| a.max(b))
+        .abs();
+    let amp = *amp;
+    // Scale by the amp value and max sample.
+    samples[0..impulse_response_length]
+        .iter_mut()
+        .for_each(|s| *s *= amp / max_sample);
 }
 
 fn interpolate1d(
@@ -291,6 +302,41 @@ fn interpolate1d(
     }
     *start_x = 0;
     upper
+}
+
+/// No-op to let the C# library check if it can load this library.
+#[ffi_export]
+pub fn is_ok() {}
+
+/// Convolve the input by the kernel.
+///
+/// Source: https://stackoverflow.com/a/7239016
+/// This code is a more optimized version of the source.
+///
+/// We're not using an fft convolve because it's actually faster to convolve in-place without ndarray.
+///
+/// - `input` The input array.
+/// - `kernel` A convolution kernel.
+/// - `length` The length of the convolved array.
+/// - `output` The output array.
+fn convolve(input: &SafeVec, kernel: &SafeVec, length: usize, output: &mut SafeVec) {
+    let input_length = input.len();
+    let kernel_length = kernel.len();
+    for (i, o) in (0..length - 1).zip(output.iter_mut()).rev() {
+        *o = kernel[if i < input_length {
+            0
+        } else {
+            i - input_length - 1
+        }..=if i < kernel_length {
+            0
+        } else {
+            kernel_length - 1
+        }]
+            .iter()
+            .enumerate()
+            .map(|(j, k)| input[i - j] * *k)
+            .sum();
+    }
 }
 
 #[cfg(feature = "headers")]

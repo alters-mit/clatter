@@ -35,32 +35,62 @@ public unsafe struct Vec_double_t {
     public UIntPtr cap;
 }
 
-public unsafe partial class Ffi {
-    /// <summary>
-    /// Convolve the input by the kernel.
-    ///
-    /// Source: https://stackoverflow.com/a/7239016
-    /// This code is a more optimized version of the source.
-    /// We're not using an fft convolve because it's actually faster to convolve in-place without ndarray.
-    ///
-    /// - <c>input</c> The input array.
-    /// - <c>kernel</c> A convolution kernel.
-    /// - <c>length</c> The length of the convolved array.
-    /// - <c>output</c> The output array.
-    /// </summary>
-    [DllImport(RustLib, ExactSpelling = true)] public static unsafe extern
-    void convolve (
-        Vec_double_t /*const*/ * input,
-        Vec_double_t /*const*/ * kernel,
-        UIntPtr length,
-        Vec_double_t * output);
+[StructLayout(LayoutKind.Sequential, Size = 136)]
+public unsafe struct MedianFilter_t {
+    public Vec_double_t buffer;
+
+    public Vec_double_t offset_buffer_1;
+
+    public Vec_double_t offset_buffer_2;
+
+    public Vec_double_t offset_buffer_3;
+
+    public Vec_double_t offset_buffer_4;
+
+    public UIntPtr offset;
+
+    [MarshalAs(UnmanagedType.U1)]
+    public bool full;
+}
+
+[StructLayout(LayoutKind.Sequential, Size = 56)]
+public unsafe struct ScrapeMaterialData_t {
+    public double roughness_ratio;
+
+    public Vec_double_t dsdx;
+
+    public Vec_double_t d2sdx2;
 }
 
 public unsafe partial class Ffi {
     [DllImport(RustLib, ExactSpelling = true)] public static unsafe extern
-    void impact_frequencies (
+    void get_impact (
+        double max_t,
+        double framerate,
+        [MarshalAs(UnmanagedType.U1)]
+        bool prevent_distortion,
+        double * amp,
+        UIntPtr impulse_response_length,
+        Vec_double_t /*const*/ * impulse_response,
+        Vec_double_t * samples);
+}
+
+public unsafe partial class Ffi {
+    [DllImport(RustLib, ExactSpelling = true)] public static unsafe extern
+    UIntPtr get_scrape (
+        double primary_mass,
+        double scrape_speed,
+        double max_speed,
+        double simulation_amp,
+        double scrape_amp,
+        UIntPtr num_points,
+        UIntPtr scrape_index,
+        ScrapeMaterialData_t /*const*/ * scrape_material,
+        Vec_double_t /*const*/ * impulse_response,
         Vec_double_t * linear_space,
-        UIntPtr length);
+        Vec_double_t * force,
+        MedianFilter_t * median_filter,
+        Vec_double_t * samples);
 }
 
 public unsafe partial class Ffi {

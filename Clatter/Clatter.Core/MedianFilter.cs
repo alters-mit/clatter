@@ -14,36 +14,41 @@ namespace Clatter.Core
     internal class MedianFilter
     {
         /// <summary>
+        /// The filter window size.
+        /// </summary>
+        private const int WINDOW_SIZE = 5;
+        
+        
+        /// <summary>
         /// The filter buffer.
         /// </summary>
-        private readonly double[] buffer;
-        /// <summary>
-        /// A dictionary of cached offset buffers. Key = The length of the buffer.
-        /// </summary>
-        private readonly Dictionary<int, double[]> offsetBuffers = new Dictionary<int, double[]>();
+        internal readonly double[] buffer;
+        internal readonly double[] offsetBuffer1;
+        internal readonly double[] offsetBuffer2;
+        internal readonly double[] offsetBuffer3;
+        internal readonly double[] offsetBuffer4;
         /// <summary>
         /// The current offset.
         /// </summary>
-        private int offset;
+        internal int offset;
         /// <summary>
         /// If true, the buffer is full.
         /// </summary>
-        private bool bufferFull;
+        internal bool bufferFull;
         
 
         /// <summary>
         /// Create a Median Filter.
         /// </summary>
-        /// <param name="windowSize">The window size.</param>
-        internal MedianFilter(int windowSize)
+        internal MedianFilter()
         {
             // Set the buffer.
-            buffer = new double[windowSize];
+            buffer = new double[WINDOW_SIZE];
             // Generate offset buffers.
-            for (int i = windowSize - 1; i >= 0; i--)
-            {
-                offsetBuffers.Add(i, new double[i]);
-            }
+            offsetBuffer1 = new double[1];
+            offsetBuffer2 = new double[2];
+            offsetBuffer3 = new double[3];
+            offsetBuffer4 = new double[4];
         }
         
         
@@ -62,9 +67,30 @@ namespace Clatter.Core
             else
             {
                 int length = buffer.Length - offset;
+                double[] offsetBuffer;
+                if (length == 1)
+                {
+                    offsetBuffer = offsetBuffer1;
+                }
+                else if (length == 2)
+                {
+                    offsetBuffer = offsetBuffer2;
+                }
+                else if (length == 3)
+                {
+                    offsetBuffer = offsetBuffer3;
+                }
+                else if (length == 4)
+                {
+                    offsetBuffer = offsetBuffer4;
+                }
+                else
+                {
+                    throw new Exception("Invalid offset buffer length: " + length);
+                }
                 // Copy to the offset buffer.
-                Buffer.BlockCopy(buffer, offset * 8, offsetBuffers[length], 0, offsetBuffers[length].Length * 8);
-                return offsetBuffers[length].MedianInPlace();
+                Buffer.BlockCopy(buffer, offset * 8, offsetBuffer, 0, offsetBuffer.Length * 8);
+                return offsetBuffer.MedianInPlace();
             }
         }
     }

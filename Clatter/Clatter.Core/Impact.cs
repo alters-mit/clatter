@@ -111,61 +111,75 @@ namespace Clatter.Core
                 double[] frc;
                 if (Globals.CanUseNativeLibrary)
                 {
-                    frc = new double[(int)Math.Ceiling(maxT * Globals.framerate)];
-                    UIntPtr frcLength = (UIntPtr)frc.Length;
+                    // Resize the samples array.
+                    if (samples.samples.Length < impulseResponseLength)
+                    {
+                        Array.Resize(ref samples.samples, impulseResponseLength * 2);
+                    }
                     unsafe
                     {
-                        fixed (double* frcPointer = frc)
+                        fixed (double* irPointer = impulseResponse, samplesPointer = samples.samples)
                         {
-                            Vec_double_t frcVec = new Vec_double_t
+                            UIntPtr irLength = (UIntPtr)impulseResponse.Length;
+                            Vec_double_t impulseResponseVec = new Vec_double_t
                             {
-                                ptr = frcPointer,
-                                len = frcLength,
-                                cap = frcLength
+                                ptr = irPointer,
+                                len = irLength,
+                                cap = irLength
                             };
-                            Ffi.impact_frequencies(&frcVec, frcLength);
+                            UIntPtr samplesLength = (UIntPtr)samples.samples.Length;
+                            Vec_double_t samplesVec = new Vec_double_t
+                            {
+                                ptr = samplesPointer,
+                                len = samplesLength,
+                                cap = samplesLength
+                            };
+                            Ffi.get_impact(maxT, Globals.framerateD, preventDistortion, &amp, (UIntPtr)impulseResponseLength, &impulseResponseVec, &samplesVec);
                         }
                     }
                 }
                 else
                 {
+                    // Create a sinusoid.
                     frc = LinSpace.Get(0, Math.PI, (int)Math.Ceiling(maxT * Globals.framerate));
                     for (int i = 0; i < frc.Length; i++)
                     {
                         frc[i] = Math.Sin(frc[i]);
-                    }                 
-                }
-                // Convolve.
-                impulseResponse.Convolve(frc, impulseResponseLength, ref samples.samples);
-                double maxSample = 0;
-                for (int i = 0; i < impulseResponseLength; i++)
-                {
-                    if (samples.samples[i] > maxSample)
+                    }     
+                    // Convolve.
+                    impulseResponse.Convolve(frc, impulseResponseLength, ref samples.samples);
+                    // Get the max sample.
+                    double maxSample = 0;
+                    for (int i = 0; i < impulseResponseLength; i++)
                     {
-                        maxSample = samples.samples[i];
+                        if (samples.samples[i] > maxSample)
+                        {
+                            maxSample = samples.samples[i];
+                        }
                     }
-                }
-                // Clamp the amp.
-                if (preventDistortion && amp > MAX_AMP)
-                {
-                    amp = MAX_AMP;
-                }
-                maxSample = Math.Abs(maxSample);
-                double maxAbsSample = 0;
-                double abs;
-                for (int i = 0; i < impulseResponseLength; i++)
-                {
-                    samples.samples[i] /= maxSample;
-                    abs = Math.Abs(samples.samples[i]);
-                    if (abs > maxAbsSample)
+                    // Clamp the amp.
+                    if (preventDistortion && amp > MAX_AMP)
                     {
-                        maxAbsSample = abs;
+                        amp = MAX_AMP;
                     }
-                }
-                // Scale by the amp value.
-                for (int i = 0; i < impulseResponseLength; i++)
-                {
-                    samples.samples[i] = amp * samples.samples[i] / maxAbsSample;
+                    // Get the max abs sample.
+                    maxSample = Math.Abs(maxSample);
+                    double maxAbsSample = 0;
+                    double abs;
+                    for (int i = 0; i < impulseResponseLength; i++)
+                    {
+                        samples.samples[i] /= maxSample;
+                        abs = Math.Abs(samples.samples[i]);
+                        if (abs > maxAbsSample)
+                        {
+                            maxAbsSample = abs;
+                        }
+                    }
+                    // Scale by the amp value.
+                    for (int i = 0; i < impulseResponseLength; i++)
+                    {
+                        samples.samples[i] = amp * samples.samples[i] / maxAbsSample;
+                    }
                 }
                 samples.length = impulseResponseLength;
                 // Restart the clock.
