@@ -48,7 +48,6 @@
         <Compile Include="CollisionEvent.cs" />
         <Compile Include="DoubleExtensions.cs" />
         <Compile Include="EventState.cs" />
-        <Compile Include="ExternalEntryPoint.cs" />
         <Compile Include="Globals.cs" />
         <Compile Include="Impact.cs" />
         <Compile Include="ImpactMaterialUnsized.cs" />

@@ -112,6 +112,10 @@ namespace Clatter.Core
                 // Use the prerecorded impulse response.
                 else
                 {
+                    if (impulseResponse.Length < pregeneratedImpulseResponse.Length) 
+                    {
+                        Array.Resize(ref impulseResponse, pregeneratedImpulseResponse.Length);
+                    }
                     Buffer.BlockCopy(pregeneratedImpulseResponse, 0, impulseResponse, 0, pregeneratedImpulseResponse.Length * 8);
                     impulseResponseLength = pregeneratedImpulseResponse.Length;
                 }
